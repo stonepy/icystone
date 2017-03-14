@@ -12,11 +12,18 @@ class run:
         t()
 
 
+
     """
+
+        Note:
+
         Apply multiple processes in different ways
             1) no arg
             2) one arg
             3) more than one arg (list)
+
+
+        Usage:
 
         This function accepts 2 positional and 1 optional args:
             1) the name of the function
