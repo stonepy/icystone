@@ -1,8 +1,24 @@
+"""
+- Information --------------------------------------------------------------------
+ Name         :   lncRNA_mRNA_Database
+ Description  :   Find the expression relationship between lncRNA and mRNA, finally
+                   output the gtf files in different folders
+ Author       :   Hwx
+ Version      :   V1
+ Dev Env      :   Red Hat 4.8.5-11, Python3.5.3, virtualenv15.1.0
+ Finish Date  :   2017-02-20
+-----------------------------------------------------------------------------------
+"""
+
+
+
 import pandas as pd
 import time
 import os
 import shutil
 import re
+
+
 
 class main:
 
