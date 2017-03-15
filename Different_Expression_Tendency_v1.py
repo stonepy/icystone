@@ -26,8 +26,8 @@ def diff_tendency():
     df_B = pd.read_table(path_B, usecols=["gene_id", "Type", "log2(fold_change)"])
     df_C = pd.read_table(path_C, usecols=["gene_id", "Type", "log2(fold_change)"])
 
-    df_B = df_B[df_B["log2(fold_change)"] >= 1]
-    df_C = df_C[df_C["log2(fold_change)"] >= 1]
+    df_B = df_B[abs(df_B["log2(fold_change)"]) >= 1]
+    df_C = df_C[abs(df_C["log2(fold_change)"]) >= 1]
 
     df_BC = pd.merge(df_B, df_C, on="gene_id")
 
