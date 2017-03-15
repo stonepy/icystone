@@ -11,7 +11,7 @@
 
 
 import pandas as pd
-
+import time
 
 dir_files = "/home/daniel/PycharmProjects/fishbone/files/"
 dir_output = dir_files + "output/"
@@ -51,63 +51,52 @@ def lnc2mRNA_Target():
 
     path_output  = dir_files + "/output/lncTgeneList.txt"
 
-    df_lncList = pd.read_table(path_lncList)
-    df_lnc2m   = pd.read_table(path_lnc2m, usecols=["Query", "Target"])
+    df_lncList = open(path_lncList,"r")
+    df_lnc2m   = open(path_lnc2m,"r")
+
+    for l in df_lncList:
+        try:
+            lncList_list.append(l)
+        except:
+            lncList_list = []
+            lncList_list.append(l)
+
+
+
+    for l in df_lnc2m:
+        try:
+            lnc2m_list.append(l)
+        except:
+            lnc2m_list = []
+            lnc2m_list.append(l)
+
 
 
     with open(path_output, "w") as lncTgene:
+        mRNA_list = []
 
-        for index, lnc in df_lncList.iterrows():
+        for lnc in lncList_list:
 
-            for index, row in df_lnc2m.iterrows():
+            for row in lnc2m_list:
 
-                if row[0].split("(")[1].strip(")") == lnc:
+                if lnc.strip("\n") in row:
 
-                    gene_id = row[1].split("(")[1].strip(")") + "\n"
-                    lncTgene.write(gene_id)
+                    try:
+                        mRNA = row.split("\t")[2].split("(")[1].strip(")")
+                        mRNA_list.append(mRNA)
+                    except:
+                        mRNA_list = []
+                        mRNA_list.append(mRNA)
 
+        mRNA_unique = set(mRNA_list)
+        for l in mRNA_unique:
+            lncTgene.write(l+"\n")
 
+        print(len(mRNA_unique))
 
-    # with open(path_lnc2m, "r") as lnc2m:
-    #
-    #     for l in lnc2m:
-    #         try:
-    #             lnc2m_list.append(l)
-    #         except:
-    #             lnc2m_list = []
-    #
-    #     lnc2m_dict      = {}
-    #     for l in lnc2m_list:
-    #
-    #         # print(l.split("\t")[0].split("(")[1].strip(")"))
-    #         try:
-    #             key   = l.split("\t")[0].split("(")[1].strip(")")
-    #             value = l.split("\t")[2].split("(")[1].strip(")")
-    #
-    #         except:
-    #             continue
-    #
-    #
-    #         try:
-    #             lnc2m_dict[key].append(value+"\t")
-    #             # print(key, value)
-    #
-    #         except:
-    #             lnc2m_dict[key] = []
-    #             lnc2m_dict[key].append(value)
-    #
-    #     # for key in lnc2m_dict.keys():
-    #     #     print(key)
-    #     print(lnc2m_dict)
-    #
-    #
-    # with open(path_output, "w") as lncTgene:
-    #     for l in lnc2m_dict.items():
-    #         lncTgene.write(l+"\n")
 
 
 
 if __name__ == "__main__":
-    # diff_tendency()
+    diff_tendency()
     lnc2mRNA_Target()
-
