@@ -15,6 +15,7 @@ import pandas as pd
 
 
 def REA():
+
     sampleType  = "tRNA_id"
     path_expr   = "/home/daniel/PycharmProjects/fishbone/files/miRNA_tRNA/tRNA.expression.xls"
     path_output = "/home/daniel/PycharmProjects/fishbone/files/output/tRNA.REA.xls"
@@ -41,7 +42,7 @@ def REA():
 
 
 def Add_fastaSeq():
-    sampleType  = "tRNA_id"
+
     path_fasta  = "/home/daniel/PycharmProjects/fishbone/files/miRNA_tRNA/hg19-tRNAs.fa"
     path_REA    = "/home/daniel/PycharmProjects/fishbone/files/output/tRNA.REA.xls"
     path_output = "/home/daniel/PycharmProjects/fishbone/files/output/tRNA.REAseq.xls"
