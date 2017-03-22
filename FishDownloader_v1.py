@@ -21,12 +21,17 @@ class main:
     def Download(self, url):
 
         file_name = url.split("/")[-1]
-        print(file_name)
+
         try:
+            print("\nDownload file : %s\nFrom          : %s\n\nDownloading, please ...\n" % (file_name, url))
             urllib.request.urlretrieve(url, file_name)
+
         except Exception as e:
             print(e)
-        print("\nDownload file : %s\nFrom          : %s\n" % (file_name, url))
+            exit()
+
+        print("Finish downloading file : '%s'\n" % file_name)
+
 
 
 
@@ -109,7 +114,7 @@ if __name__ == "__main__":
 
     hg = "helloe world"
     words_list = ['default', 'arguments', 'are', 'evaluated', 'once', 'when']
-    urls = ['http://www.blog.pythonlibrary.org/wp-content/uploads/2012/06/wxDbViewer.zip']
+    urls = ['ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.chromosome.9.fa.gz', "ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.chromosome.8.fa.gz", "ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.chromosome.7.fa.gz"]
     process_num = 3
 
 
