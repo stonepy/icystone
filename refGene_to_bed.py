@@ -1,8 +1,7 @@
 """
 - Information --------------------------------------------------------------------
- Name         :
- Description  : If the amount of samples is too small and the ranges of samples are
-                too large, use this script to make the data more close to the median
+ Name         : refGene_to_bed
+ Description  : Transform '*_refGene.txt' to 'TAIR10.bed'
  Formulation  : None
  Author       : Hwx
  Version      : V1
