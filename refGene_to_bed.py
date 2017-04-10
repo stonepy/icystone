@@ -1,7 +1,7 @@
 """
 - Information --------------------------------------------------------------------
  Name         : refGene_to_bed
- Description  : Transform '*_refGene.txt' to '*.bed', '*'stands for species, specific for SNP pipline
+ Description  : Transform '*_refGene.txt' to '*.bed', '*' stands for species, specific for SNP pipline
  Formulation  : None
  Author       : Hwx
  Version      : V3
@@ -10,8 +10,10 @@
 -----------------------------------------------------------------------------------
 """
 
-
+import time
 import sys
+import re
+
 
 # Test path
 path_refGene   = "mm10_refGene_old.txt"
@@ -30,8 +32,17 @@ except:
     """)
     exit()
 
+# Start timing
+start_t = time.time()
+
 # Import pandas here for faster launching
 import pandas as pd
+
+# Get name of IO file names
+inputFile = re.split("/|\|", path_refGene)[-1]
+outputFile = re.split("/|\|", path_BedOutput)[-1]
+
+print("\nReading %s ......" % inputFile)
 
 # Read '*_refGene.txt' as DataFrame
 df_refGene = pd.read_table(path_refGene, header=None)
@@ -40,6 +51,8 @@ df_refGene = pd.read_table(path_refGene, header=None)
 with open(path_BedOutput, "w") as bed:
     # Sort by chromosome
     df_refGene = df_refGene.sort_values(by=2, ascending=True)
+
+    print("Converting %s into %s ......" % (inputFile, outputFile))
 
     # Obtain information
     for index, row in df_refGene.iterrows():
@@ -57,3 +70,9 @@ with open(path_BedOutput, "w") as bed:
             iso_n = iso + "." + str(n)      # Use id of isoform and number to identify name, must convert number to string
             l = "\t".join([str(chr), str(coord[0]), str(coord[1]), str(ori), iso_n]) + "\n"     # Merge all items into a line
             bed.write(l)
+
+print("Finish convertion.\n")
+
+# Stop timing
+total_t = time.time() - start_t
+print("Time concumed: %0.2fs\n" % total_t)
