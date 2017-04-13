@@ -36,7 +36,7 @@ try:
 
 except ImportError as e:
     print(">>> Warning: Lack of package\n    %s\n" % e)
-    print(">>> You can stop this Pipline right now and fix it, or just let it be...\n")
+    print(">>> You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be...\n")
 
 
 
