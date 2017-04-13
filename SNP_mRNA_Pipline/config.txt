@@ -1,0 +1,9 @@
+project    /home/hwx/work/RNA_seq/WTS_mRNA_17B0206A/
+report     /home/hwx/work/RNA_seq/WTS_mRNA_17B0206A/work_path/report_new
+raw_data   /home/pub/project/Transcriptome/17B0206A
+sample     5-1-leaves-1,5-1-leaves-2,Ler-leaves-1,Ler-leaves-2
+organ      Arabidopsis
+
+Ler-1 5-1-1 Ler-leaves-1;5-1-leaves-1
+Ler-2 5-1-2 Ler-leaves-2;5-1-leaves-2
+Ler   5     Ler-leaves-1,Ler-leaves-2;5-1-leaves-1,5-1-leaves-2
