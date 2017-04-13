@@ -112,13 +112,13 @@ def configini(WTS_cfg_dict, output_path):
 
         # Choose '=bed' by species
         if Species.lower() == "human":
-            Bed_path = bed_dict["human"]
+            Bed_path = bed_dict["human"].capitalize()
 
         elif Species.lower() == "mouse":
-            Bed_path = bed_dict["mouse"]
+            Bed_path = bed_dict["mouse"].capitalize()
 
         elif Species.lower() == "arabidopsis":
-            Bed_path = bed_dict["arabidopsis"]
+            Bed_path = bed_dict["arabidopsis"].capitalize()
 
         # You can see the config dictionary structure here
         config_dict = {
