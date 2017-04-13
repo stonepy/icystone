@@ -40,3 +40,18 @@ except ImportError as e:
 
 
 
+
+"""
+_ Log ___________________________________________________________________________
+
+2017_04_13
+    1) Finish package part of 'checking.py'
+    2) check list
+        packages
+        dirs(I/O)
+        soft
+        database
+        config
+
+_________________________________________________________________________________
+"""
