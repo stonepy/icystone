@@ -35,7 +35,7 @@ try:
 except:
     print("""
     Usage:
-        python WTS_SNP_ConfigProducer.py <WTSconfig_path> <Output_path>
+        python config_producer.py <WTSconfig_path> <Output_path>
     """)
     exit()
 

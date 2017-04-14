@@ -20,17 +20,17 @@ Usage = """
 
 """
 
+k = "helloe world"
 
-
-# Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
+# + Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
 def test():
     try:
         # Alternative way: import packages.settings
-        from packages import settings
+        from packages import checking
 
         print("\nIt works...\n")
 
-        print(settings.software_dict)
+        checking.mapping_STAR(k)
 
     except:
         print("\nIt's not going to work...\n")
@@ -40,13 +40,15 @@ def test():
 
 # test()
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
-# Get WTS 'config.txt' path from command line __________________________________________________
 import sys
 import os
+
+# _ Get WTS 'config.txt' path from command line __________________________________________________
+
 
 try:
     # Make sure the 'config.txt' exists
@@ -64,7 +66,7 @@ except:
 
 
 
-# Pathes ____________________
+# _ Pathes ____________________
 
 WTSconfig_path = sys.argv[1]
 SNPconfig_path = ""
@@ -74,7 +76,7 @@ SNPreport_path = ""
 
 
 
-# ALl modules needed ____
+# _ ALl modules needed ____
 
 
 modules_dict = """
@@ -105,7 +107,7 @@ report
 
 
 
-# Main _________________________________________
+# _ Main _________________________________________
 
 
 
@@ -120,7 +122,7 @@ report
 """
 _ Log ___________________________________________________________________________
 
-2017_04_13
+2017-04-13
     0) Start
     1) self-package configparser
     2) Finish 'settings.py', did not test
