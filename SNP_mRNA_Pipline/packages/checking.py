@@ -16,7 +16,21 @@ ________________________________________________________________________________
 
 
 def mapping_STAR():
-    print(k)
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -48,8 +62,8 @@ try:
     print("\nEverything is OK. Start running right away.\n")
 
 except ImportError as e:
-    print(">>> Warning: Lack of package\n    %s\n" % e)
-    print(">>> You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be...\n")
+    print(">>> Warning: lack of package\n      %s\n" % e)
+    print(">>> You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be, but you may encounter some problems during Pipline running.\n")
 
 
 

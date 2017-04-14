@@ -6,33 +6,40 @@ _ Information __________________________________________________________________
     Description  :
     Author       : Hwx
     Version      : V0
-    Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS/Python3.5.3, virtualenv15.1.0
+    Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0
     Finish Date  : 2017_04_
 __________________________________________________________________________________
 """
+
+
+
+import sys
+import os
+
 
 Usage = """
 
         Usage:
 
-            python SNP_mRNA.py <WTS_CongfigPATH>
+            python %s <WTS_CongfigPATH>
 
 
-"""
+""" % __file__
 
-k = "helloe world"
+
 
 # + Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
 def test():
     try:
         # Alternative way: import packages.settings
-        from packages import checking
+        from packages import config_parser
 
         print("\nIt works...\n")
 
-        checking.mapping_STAR(k)
+        print(config_parser.Description)
 
-    except:
+    except Exception as e:
+        print(e)
         print("\nIt's not going to work...\n")
 
 
@@ -44,11 +51,9 @@ def test():
 
 
 
-import sys
-import os
 
-# _ Get WTS 'config.txt' path from command line __________________________________________________
 
+# _ 1. Get WTS 'config.txt' path from command line __________________________________________________
 
 try:
     # Make sure the 'config.txt' exists
@@ -65,14 +70,42 @@ except:
     exit()
 
 
+# _ 2. Preparation for Pipline _____________________________________________
 
-# _ Pathes ____________________
+# Generate configs and parse them
+try:
+    from packages import config_producer
+    from packages import config_parser
+except Exception as e:
+    print(">>> Warning: lack of package\n      %s\n" % e)
+    print(">>> %s will be shut down right away.\n" % __file__)
+    exit()
 
-WTSconfig_path = sys.argv[1]
-SNPconfig_path = ""
-SNPrun_path    = ""
-SNPdata_path   = ""
-SNPreport_path = ""
+    # Parse the config Info and store in dictionary
+    config_dict = config_parser.configini
+    run_dict    = config_parser.runini
+
+    # Pathes
+    WTSconfig_path = sys.argv[1]
+    SNPconfig_path = ""
+    SNPrun_path    = ""
+    SNPdata_path   = ""
+    SNPreport_path = ""
+
+# Check everything that is needed to make sure Pipline will work properly
+try:
+    from packages import checking
+except Exception as e:
+    print(">>> Warning: lack of package\n      %s\n" % e)
+    print(">>> Checking function can not work properly. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
+
+
+
+
+
+# _ Main _________________________________________
+
+
 
 
 
@@ -104,15 +137,6 @@ analysis
 report
 
 """
-
-
-
-# _ Main _________________________________________
-
-
-
-
-
 
 
 

@@ -1,4 +1,5 @@
 Description = """
+
 _ Information ____________________________________________________________________
  Name         : WTS_SNP_ConfigProducer
  Description  : Produce 'config.ini' and 'run.ini' for
@@ -9,6 +10,7 @@ _ Information __________________________________________________________________
  Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS/Python3.5.3, virtualenv15.1.0
  Finish Date  : 2017-04-14
 ___________________________________________________________________________________
+
 """
 
 
@@ -33,8 +35,8 @@ if __name__ == "__main__":
     except:
         print("""
         Usage:
-            python config_producer.py <WTSconfig_path> <Output_path>
-        """)
+            python %s <WTSconfig_path> <Output_path>
+        """) % __file__
         exit()
 
 
