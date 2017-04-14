@@ -22,30 +22,14 @@ runOPT_path = "%s\\run.ini" % OPT_dir
 WTS_cfg_path = "WTS_config.txt"
 
 
-# _ 0. When use this script alone ________________________________________
-if __name__ == "__main__":
-
-
-
-    import sys
-
-    # Obtain pathes from command line(Linux)
-    try:
-        WTS_cfg_path = sys.argv[1]
-        OPT_dir = sys.argv[2]
-        configOPT_path = "%s/config.ini" % OPT_dir
-        runOPT_path = "%s/run.ini" % OPT_dir
-    
-    except:
-        print("""
-        Usage:
-            python %s <WTSconfig_path> <Output_path>
-        """) % __file__
-        exit()
-
 
 # _ 1. Process the WTS config and get Info ___________________________________
+
+import os
+import shutil
 import re
+
+
 
 def WTS_cfg(WTS_cfg_path):
     with open(WTS_cfg_path, "r") as WTS_config:
@@ -59,7 +43,7 @@ def WTS_cfg(WTS_cfg_path):
             "group": [],
         }
 
-        # Get WTS config information and store in a dictionary
+        # Get WTS config information and store in dictionary 'WTS_cfg_dict'
         for l in WTS_config:
             if l.startswith("project"):
                 WTS_cfg_dict["project_dir"] = l.strip()
@@ -84,10 +68,14 @@ def WTS_cfg(WTS_cfg_path):
 
 
 # _ 2. Produce SNP_mRNA_Pipline 'config.ini'______________________________________________________
-def configini(WTS_cfg_dict, output_path):
+def configini(WTS_cfg_dict):
+
+    output_dir = os.path.join(WTS_cfg_dict["project_dir"], "mRNA/snp")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     # Oupput 'config.ini' for SNP pipline
-    with open(output_path, "w") as cfg:
+    with open(output_dir + "/config.ini", "w") as cfg:
 
         print("\n>>> Content of 'config.ini' for SNP pipline:")
         print(">>> ========================================")
@@ -258,7 +246,26 @@ def runini(WTS_cfg_dict, output_path):
 
 
 
+# _ 0. When use this script alone ________________________________________
 if __name__ == "__main__":
+
+    import sys
+
+    # Obtain pathes from command line(Linux)
+    try:
+        WTS_cfg_path = sys.argv[1]
+        OPT_dir = sys.argv[2]
+        configOPT_path = "%s/config.ini" % OPT_dir
+        runOPT_path = "%s/run.ini" % OPT_dir
+
+    except:
+        print("""
+        Usage:
+            python %s <WTSconfig_path> <Output_path>
+        """) % __file__
+        exit()
+
+
     WTS_cfg_dict = WTS_cfg(WTS_cfg_path)  # Obtain sample and group information form WTS 'config.txt'
     configini(WTS_cfg_dict, configOPT_path)  # Produce 'config.ini' for mRNA SNP pipline
     runini(WTS_cfg_dict, runOPT_path)  # Produce 'run.ini' for mRNA SNP pipline

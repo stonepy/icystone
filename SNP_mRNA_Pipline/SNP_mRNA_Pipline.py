@@ -28,29 +28,7 @@ Usage = """
 
 
 
-# + Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
-def test():
-    try:
-        # Alternative way: import packages.settings
-        from packages import config_parser
-        config_dict = config_parser.configini(sys.argv[1])
-        run_dict = config_parser.runini(sys.argv[1])
 
-        print(config_dict,run_dict)
-
-        print("\nIt works...\n")
-
-
-    except Exception as e:
-        print(e)
-        print("\nIt's not going to work...\n")
-
-
-    exit()
-
-# test()
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -62,6 +40,8 @@ try:
     # Make sure the 'config.txt' exists
     if os.path.isfile(sys.argv[1]):
         print("\nLauching the SNP_mRNA Pipline...\n")
+        WTSconfig_path = sys.argv[1]
+
     else:
         print("\n>>> Error: 'config' file can't be found, make sure you use the right path.\n")
         raise
@@ -71,6 +51,36 @@ except:
     print(Description)
     print(Usage)
     exit()
+
+
+# + Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
+def test():
+    try:
+        from packages import config_processor
+        config_processor.WTS_cfg(WTSconfig_path)
+        config_dict = config_processor.configini()
+        # run_dict = config_processor.runini(WTSconfig_path)
+        print(config_dict)
+
+        # print(config_dict,run_dict)
+
+        print("\nIt works...\n")
+        exit()
+
+
+    except Exception as e:
+        print(e)
+        print("\nIt's not going to work...\n")
+
+
+    exit()
+
+test()
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
 
 
 # _ 2. Preparation for Pipline _____________________________________________
@@ -85,16 +95,16 @@ except Exception as e:
     exit()
 
     # Parse the config Info and store in dictionary
-    config_dict = config_processor.configini()
-    run_dict    = config_processor.runini()
+    config_dict = config_processor.configini(WTSconfig_path)
+    run_dict    = config_processor.runini(WTSconfig_path)
     print(config_dict, run_dict)
 
     # Pathes
-    WTSconfig_path = sys.argv[1]
-    SNPconfig_path = ""
-    SNPrun_path    = ""
-    SNPdata_path   = ""
-    SNPreport_path = ""
+    # WTSconfig_path = sys.argv[1]
+    # SNPconfig_path = ""
+    # SNPrun_path    = ""
+    # SNPdata_path   = ""
+    # SNPreport_path = ""
 
 # Check everything that is needed to make sure Pipline will work properly
 try:
