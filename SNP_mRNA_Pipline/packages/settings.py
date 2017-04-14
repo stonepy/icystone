@@ -1,7 +1,8 @@
-"""
+Description = """
+
 _ Information ____________________________________________________________________________
 
-    Name         : settings_SNP_mRNA
+    Name         : Settings_SNP_mRNA
     Description  : Use for storing variety of settings, including path and process numbers.
                    Only for Server #6 now.
     Author       : Hwx
@@ -9,12 +10,24 @@ _ Information __________________________________________________________________
     Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS/Python3.5.3, virtualenv15.1.0
     Finish Date  : 2017-04-13
 __________________________________________________________________________________________
+
 """
 
 
 
 # Species database path set
 species_dict = {
+
+    # Arabidopsis TAIR10
+    "Arabidopsis" :
+        {
+            "GenomeSTAR": "",
+            "GTF": "",
+            "Genome": "",
+            "dbSNP": "",
+            "AnnovarDB": "",
+            "AnnovarBuild": "TAIR10",
+        },
 
     # Mouse mm10
     "Mouse" :

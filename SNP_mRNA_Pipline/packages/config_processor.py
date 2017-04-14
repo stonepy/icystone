@@ -1,7 +1,7 @@
 Description = """
 
 _ Information ____________________________________________________________________
- Name         : WTS_SNP_ConfigProducer
+ Name         : ConfigProcessor_SNP_mRNA
  Description  : Produce 'config.ini' and 'run.ini' for
                 Whole Transcription Sequecing(WTS) mRNA SNP pipline,
                 using WTS pipline's 'config.txt'
@@ -15,12 +15,16 @@ ________________________________________________________________________________
 
 
 
+# Test pathes(Windows 10)
+OPT_dir = "C:\\Users\\GiantStone_Hwx\\PycharmProjects\\Playground"
+configOPT_path = "%s\\config.ini" % OPT_dir
+runOPT_path = "%s\\run.ini" % OPT_dir
+WTS_cfg_path = "WTS_config.txt"
+
+
+# _ 0. When use this script alone ________________________________________
 if __name__ == "__main__":
-    # Test pathes(Windows 10)
-    OPT_dir = "C:\\Users\\GiantStone_Hwx\\PycharmProjects\\Playground"
-    configOPT_path = "%s\\config.ini" % OPT_dir
-    runOPT_path = "%s\\run.ini" % OPT_dir
-    WTS_cfg_path = "WTS_config.txt"
+
 
 
     import sys
@@ -40,6 +44,7 @@ if __name__ == "__main__":
         exit()
 
 
+# _ 1. Process the WTS config and get Info ___________________________________
 import re
 
 def WTS_cfg(WTS_cfg_path):
@@ -78,6 +83,7 @@ def WTS_cfg(WTS_cfg_path):
     return WTS_cfg_dict
 
 
+# _ 2. Produce SNP_mRNA_Pipline 'config.ini'______________________________________________________
 def configini(WTS_cfg_dict, output_path):
 
     # Oupput 'config.ini' for SNP pipline
@@ -95,12 +101,12 @@ def configini(WTS_cfg_dict, output_path):
                     gpInfo.append(i)
 
         # Other INFO
-        Rawdata = WTS_cfg_dict["raw_data_dir"].split(" ")[_1]
-        Output = WTS_cfg_dict["project_dir"].split(" ")[_1] + "/mRNA/SNP"
-        Report = WTS_cfg_dict["report_dir"].split(" ")[_1] + "/mRNA/06_SNP"
-        Species = WTS_cfg_dict["organ"].split(" ")[_1]
-        Samples = ""
-        for s in WTS_cfg_dict["sample"].split(" ")[_1].split(","):
+        Rawdata  = WTS_cfg_dict["raw_data_dir"].split(" ")[-1]
+        Output   = WTS_cfg_dict["project_dir"].split(" ")[-1] + "/mRNA/SNP"
+        Report   = WTS_cfg_dict["report_dir"].split(" ")[-1] + "/mRNA/06_SNP"
+        Species  = WTS_cfg_dict["organ"].split(" ")[-1]
+        Samples  = ""
+        for s in WTS_cfg_dict["sample"].split(" ")[-1].split(","):
             Samples += s + "\n"
 
         # Pathes of '=.bed' files
@@ -161,7 +167,7 @@ def configini(WTS_cfg_dict, output_path):
                 if isinstance(j, str):
 
                     # Format adjustment
-                    if j.split(("_"))[_1] == str(1):
+                    if j.split(("_"))[-1] == str(1):
                         print("")
                         continue
                     cfg.write("\n")
@@ -177,7 +183,10 @@ def configini(WTS_cfg_dict, output_path):
 
         print(">>> ========================================\n\n")
 
+        return config_dict
 
+
+# _ 3. Produce SNP_mRNA_Pipline 'run.ini' _______________________________________________________________
 def runini(WTS_cfg_dict, output_path):
 
     # Output the 'run.ini'
@@ -193,58 +202,60 @@ def runini(WTS_cfg_dict, output_path):
                 if i != "":
                     gpInfo.append(i)
 
-            RUN_para = gpInfo[1] + "_vs_" + gpInfo[0]  # Group name: group1_vs_group2
-            Case_para = gpInfo[3]  # Case samples: 5_1_leaves_1, 5_1_leaves_2
-            Control_para = gpInfo[2]  # Case samples: Ler_leaves_1, Ler_leaves_2
-            Model_para = "Dominance"  # Gene limited calculation related, default: Dominance
-            Report_para = "All"  # Report model, default: All
+            RUN_para      = gpInfo[1] + "_vs_" + gpInfo[0]  # Group name: group1_vs_group2
+            Case_para     = gpInfo[3]  # Case samples: 5_1_leaves_1, 5_1_leaves_2
+            Control_para  = gpInfo[2]  # Case samples: Ler_leaves_1, Ler_leaves_2
+            Model_para    = "Dominance"  # Gene limited calculation related, default: Dominance
+            Report_para   = "All"  # Report model, default: All
 
-            Freq_Alt_1000g_para = str(0.01)  # 1000Genome database threshold
-            ExAC03_para = str(0.1)  # ExAC03 database threshold
+            Freq_Alt_1000g_para     = str(0.01)  # 1000Genome database threshold
+            ExAC03_para             = str(0.1)   # ExAC03 database threshold
             GENESKYDBHITS_Freq_para = str(0.05)  # GENESKYDBHITS database threshold
 
             # Human 'run.ini' config
             human_dict = {
 
-                "::RUN ": RUN_para,
-                "Case:": Case_para,
-                "Control:": Control_para,
-                "Freq_Alt (1000g):": Freq_Alt_1000g_para,
-                "ExAC03:": ExAC03_para,
-                "GENESKYDBHITS_Freq:": GENESKYDBHITS_Freq_para,
-                "Model:": Model_para,
-                "Report:": Report_para,
+                "::RUN "               : RUN_para,
+                "Case:"                : Case_para,
+                "Control:"             : Control_para,
+                "Freq_Alt (1000g):"    : Freq_Alt_1000g_para,
+                "ExAC03:"              : ExAC03_para,
+                "GENESKYDBHITS_Freq:"  : GENESKYDBHITS_Freq_para,
+                "Model:"               : Model_para,
+                "Report:"              : Report_para,
 
             }
 
             # Other species 'run.ini' config
             other_dict = {
 
-                "::RUN ": RUN_para,
-                "Case:": Case_para,
-                "Control:": Control_para,
-                "Model:": Model_para,
-                "Report:": Report_para,
+                "::RUN "    : RUN_para,
+                "Case:"     : Case_para,
+                "Control:"  : Control_para,
+                "Model:"    : Model_para,
+                "Report:"   : Report_para,
 
             }
 
             # Decide which config to use
             Species = WTS_cfg_dict["organ"]
             if "human" in Species.lower():
-                write_dict = human_dict
+                run_dict = human_dict
             else:
-                write_dict = other_dict
+                run_dict = other_dict
 
-            write_dict = sorted(write_dict.items(), key=lambda d: d[
-                0])  # Learn from http://jingyan.baidu.com/article/75ab0bcbeaf643d6874db249.html
+            write_list = sorted(run_dict.items(), key=lambda d: d[0])  # Learn from http://jingyan.baidu.com/article/75ab0bcbeaf643d6874db249.html
 
-            for item in write_dict:
+            for item in write_list:
                 run.write(item[0] + item[1] + "\n")
                 print(item[0] + item[1])
             run.write("\n")
             print("\n")
 
         print(">>> =====================================\n")
+
+        return run_dict
+
 
 
 if __name__ == "__main__":
@@ -320,8 +331,9 @@ ________________________________________________________________________________
 
 
 
-_ Import Information ______________________________________________________________
+_ Important Information ______________________________________________________________
 
+1. Server #6
 Human_bed = "/home/pub/database/Human/hg19/bed/human_exons_realign.bed"
 Mouse_bed = "/home/hwx/reference/mm10.bed"
 Arabidopsis_bed = "/home/hwx/reference/Arabidopsis/TAIR10/AnnovarDB/TAIR10.bed"
@@ -332,7 +344,7 @@ ________________________________________________________________________________
 _ Import Information ______________________________________________________________
 
 2017-04-14
-    1) revised argument part
+    1) revised argument input part
 
 ___________________________________________________________________________________
 

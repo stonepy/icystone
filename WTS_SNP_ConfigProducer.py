@@ -35,7 +35,7 @@ try:
 except:
     print("""
     Usage:
-        python config_producer.py <WTSconfig_path> <Output_path>
+        python config_processor.py <WTSconfig_path> <Output_path>
     """)
     exit()
 
@@ -229,14 +229,13 @@ def runini(WTS_cfg_dict, output_path):
             # Decide which config to use
             Species = WTS_cfg_dict["organ"]
             if "human" in Species.lower():
-                write_dict = human_dict
+                run_dict = human_dict
             else:
-                write_dict = other_dict
+                run_dict = other_dict
 
-            write_dict = sorted(write_dict.items(), key=lambda d: d[
-                0])  # Learn from http://jingyan.baidu.com/article/75ab0bcbeaf643d6874db249.html
+            write_list = sorted(run_dict.items(), key=lambda d: d[0])  # Learn from http://jingyan.baidu.com/article/75ab0bcbeaf643d6874db249.html
 
-            for item in write_dict:
+            for item in write_list:
                 run.write(item[0] + item[1] + "\n")
                 print(item[0] + item[1])
             run.write("\n")

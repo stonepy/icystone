@@ -2,7 +2,7 @@ Description = """
 
 _ Information ____________________________________________________________________
 
-    Name         : main_SNP_mRNA
+    Name         : Checking_SNP_mRNA
     Description  :
     Author       : Hwx
     Version      : V0
@@ -38,11 +38,11 @@ def mapping_STAR():
 
 
 # _ Checking ___________________________________________________________________________________
-print("\nChecking the necessary packages and other items before running...\n")
+
 try:
     # Alternative way: import packages.settings
 
-    from packages import config_producer
+
     from packages import settings
 
     from packages import mapping_STAR

@@ -33,10 +33,13 @@ def test():
     try:
         # Alternative way: import packages.settings
         from packages import config_parser
+        config_dict = config_parser.configini(sys.argv[1])
+        run_dict = config_parser.runini(sys.argv[1])
+
+        print(config_dict,run_dict)
 
         print("\nIt works...\n")
 
-        print(config_parser.Description)
 
     except Exception as e:
         print(e)
@@ -58,7 +61,7 @@ def test():
 try:
     # Make sure the 'config.txt' exists
     if os.path.isfile(sys.argv[1]):
-        print("\nStart the SNP_mRNA Pipline immediately\n")
+        print("\nLauching the SNP_mRNA Pipline...\n")
     else:
         print("\n>>> Error: 'config' file can't be found, make sure you use the right path.\n")
         raise
@@ -74,16 +77,17 @@ except:
 
 # Generate configs and parse them
 try:
-    from packages import config_producer
-    from packages import config_parser
+    from packages import config_processor
+
 except Exception as e:
     print(">>> Warning: lack of package\n      %s\n" % e)
-    print(">>> %s will be shut down right away.\n" % __file__)
+    print(">>> SNP_mRNA_Pipline will be shut down right away.\n")
     exit()
 
     # Parse the config Info and store in dictionary
-    config_dict = config_parser.configini
-    run_dict    = config_parser.runini
+    config_dict = config_processor.configini()
+    run_dict    = config_processor.runini()
+    print(config_dict, run_dict)
 
     # Pathes
     WTSconfig_path = sys.argv[1]
@@ -94,7 +98,9 @@ except Exception as e:
 
 # Check everything that is needed to make sure Pipline will work properly
 try:
+    print("\nChecking the necessary packages and other necessary items before running...\n")
     from packages import checking
+
 except Exception as e:
     print(">>> Warning: lack of package\n      %s\n" % e)
     print(">>> Checking function can not work properly. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
@@ -103,7 +109,7 @@ except Exception as e:
 
 
 
-# _ Main _________________________________________
+# _ 3. Main _________________________________________
 
 
 
@@ -114,15 +120,13 @@ except Exception as e:
 
 modules_dict = """
 
-check
-config_producer
-excel
-format
-
 settings
 config_producer
 
 # _ need to be develop ________________
+check
+
+config_parser
 mapping
 
 gatk
@@ -135,6 +139,8 @@ annotation
 analysis
 
 report
+excel
+format
 
 """
 
@@ -148,9 +154,13 @@ _ Log __________________________________________________________________________
 
 2017-04-13
     0) Start
-    1) self-package configparser
-    2) Finish 'settings.py', did not test
+    1) self-package configparser, to read
+    2) Finish 'settings.py', not test
     3) Finish package part of 'checking.py'
+
+2017-04-14
+    1) Finish '2.Preparation', tested
+
 
 _________________________________________________________________________________
 """
