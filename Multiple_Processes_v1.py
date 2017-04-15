@@ -1,3 +1,6 @@
+
+
+
 from multiprocessing import Pool
 import time
 import random
@@ -38,7 +41,7 @@ class run:
         # No argumnet passed
         if args== None :
             p = Pool(process_num)
-            for i in process_num:
+            for i in range(process_num):
                 p.apply_async(function_name)
             p.close()
             p.join()
@@ -46,7 +49,7 @@ class run:
         # Only one argument passed
         elif isinstance(args, list) == False :
             p = Pool(process_num)
-            for i in process_num:
+            for i in range(process_num):
                 p.apply_async(function_name, args=(args,))
             p.close()
             p.join()
