@@ -161,7 +161,6 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
                     continue
 
                 j = sorted(j.items(), key=lambda d: d[0])  # Sort the information specific order
-
                 # Final output
                 for l in j:
                     cfg.write(l[1] + "\n")
@@ -175,7 +174,7 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
 # _ 3. Produce SNP_mRNA_Pipline 'run.ini' _______________________________________________________________
 def runini(WTS_cfg_dict, SNPoutput_dir):
 
-    output_path = SNPoutput_dir + "/config.ini"
+    output_path = SNPoutput_dir + "/run.ini"
 
     # Output the 'run.ini'
     with open(output_path, "w") as run:
@@ -233,7 +232,6 @@ def runini(WTS_cfg_dict, SNPoutput_dir):
                 run_dict = other_dict
 
             write_list = sorted(run_dict.items(), key=lambda d: d[0])  # Learn from http://jingyan.baidu.com/article/75ab0bcbeaf643d6874db249.html
-
             for item in write_list:
                 run.write(item[0] + item[1] + "\n")
                 print(item[0] + item[1])
@@ -253,10 +251,10 @@ if __name__ == "__main__":
 
     # Obtain pathes from command line(Linux)
     try:
-        WTS_cfg_path = sys.argv[1]
-        OPT_dir = sys.argv[2]
-        configOPT_path = "%s/config.ini" % OPT_dir
-        runOPT_path = "%s/run.ini" % OPT_dir
+        WTS_cfg_path    = sys.argv[1]
+        OPT_dir         = sys.argv[2]
+        configOPT_path  = "%s/config.ini" % OPT_dir
+        runOPT_path     = "%s/run.ini" % OPT_dir
 
     except:
         print("""
