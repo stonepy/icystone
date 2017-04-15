@@ -2,7 +2,7 @@ Description = """
 
 _ Information ____________________________________________________________________
 
-    Name         : main_SNP_mRNA
+    Name         : Main_SNP_mRNA
     Description  :
     Author       : Hwx
     Version      : V0
@@ -39,7 +39,8 @@ Usage = """
 try:
     # Make sure the 'config.txt' exists
     if os.path.isfile(sys.argv[1]):
-        print("\nLauching the SNP_mRNA Pipline...\n")
+        print(Description)
+        print("\n\n\nLauching the SNP_mRNA Pipline...\n")
         WTSconfig_path = sys.argv[1]
 
     else:
@@ -57,12 +58,6 @@ except:
 def test():
     try:
         from packages import config_processor
-        config_processor.WTS_cfg(WTSconfig_path)
-        config_dict = config_processor.configini()
-        # run_dict = config_processor.runini(WTSconfig_path)
-        print(config_dict)
-
-        # print(config_dict,run_dict)
 
         print("\nIt works...\n")
         exit()
@@ -95,16 +90,10 @@ except Exception as e:
     exit()
 
     # Parse the config Info and store in dictionary
-    config_dict = config_processor.configini(WTSconfig_path)
-    run_dict    = config_processor.runini(WTSconfig_path)
-    print(config_dict, run_dict)
+    WTS_cfg_dict, SNPoutput_dir = config_processor.WTS_cfg(WTSconfig_path)
+    config_dict = config_processor.configini(WTS_cfg_dict, SNPoutput_dir)
+    run_dict    = config_processor.runini(WTS_cfg_dict, SNPoutput_dir)
 
-    # Pathes
-    # WTSconfig_path = sys.argv[1]
-    # SNPconfig_path = ""
-    # SNPrun_path    = ""
-    # SNPdata_path   = ""
-    # SNPreport_path = ""
 
 # Check everything that is needed to make sure Pipline will work properly
 try:
