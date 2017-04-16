@@ -28,32 +28,6 @@ Usage = """
 
 
 
-
-
-
-
-
-
-# _ 1. Get WTS 'config.txt' path from command line __________________________________________________
-
-try:
-    # Make sure the 'config.txt' exists
-    if os.path.isfile(sys.argv[1]):
-        print(Description)
-        print("\n\n\nLauching the SNP_mRNA Pipline...\n")
-        WTSconfig_path = sys.argv[1]
-
-    else:
-        print("\n>>> Error: 'config' file can't be found, make sure you use the right path.\n")
-        raise
-
-except:
-    # If 'config.txt' can not be found, tell user how to use this Pipline
-    print(Description)
-    print(Usage)
-    exit()
-
-
 # + Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
 def test():
     try:
@@ -70,46 +44,108 @@ def test():
 
     exit()
 
-test()
+# test()
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
+# _ 1. Preparation for Pipline __________________________________________________________________________
+class preparation:
+
+    def __init__(self):
+        pass
+
+    # Get WTS 'config.txt' path from command line
+    def get_args(self):
+        try:
+            # Make sure the 'config.txt' exists
+            if os.path.isfile(sys.argv[1]):
+                self.WTSconfig_path = sys.argv[1]
+
+            else:
+                print("\n>>> Error: 'config' file can't be found, make sure you use the right path.\n")
+                raise
+
+        except:
+            # If 'config.txt' can not be found, tell user how to use this Pipline
+            print(Description)
+            print(Usage)
+            exit()
+
+    # Generate configs and parse them
+    def config(self):
+        try:
+            from packages import config_processor
+            # Parse the config Info and store in dictionary
+            WTS_cfg_dict, SNPoutput_dir = config_processor.WTS_cfg(self.WTSconfig_path)
+            config_dict = config_processor.configini(WTS_cfg_dict, SNPoutput_dir)
+            run_dict    = config_processor.runini(WTS_cfg_dict, SNPoutput_dir)
+
+        except Exception as e:
+            print(">>> Warning: lack of package\n      %s\n" % e)
+            print(">>> SNP_mRNA_Pipline will be shut down right away.\n")
+            exit()
+        return config_dict, run_dict
+
+    # Check everything that is needed to make sure Pipline will work properly
+    def check(self):
+        try:
+            print("\nChecking the necessary packages and other items before running...\n")
+            from packages import checking
+
+        except Exception as e:
+            print(">>> Warning: lack of package\n      %s\n" % e)
+            print(">>> Checking function can not work properly. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
 
 
-# _ 2. Preparation for Pipline _____________________________________________
-
-# Generate configs and parse them
-try:
-    from packages import config_processor
-
-except Exception as e:
-    print(">>> Warning: lack of package\n      %s\n" % e)
-    print(">>> SNP_mRNA_Pipline will be shut down right away.\n")
-    exit()
-
-    # Parse the config Info and store in dictionary
-    WTS_cfg_dict, SNPoutput_dir = config_processor.WTS_cfg(WTSconfig_path)
-    config_dict = config_processor.configini(WTS_cfg_dict, SNPoutput_dir)
-    run_dict    = config_processor.runini(WTS_cfg_dict, SNPoutput_dir)
 
 
-# Check everything that is needed to make sure Pipline will work properly
-try:
-    print("\nChecking the necessary packages and other necessary items before running...\n")
-    from packages import checking
 
-except Exception as e:
-    print(">>> Warning: lack of package\n      %s\n" % e)
-    print(">>> Checking function can not work properly. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
+# _ 2. Main _________________________________________
+class main(preparation):
+
+    def __init__(self):
+        pass
 
 
 
 
+# _ Exxcution Control ________________________________
+if __name__ == "__main__":
 
-# _ 3. Main _________________________________________
+    note_0 = """
 
+                      **************************************
+                      *                                    *
+                      *  Lauching the SNP_mRNA Pipline...  *
+                      *                                    *
+                      **************************************
+
+    """
+    print(note_0)
+
+
+
+
+    try:
+        prep = preparation()        # Comment this line to skip whole preparation and test the Pipline by input arguments
+
+        prep.get_args()
+        config_dict, run_dict = prep.config()
+        prep.check()
+    except:
+        print("\nSkipped preparation of Pipline or there is something wrong.\n")
+
+
+
+    try:
+        main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
+        main
+        print("\nSNP_mRNA Pipline is running...\n")
+
+    except:
+        print("\nSkipped preparation of Pipline or there is something wrong.\n")
 
 
 
@@ -159,6 +195,14 @@ _ Log __________________________________________________________________________
 
 2017-04-14
     1) Finish '2.Preparation', tested
+
+2017-04-15
+    1) Finish 'Config_porcessor.py', tested
+    2) Add class to the main script
+    *3) Passing parameters between classes issue
+
+2017-04-16
+    1)
 
 
 _________________________________________________________________________________
