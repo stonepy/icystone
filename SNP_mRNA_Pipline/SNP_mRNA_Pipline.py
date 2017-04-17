@@ -250,14 +250,14 @@ _ Log __________________________________________________________________________
     1) Finish '2.Preparation', tested
 
 2017-04-15
-    1) Finish 'Config_porcessor.py', tested
+    1) Finish 'config_porcessor.py', tested
     2) Add class to the main script
     *3) Passing parameters between classes issue
 
 2017-04-17
     1) Add timer for Pipline
     2) Develop 'mapping_STAR.py'
-    3) Add '' and ''
+    3) Add new module 'process_manager.py' , developing
 
 
 _________________________________________________________________________________

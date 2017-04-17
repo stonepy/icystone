@@ -1,6 +1,6 @@
 """
 - Information --------------------------------------------------------------------
- Name         : ProcessManager_
+ Name         : ProcessManager_SNP_mRNA_Pipline
  Description  : Run modules with single or multiple processes automatically
  Author       : Hwx
  Version      : V0
