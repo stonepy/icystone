@@ -1,28 +1,30 @@
-import os
+import subprocess
+import sys
+import time
 
 
-print(__file__)
+args = sys.argv
+cmd = " ".join(args[1:])
 
-# for root, dirs, files in os.walk(os.getcwd()):
+print("\n>>> Executing CMD: %s\n\n" % cmd)
 
-    # print(root)
+start_time = time.time()
 
-    # for dir in dirs:
-    #     print(os.path.join(root,dir))
-    #     print(os.path.join(root,dir))
-    #     print(dir)
-
-    # for file in files:
-    #     print(file)
+try:
+    subprocess.call(cmd, shell=True)
+except Exception as e:
+    print(e)
 
 
+total_time = time.time() - start_time
 
-colors = {
 
-    "red" : (22,33,65,22),
-    "red" : (22,33,65,22),
-    "red" : (22,33,65,22),
-    "red" : (22,33,65,22),
-    "red" : (22,33,65,22),
+d = total_time // (3600 * 24)
+h = total_time // (3600) % 24
 
-}
+m = total_time % (3600)
+
+s = total_time % (60)
+
+
+print("\n\n>>> Total time: %.5f s\n" % total_time)

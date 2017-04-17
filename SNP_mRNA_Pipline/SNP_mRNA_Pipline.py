@@ -15,7 +15,7 @@ ________________________________________________________________________________
 
 import sys
 import os
-
+import time
 
 Usage = """
 
@@ -95,8 +95,8 @@ class preparation:
             from packages import checking
 
         except Exception as e:
-            print(">>> Warning: lack of package\n      %s\n" % e)
-            print(">>> Checking function can not work properly. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
+            print(">>> Warning:\n      %s\n" % e)
+            print(">>> Encounter some problems as above while checking. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
 
 
 
@@ -105,14 +105,16 @@ class preparation:
 # _ 2. Main _________________________________________
 class main(preparation):
 
-    def __init__(self):
-        pass
-
+    def __init__(self, config_dict, run_dict):
+        self.config_dict = config_dict
+        self.run_dict    = run_dict
 
 
 
 # _ Exxcution Control ________________________________
 if __name__ == "__main__":
+
+    t_start = time.time()
 
     note_0 = """
 
@@ -122,30 +124,33 @@ if __name__ == "__main__":
                       *                                    *
                       **************************************
 
-    """
+
+%s
+    """ % time.ctime()
     print(note_0)
 
 
 
 
     try:
-        prep = preparation()        # Comment this line to skip whole preparation and test the Pipline by input arguments
+        prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
 
         prep.get_args()
         config_dict, run_dict = prep.config()
         prep.check()
-    except:
-        print("\nSkipped preparation of Pipline or there is something wrong.\n")
+    except Exception as e:
+        print("\nPreparation of Pipline is Skipped or there is something wrong with it.\n")
+        print("%s\n" % e)
 
 
 
     try:
         main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
-        main
         print("\nSNP_mRNA Pipline is running...\n")
 
-    except:
-        print("\nSkipped preparation of Pipline or there is something wrong.\n")
+    except Exception as e:
+        print("\nMain workflow is going wrong...\n")
+        print("%s\n" % e)
 
 
 
