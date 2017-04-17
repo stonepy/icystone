@@ -44,6 +44,7 @@ try:
 
 
     from packages import settings
+    from packages import process_manager
 
     from packages import mapping_STAR
     # from packages import gatk

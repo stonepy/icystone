@@ -28,11 +28,10 @@ Usage = """
 
 
 
-# + Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++
+""" Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++++ """
 def test():
     try:
-        from packages import config_processor
-
+        from packages import process_manager
         print("\nIt works...\n")
         exit()
 
@@ -46,11 +45,12 @@ def test():
 
 # test()
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+""" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ """
 
 
 
-# _ 1. Preparation for Pipline __________________________________________________________________________
+
+""" _ 1. Preparation for Pipline __________________________________________________________________________ """
 class preparation:
 
     def __init__(self):
@@ -102,8 +102,7 @@ class preparation:
 
 
 
-
-# _ 2. Main _________________________________________
+""" _ 2. Main _________________________________________ """
 class main(preparation):
 
     def __init__(self, config_dict, run_dict):
@@ -120,7 +119,7 @@ class main(preparation):
 
 
 
-# _ 3. Execution Control _________________________________________________________________________________________
+""" _ 3. Execution Control _________________________________________________________________________________________ """
 if __name__ == "__main__":
 
     t_start = time.time()   # Start time
@@ -142,22 +141,25 @@ if __name__ == "__main__":
 
 
 
-
+    # _ Preparation ______________________________________________________________________________________________
     try:
         prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
 
         prep.get_args()
         config_dict, run_dict = prep.config()
         prep.check()
+
+
     except Exception as e:
         print("\nPreparation of Pipline is Skipped or there is something wrong with it.\n")
         print("%s\n" % e)
 
 
-
+    # _ Workflow _______________________________________________________________________________________________________________________
     try:
         print("\nSNP_mRNA Pipline is running...\n")
         main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
+        from packages import process_manager
 
         main.mapping()
         main.gatk()
@@ -171,8 +173,7 @@ if __name__ == "__main__":
 
 
     # _ Timer _______________________________________________________________________________________________________________
-    t_finish = time.time()             # Finish time
-
+    t_finish   = time.time()             # Finish time
     total_time = t_finish - t_start    # Total time
 
     # Convert second to minute,hour and day.
@@ -185,24 +186,24 @@ if __name__ == "__main__":
     # Finish note
     note_finish = """
 
-                          **************************************
-                          *                                    *
-                          *     SNP_mRNA Pipline finished.     *
-                          *                                    *
-                          **************************************
+                              **************************************
+                              *                                    *
+                              *     SNP_mRNA Pipline finished.     *
+                              *                                    *
+                              **************************************
 
 
     %s
-        """ % time.ctime()
+    """ % time.ctime()
     print(note_finish)
     print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
 
 
-# _ END _______________________________________________________________________________________________________________________
+""" _ END _______________________________________________________________________________________________________________________ """
 
 
 
-# _ ALl modules needed ____
+# _ ALl modules needed ________________
 
 
 modules_dict = """
@@ -255,6 +256,8 @@ _ Log __________________________________________________________________________
 
 2017-04-17
     1) Add timer for Pipline
+    2) Develop 'mapping_STAR.py'
+    3) Add '' and ''
 
 
 _________________________________________________________________________________

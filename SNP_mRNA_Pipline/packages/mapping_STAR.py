@@ -24,11 +24,11 @@ class main:
         # Start Note
         note_start = """
 
-                              ***************************************
-                              *                                     *
-                              *  Start mapping with STAR programme  *
-                              *                                     *
-                              ***************************************
+                              =======================================
+                              |                                     |
+                              |  Start mapping with STAR programme  |
+                              |                                     |
+                              =======================================
 
 
         %s
@@ -53,38 +53,24 @@ class main:
         nRun        = config_dict["section_4"]["2_samples"].split("\n")[0:-1]   # Convert sample string to sample list
         tab         = ""
 
+        if nRun > 6:
+            nProcess = 6
+        else:
+            nProcess = nRun
+
         count = 0
         i     = 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
         # Finish Note
         note_finish = """
 
-                              ****************************************
-                              *                                      *
-                              *  Finish mapping with STAR programme  *
-                              *                                      *
-                              ****************************************
+                              ========================================
+                              |                                      |
+                              | Finish mapping with STAR programme   |
+                              |                                      |
+                              ========================================
 
 
         %s
