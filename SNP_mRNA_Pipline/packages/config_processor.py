@@ -75,8 +75,8 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
     # Oupput 'config.ini' for SNP pipline
     with open(output_path, "w") as cfg:
 
-        print("\n>>> Content of 'config.ini' for SNP pipline:")
-        print(">>> ========================================")
+        print("\nContent of 'config.ini' for SNP pipline:")
+        print("_________________________________________")
 
         # Group INFO
         for gp in WTS_cfg_dict["group"]:
@@ -166,8 +166,6 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
                     cfg.write(l[1] + "\n")
                     print(l[1])
 
-        print(">>> ========================================\n\n")
-
         return config_dict
 
 
@@ -179,8 +177,8 @@ def runini(WTS_cfg_dict, SNPoutput_dir):
     # Output the 'run.ini'
     with open(output_path, "w") as run:
 
-        print("\n>>> Content of 'run.ini' for SNP pipline:")
-        print(">>> =====================================\n")
+        print("\nContent of 'run.ini' for SNP pipline:")
+        print("_____________________________________\n")
 
         for gp in WTS_cfg_dict["group"]:
             gp = re.split(" |\t|;", gp)
@@ -237,8 +235,6 @@ def runini(WTS_cfg_dict, SNPoutput_dir):
                 print(item[0] + item[1])
             run.write("\n")
             print("\n")
-
-        print(">>> =====================================\n")
 
         return run_dict
 

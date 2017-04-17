@@ -81,6 +81,7 @@ class preparation:
             WTS_cfg_dict, SNPoutput_dir = config_processor.WTS_cfg(self.WTSconfig_path)
             config_dict = config_processor.configini(WTS_cfg_dict, SNPoutput_dir)
             run_dict    = config_processor.runini(WTS_cfg_dict, SNPoutput_dir)
+            print("\n\n")
 
         except Exception as e:
             print(">>> Warning: lack of package\n      %s\n" % e)
@@ -116,18 +117,18 @@ if __name__ == "__main__":
 
     t_start = time.time()
 
-    note_0 = """
+    note_start = """
 
-                      **************************************
-                      *                                    *
-                      *  Lauching the SNP_mRNA Pipline...  *
-                      *                                    *
-                      **************************************
+                          **************************************
+                          *                                    *
+                          *  Lauching the SNP_mRNA Pipline...  *
+                          *                                    *
+                          **************************************
 
 
-%s
+    %s
     """ % time.ctime()
-    print(note_0)
+    print(note_start)
 
 
 
@@ -153,6 +154,30 @@ if __name__ == "__main__":
         print("%s\n" % e)
 
 
+    t_finish = time.time()
+
+    total_time = t_finish - t_start
+
+    # Convert second to minute,hour and day.
+    day    = total_time // (3600 * 24)
+    hour   = total_time // (3600) % 24
+    minute = total_time / 60 % 60
+    second = total_time % (60)
+
+    note_end = """
+
+                          **************************************
+                          *                                    *
+                          *     SNP_mRNA Pipline finished.     *
+                          *                                    *
+                          **************************************
+
+
+    %s
+        """ % time.ctime()
+    print(note_end)
+
+    print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
 
 
 # _ ALl modules needed ____

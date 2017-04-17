@@ -15,16 +15,13 @@ try:
 except Exception as e:
     print(e)
 
-
 total_time = time.time() - start_time
 
 
-d = total_time // (3600 * 24)
-h = total_time // (3600) % 24
-
-m = total_time % (3600)
-
-s = total_time % (60)
+day    = total_time // (3600 * 24)
+hour   = total_time // (3600) % 24
+minute = total_time / 60 % 60
+second = total_time % (60)
 
 
-print("\n\n>>> Total time: %.5f s\n" % total_time)
+print("\n\n>>> Total time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
