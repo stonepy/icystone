@@ -107,16 +107,26 @@ class preparation:
 class main(preparation):
 
     def __init__(self, config_dict, run_dict):
-        self.config_dict = config_dict
-        self.run_dict    = run_dict
+        self.config_dict  = config_dict
+        self.run_dict     = run_dict
+
+    def mapping(self):
+        from packages import mapping_STAR
+        mapping_STAR.main(self.config_dict)
+
+    def gatk(self):
+        pass
 
 
 
-# _ Exxcution Control ________________________________
+
+# _ 3. Execution Control ________________________________
 if __name__ == "__main__":
 
-    t_start = time.time()
+    t_start = time.time()   # Start time
 
+
+    # Start Note
     note_start = """
 
                           **************************************
@@ -146,17 +156,24 @@ if __name__ == "__main__":
 
 
     try:
-        main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
         print("\nSNP_mRNA Pipline is running...\n")
+        main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
+
+        main.mapping()
+        main.gatk()
+
 
     except Exception as e:
-        print("\nMain workflow is going wrong...\n")
-        print("%s\n" % e)
+        print("\n>>> Error: Main workflow goes wrong...\n")
+        print("    %s\n" % e)
 
 
-    t_finish = time.time()
 
-    total_time = t_finish - t_start
+
+    # _ Timer ___________________________________________________________________________________
+    t_finish = time.time()             # Finish time
+
+    total_time = t_finish - t_start    # Total time
 
     # Convert second to minute,hour and day.
     day    = total_time // (3600 * 24)
@@ -164,6 +181,8 @@ if __name__ == "__main__":
     minute = total_time / 60 % 60
     second = total_time % (60)
 
+
+    # Finish note
     note_end = """
 
                           **************************************
@@ -176,8 +195,11 @@ if __name__ == "__main__":
     %s
         """ % time.ctime()
     print(note_end)
-
     print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
+
+
+# _ END _______________________________________________________________________________________________________________________
+
 
 
 # _ ALl modules needed ____
@@ -231,8 +253,8 @@ _ Log __________________________________________________________________________
     2) Add class to the main script
     *3) Passing parameters between classes issue
 
-2017-04-16
-    1)
+2017-04-17
+    1) Add timer for Pipline
 
 
 _________________________________________________________________________________

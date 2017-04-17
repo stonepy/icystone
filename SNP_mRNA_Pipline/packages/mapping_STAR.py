@@ -15,10 +15,13 @@ ________________________________________________________________________________
 
 
 
-class mapping_STAR:
+class main:
 
-    def __init__(self):
-        pass
+    def __init__(self, config_dict):
+
+        from packages import settings
+
+
 
 
 
@@ -44,6 +47,9 @@ class mapping_STAR:
 
 """
 _ Log _____________________________________________________________________________
+
+2017-04-17
+    1) Import 'settings.py' and get 'congfig_dict' form 'Main_SNP_mRNA'
 
 ___________________________________________________________________________________
 
