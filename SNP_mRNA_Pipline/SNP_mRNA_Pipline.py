@@ -120,7 +120,7 @@ class main(preparation):
 
 
 
-# _ 3. Execution Control ________________________________
+# _ 3. Execution Control _________________________________________________________________________________________
 if __name__ == "__main__":
 
     t_start = time.time()   # Start time
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
 
 
-    # _ Timer ___________________________________________________________________________________
+    # _ Timer _______________________________________________________________________________________________________________
     t_finish = time.time()             # Finish time
 
     total_time = t_finish - t_start    # Total time
@@ -183,7 +183,7 @@ if __name__ == "__main__":
 
 
     # Finish note
-    note_end = """
+    note_finish = """
 
                           **************************************
                           *                                    *
@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
     %s
         """ % time.ctime()
-    print(note_end)
+    print(note_finish)
     print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
 
 
