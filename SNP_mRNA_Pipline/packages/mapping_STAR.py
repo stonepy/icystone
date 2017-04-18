@@ -13,9 +13,9 @@ ________________________________________________________________________________
 """
 
 
-
+from packages import process_manager
 import time
-import multiprocessing as MP
+
 
 class main:
 
@@ -40,26 +40,49 @@ class main:
 
 
         # Get necessery Info from 'config.ini' and 'settings.py'
-        fastq_dir   = config_dict["section_1"]["4_"].split(" ")[-1]     # Split out the fastq_dir value
-        output_dir  = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the output_dir value
-        report_dir  = config_dict["section_1"]["6_"].split(" ")[-1]     # Split out the report_dir value
+        FastqDir    = config_dict["section_1"]["4_"].split(" ")[-1]     # Split out the FastqDir value
+        OutputDir   = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the OutputDir value
+        ReportDir   = config_dict["section_1"]["6_"].split(" ")[-1]     # Split out the ReportDir value
         Species     = config_dict["section_2"]["2_"].split(" ")[-1]     # Split out the Species value
+        Samples     = config_dict["section_4"]["2_samples"].split("\n")[0:-1]   # Convert sample string to sample list
+
 
         STAR_path   = settings.software_dict["STAR"]
         GenomeSTAR  = settings.species_dict[Species]["GenomeSTAR"]
         GTF         = settings.species_dict[Species]["GTF"]
 
         Threshold   = settings.software_dict["Mapping"]
-        nRun        = config_dict["section_4"]["2_samples"].split("\n")[0:-1]   # Convert sample string to sample list
+        # nRun        =
         tab         = ""
 
-        if nRun > 6:
+        if len(Samples) > 6:
             nProcess = 6
         else:
-            nProcess = nRun
+            nProcess = len(Samples)
 
-        count = 0
-        i     = 0
+
+        """
+
+        $STAR --runThreadN 10 --genomeDir $GenomeSTAR --readFilesIn $FastqDir/$sample"."_R1.fastq.gz $FastqDir/$sample"."_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile $GTF --sjdbOverhang 149 --outFileNamePrefix $OutputDir/$sample/$sample.step1.
+
+        "{} --runThreadN {} --genomeDir {} --readFilesIn {}/{}"."_R1.fastq.gz {}/{}"."_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {} --sjdbOverhang 149 --outFileNamePrefix {}/{}/{}.step1."
+
+        """
+
+        para_dict = {
+            "nRun": 4,
+            "nProcess": 4,
+            "CMDs": []
+        }
+
+        for sample in Samples:
+
+            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
+
+            para_dict["CMDs"].append(cmd)
+
+
+
 
 
 

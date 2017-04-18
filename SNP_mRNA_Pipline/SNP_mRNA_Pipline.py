@@ -130,11 +130,11 @@ if __name__ == "__main__":
     # Start Note
     note_start = """
 
-                              **************************************
-                              *                                    *
-                              *  Lauching the SNP_mRNA Pipline...  *
-                              *                                    *
-                              **************************************
+                               **************************************
+                               *                                    *
+                               *  Lauching the SNP_mRNA Pipline...  *
+                               *                                    *
+                               **************************************
 
 
     %s
@@ -162,7 +162,7 @@ if __name__ == "__main__":
         print("\nSNP_mRNA Pipline is running...\n")
         main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
 
-        main().mapping()
+        main.mapping()
         main.gatk()
 
 
@@ -187,11 +187,11 @@ if __name__ == "__main__":
     # Finish note
     note_finish = """
 
-                              **************************************
-                              *                                    *
-                              *     SNP_mRNA Pipline finished.     *
-                              *                                    *
-                              **************************************
+                               **************************************
+                               *                                    *
+                               *     SNP_mRNA Pipline finished.     *
+                               *                                    *
+                               **************************************
 
 
     %s

@@ -53,7 +53,7 @@ def multiP(para_dict, call_func):
 
 
 # Execution part
-multiP(para_dict, call_func)
+# multiP(para_dict, call_func)
 
 
 
