@@ -1,0 +1,9 @@
+project    /home/daniel/PycharmProjects/fishbone/SNP_mRNA_Pipline/data_analysis
+report     /home/daniel/PycharmProjects/fishbone/SNP_mRNA_Pipline/report
+raw_data   /home/pub/project/Transcriptome/17B0206A
+sample     5-1-leaves-1,5-1-leaves-2,Ler-leaves-1,Ler-leaves-2
+organ      Arabidopsis
+
+Ler-1 5-1-1 Ler-leaves-1;5-1-leaves-1
+Ler-2 5-1-2 Ler-leaves-2;5-1-leaves-2
+Ler   5     Ler-leaves-1,Ler-leaves-2;5-1-leaves-1,5-1-leaves-2

@@ -1,11 +1,11 @@
 """
 - Information --------------------------------------------------------------------
- Name         :
- Description  :
- Author       :   Hwx
- Version      :   V1
- Dev Env      :   Red Hat 4.8.5-11/Ubuntu16.04 LTS, Python3.5.3, virtualenv15.1.0
- Finish Date  :   2017-03-14
+ Name         : ProcessManager_SNP_mRNA_Pipline
+ Description  : Run modules with single or multiple processes automatically
+ Author       : Hwx
+ Version      : V0
+ Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS, Python3.5.3, virtualenv15.1.0
+ Finish Date  : 2017-04-
 -----------------------------------------------------------------------------------
 """
 
@@ -17,18 +17,7 @@ import time
 
 
 class main:
-    def __init__(self):
-        pass
 
-    def function(self):
-        pass
-
-
-
-
-# ----------------------------------------------------------------
-# ----------------------------------------------------------------
-class management:
     def __init__(self):
         pass
 
@@ -65,7 +54,7 @@ class management:
         # No argumnet passed
         if args== None :
             p = Pool(process_num)
-            for i in process_num:
+            for i in range(process_num):
                 p.apply_async(function_name)
             p.close()
             p.join()
@@ -73,7 +62,7 @@ class management:
         # Only one argument passed
         elif isinstance(args, list) == False :
             p = Pool(process_num)
-            for i in process_num:
+            for i in range(process_num):
                 p.apply_async(function_name, args=(args,))
             p.close()
             p.join()
@@ -90,15 +79,20 @@ class management:
         print("Time concumed: %0.2fs" % total_t)
 
 
-    def singleP(self):
-        pass
-
-
 
 if __name__ == "__main__":
 
+    # Parameter Section
+
+    hg = "helloe world"
     words_list = ['default', 'arguments', 'are', 'evaluated', 'once', 'when']
-    function_name = management().testFunction
     process_num = 3
 
-    management().multiP(function_name, words_list, process_num)
+
+    # Instantiation
+    function_name = management().testFunction
+
+
+
+    # Execution part
+    management().multiP(main().function, hg, process_num)

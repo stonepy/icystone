@@ -1,2 +1,0 @@
-# fishbone
-My Bioinformatics
