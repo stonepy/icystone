@@ -6,7 +6,7 @@ Description = """
  Author       : Hwx
  Version      : V0
  Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS, Python3.5.3, virtualenv15.1.0
- Finish Date  : 2017-04-
+ Finish Date  : 2017-04-18
 -----------------------------------------------------------------------------------
 
 """
@@ -33,19 +33,22 @@ class main:
     def __init__(self):
         pass
 
-    def call_func(self, arg):
-        call(arg, shell=True)
+    def call_func(self, CMD):
+        print("\nExecuting command: %s\n" % CMD)
+        call(CMD, shell=True)
 
     def multiP(self, para_dict, call_func):
 
         start_t = time.time()
 
 
-        p = Pool(para_dict["nProcess"])
-        for i in para_dict["args"]:
-            p.apply_async(call_func, args=(i,))
-        p.close()
-        p.join()
+        P = Pool(para_dict["nProcess"])
+
+        for i in para_dict["CMDs"]:
+            P.apply_async(call_func, args=(i,))
+        P.close()
+        P.join()
+
 
         total_t = time.time() - start_t
         print("Time concumed: %0.2fs" % total_t)
@@ -54,17 +57,30 @@ class main:
 
 if __name__ == "__main__":
 
-    # Parameter Section
+    # Parameter dictionary
     para_dict = {
-        "nRun"      : None,
-        "nProcess"  : None,
-        "args"      : [],
+
+        "nRun"      : 4,
+        "nProcess"  : 4,
+        "CMDs"      : ["python python_s1.py", "python python_s2.py", "python python_s3.py", "python python_s4.py"]
+
     }
 
-
     # Instantiation
-    main = main()
-
+    call_func = main().call_func
 
     # Execution part
-    main.multiP(main.call_func)
+    main().multiP(para_dict, call_func)     # Must not use 'main = main()', I don't know why, but it works.
+
+
+
+
+"""
+_ Log ___________________________________________________________________________
+
+2017-04-18
+    1) Revised from 'Script_Framework_v1.py', tested as individual script
+    2) Multiple processes or single process are both OK
+    3) Use dictionary to pass parameter only!
+_________________________________________________________________________________
+"""
