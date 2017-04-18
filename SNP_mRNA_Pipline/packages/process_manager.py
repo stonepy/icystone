@@ -28,42 +28,47 @@ import time
 
 
 
-class main:
-
-    def __init__(self):
-        pass
-
-    def call_func(self, CMD):
-        print("\nExecuting command: %s\n" % CMD)
-        call(CMD, shell=True)
-
-    def multiP(self, para_dict, call_func):
-
-        start_t = time.time()
 
 
-        P = Pool(para_dict["nProcess"])
+def call_func(CMD):
+    print("\nExecuting command: %s\n" % CMD)
+    call(CMD, shell=True)
 
-        for i in para_dict["CMDs"]:
-            P.apply_async(call_func, args=(i,))
-        P.close()
-        P.join()
+def multiP(para_dict, call_func):
+
+    start_t = time.time()
 
 
-        total_t = time.time() - start_t
-        print("Time concumed: %0.2fs" % total_t)
+    P = Pool(para_dict["nProcess"])
+
+    for i in para_dict["CMDs"]:
+        P.apply_async(call_func, args=(i,))
+    P.close()
+    P.join()
+
+
+    total_t = time.time() - start_t
+    print("Time concumed: %0.2fs" % total_t)
 
 
 
+# Execution part
+multiP(para_dict, call_func)
+
+
+
+
+
+""" _ Test Module ___________________________________________________________________________________________
+
+# Need to rebuild a class to use this module to test
 if __name__ == "__main__":
 
     # Parameter dictionary
     para_dict = {
-
         "nRun"      : 4,
         "nProcess"  : 4,
         "CMDs"      : ["python python_s1.py", "python python_s2.py", "python python_s3.py", "python python_s4.py"]
-
     }
 
     # Instantiation
@@ -72,8 +77,7 @@ if __name__ == "__main__":
     # Execution part
     main().multiP(para_dict, call_func)     # Must not use 'main = main()', I don't know why, but it works.
 
-
-
+"""
 
 """
 _ Log ___________________________________________________________________________

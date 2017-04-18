@@ -31,8 +31,6 @@ Usage = """
 """ Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++++ """
 def test():
     try:
-        from packages import process_manager
-        print("\nIt works...\n")
         exit()
 
 
@@ -71,12 +69,14 @@ class preparation:
             # If 'config.txt' can not be found, tell user how to use this Pipline
             print(Description)
             print(Usage)
+
             exit()
 
     # Generate configs and parse them
     def config(self):
         try:
             from packages import config_processor
+
             # Parse the config Info and store in dictionary
             WTS_cfg_dict, SNPoutput_dir = config_processor.WTS_cfg(self.WTSconfig_path)
             config_dict = config_processor.configini(WTS_cfg_dict, SNPoutput_dir)
@@ -86,7 +86,9 @@ class preparation:
         except Exception as e:
             print(">>> Warning: lack of package\n      %s\n" % e)
             print(">>> SNP_mRNA_Pipline will be shut down right away.\n")
+
             exit()
+
         return config_dict, run_dict
 
     # Check everything that is needed to make sure Pipline will work properly
@@ -128,11 +130,11 @@ if __name__ == "__main__":
     # Start Note
     note_start = """
 
-                          **************************************
-                          *                                    *
-                          *  Lauching the SNP_mRNA Pipline...  *
-                          *                                    *
-                          **************************************
+                              **************************************
+                              *                                    *
+                              *  Lauching the SNP_mRNA Pipline...  *
+                              *                                    *
+                              **************************************
 
 
     %s
@@ -159,9 +161,8 @@ if __name__ == "__main__":
     try:
         print("\nSNP_mRNA Pipline is running...\n")
         main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
-        from packages import process_manager
 
-        main.mapping()
+        main().mapping()
         main.gatk()
 
 
@@ -259,6 +260,8 @@ _ Log __________________________________________________________________________
     2) Develop 'mapping_STAR.py'
     3) Add new module 'process_manager.py' , developing
 
+2017-04-18
+    1) Use 'process_manager.py' in every package but not in main script
 
 _________________________________________________________________________________
 """
