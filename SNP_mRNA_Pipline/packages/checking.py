@@ -16,7 +16,7 @@ import os
 
 
 """ _ 1. Directory Check ________________________________________________________________________________ """
-def path_check(config_dict):
+def baseDIR_check(config_dict):
 
     rawd_dataDIR     = config_dict["section_1"]["4_"].split(" ")[-1]
     data_analysisDIR = config_dict["section_1"]["5_"].split(" ")[-1]
@@ -24,16 +24,29 @@ def path_check(config_dict):
 
 
     if not os.path.isdir(rawd_dataDIR):
-        print("\n>>> Warning:\n      %s does not exist, creating it..." % rawd_dataDIR)
+        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % rawd_dataDIR)
         os.makedirs(rawd_dataDIR)
 
     if not os.path.isdir(data_analysisDIR):
-        print("\n>>> Warning:\n      %s does not exist, creating it..." % data_analysisDIR)
+        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % data_analysisDIR)
         os.makedirs(data_analysisDIR)
 
     if not os.path.isdir(reportDIR):
-        print("\n>>> Warning:\n      %s does not exist, creating it..." % reportDIR)
+        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
         os.makedirs(reportDIR)
+
+
+
+def branchDIR_check(DIR):
+
+    if not os.path.isdir(DIR):
+        print("\nCreating directory: %s...\n" % DIR)
+        os.makedirs(DIR)
+
+
+
+
+
 
 
 """ _ 2. Package Check ___________________________________________________________________________________ """
@@ -116,7 +129,8 @@ _ Log __________________________________________________________________________
         config
 
 2017-04-21
-    1) Add 'path_check' module,
+    1) Add 'baseDIR_check' module,
+    2) Convert package check into 'package_check' module
 
 _________________________________________________________________________________
 """

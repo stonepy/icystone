@@ -85,7 +85,7 @@ class preparation:
 
         except Exception as e:
             print(">>> Warning: lack of package\n      %s\n" % e)
-            print(">>> SNP_mRNA_Pipline will be shut down right away.\n")
+            print(">>> SNP_mRNA_Pipline shut down.\n")
 
             exit()
 
@@ -96,7 +96,7 @@ class preparation:
         try:
             print("\nChecking the necessary packages and other items before running...\n")
             from packages import checking
-            checking.path_check(config_dict)    # Check 'raw_data','data_analysis' and 'report' directory
+            checking.baseDIR_check(config_dict)    # Check 'raw_data','data_analysis' and 'report' directory
             checking.package_check()
 
         except Exception as e:
