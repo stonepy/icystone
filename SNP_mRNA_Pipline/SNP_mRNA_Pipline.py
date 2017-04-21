@@ -96,6 +96,8 @@ class preparation:
         try:
             print("\nChecking the necessary packages and other items before running...\n")
             from packages import checking
+            checking.path_check(config_dict)    # Check 'raw_data','data_analysis' and 'report' directory
+            checking.package_check()
 
         except Exception as e:
             print(">>> Warning:\n      %s\n" % e)
@@ -162,7 +164,7 @@ if __name__ == "__main__":
         print("\nSNP_mRNA Pipline is running...\n")
         main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
 
-        main.mapping()
+        # main.mapping()
         main.gatk()
 
 

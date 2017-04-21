@@ -60,7 +60,7 @@ def WTS_cfg(WTS_cfg_path):
                 if len(l) > 1:
                     WTS_cfg_dict["group"].append(l.strip())
 
-    SNPoutput_dir = os.path.join(WTS_cfg_dict["project_dir"], "mRNA/snp")
+    SNPoutput_dir = os.path.join(WTS_cfg_dict["project_dir"], "mRNA/SNP")
     if not os.path.exists(SNPoutput_dir):
         os.makedirs(SNPoutput_dir)
 
@@ -128,7 +128,7 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
 
             "section_2": {
                 "1_title": "### Species Configuration",
-                "2_": "Species     = %s" % Species,
+                "2_": "Species     = %s" % Species.capitalize(),
             },
 
             "section_3": {
