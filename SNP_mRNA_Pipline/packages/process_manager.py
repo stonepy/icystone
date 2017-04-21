@@ -28,11 +28,10 @@ import time
 
 
 
-
-
 def call_func(CMD):
-    print("\nExecuting command: %s\n" % CMD)
+    print("\nExecuting command:\n    %s\n" % CMD)
     call(CMD, shell=True)
+
 
 def multiP(para_dict, call_func):
 
@@ -42,20 +41,14 @@ def multiP(para_dict, call_func):
     P = Pool(para_dict["nProcess"])
 
     for i in para_dict["CMDs"]:
-        print(i)
-
-    #     P.apply_async(call_func, args=(i,))
-    # P.close()
-    # P.join()
+        P.apply_async(call_func, args=(i,))
+    P.close()
+    P.join()
 
 
     total_t = time.time() - start_t
     print("Time concumed: %0.2fs" % total_t)
 
-
-
-# Execution part
-multiP(para_dict, call_func)
 
 
 
@@ -88,5 +81,8 @@ _ Log __________________________________________________________________________
     1) Revised from 'Script_Framework_v1.py', tested as individual script
     2) Multiple processes or single process are both OK
     3) Use dictionary to pass parameter only!
+
+2017-04-21
+    1) With 'mapping_STAR.py' locally, tested
 _________________________________________________________________________________
 """

@@ -13,7 +13,9 @@ ________________________________________________________________________________
 """
 
 
-from packages import process_manager
+from packages.process_manager import call_func
+from packages.process_manager import multiP
+from packages import settings
 import time
 
 
@@ -36,9 +38,6 @@ class main:
         print(note_start)
 
 
-        from packages import settings
-
-
         # Get necessery Info from 'config.ini' and 'settings.py'
         FastqDir    = config_dict["section_1"]["4_"].split(" ")[-1]     # Split out the FastqDir value
         OutputDir   = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the OutputDir value
@@ -51,8 +50,8 @@ class main:
         GenomeSTAR  = settings.species_dict[Species]["GenomeSTAR"]
         GTF         = settings.species_dict[Species]["GTF"]
 
-        nProcess    = settings.software_dict["Mapping"][0]
-        Threshold   = settings.software_dict["Mapping"][1]
+        nProcess    = int(settings.software_dict["Mapping"][0])     # Value of 'nProcess' is a string
+        Threshold   = int(settings.software_dict["Mapping"][1])     # Value of 'Threadhold' is a string
         # nRun        =
         tab         = ""
 
@@ -67,16 +66,22 @@ class main:
             "CMDs"     : []
         }
 
+
+        # _ STAR alignment step 1 _____________________________________________________________________________________
+        for sample in Samples:
+            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
+
+            para_dict["CMDs"].append(cmd)
+        multiP(para_dict, call_func)
+
+
+        # _ STAR alignment step 2 _____________________________________________________________________________________
         for sample in Samples:
 
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
 
             para_dict["CMDs"].append(cmd)
-            # print(cmd)
-
-        process_manager(para_dict)
-
-
+        multiP(para_dict, call_func)
 
 
 
@@ -85,7 +90,7 @@ class main:
 
                               ========================================
                               |                                      |
-                              | Finish mapping with STAR programme   |
+                              |  Finish mapping with STAR programme  |
                               |                                      |
                               ========================================
 
@@ -104,6 +109,7 @@ _ Log __________________________________________________________________________
 2017-04-17
     1) Import 'settings.py' and get 'congfig_dict' from 'Main_SNP_mRNA'
 
+2017-04-21
+    1) Finish development, not test
 ___________________________________________________________________________________
-
 """
