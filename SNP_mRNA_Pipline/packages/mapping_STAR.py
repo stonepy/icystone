@@ -51,28 +51,20 @@ class main:
         GenomeSTAR  = settings.species_dict[Species]["GenomeSTAR"]
         GTF         = settings.species_dict[Species]["GTF"]
 
-        Threshold   = settings.software_dict["Mapping"]
+        nProcess    = settings.software_dict["Mapping"][0]
+        Threshold   = settings.software_dict["Mapping"][1]
         # nRun        =
         tab         = ""
 
-        if len(Samples) > 6:
-            nProcess = 6
-        else:
+        # Adjust the process numbers according to the default set and the numbers of samples
+        if len(Samples) > nProcess:
             nProcess = len(Samples)
 
-
-        """
-
-        $STAR --runThreadN 10 --genomeDir $GenomeSTAR --readFilesIn $FastqDir/$sample"."_R1.fastq.gz $FastqDir/$sample"."_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile $GTF --sjdbOverhang 149 --outFileNamePrefix $OutputDir/$sample/$sample.step1.
-
-        "{} --runThreadN {} --genomeDir {} --readFilesIn {}/{}"."_R1.fastq.gz {}/{}"."_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {} --sjdbOverhang 149 --outFileNamePrefix {}/{}/{}.step1."
-
-        """
-
+        # Use for passing parameters to 'process_manager.py'
         para_dict = {
-            "nRun": 4,
-            "nProcess": 4,
-            "CMDs": []
+            "Samples"  : Samples,
+            "nProcess" : nProcess,
+            "CMDs"     : []
         }
 
         for sample in Samples:
@@ -80,7 +72,9 @@ class main:
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
 
             para_dict["CMDs"].append(cmd)
+            # print(cmd)
 
+        process_manager(para_dict)
 
 
 
@@ -108,7 +102,7 @@ class main:
 _ Log _____________________________________________________________________________
 
 2017-04-17
-    1) Import 'settings.py' and get 'congfig_dict' form 'Main_SNP_mRNA'
+    1) Import 'settings.py' and get 'congfig_dict' from 'Main_SNP_mRNA'
 
 ___________________________________________________________________________________
 

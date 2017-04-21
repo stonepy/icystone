@@ -42,9 +42,11 @@ def multiP(para_dict, call_func):
     P = Pool(para_dict["nProcess"])
 
     for i in para_dict["CMDs"]:
-        P.apply_async(call_func, args=(i,))
-    P.close()
-    P.join()
+        print(i)
+
+    #     P.apply_async(call_func, args=(i,))
+    # P.close()
+    # P.join()
 
 
     total_t = time.time() - start_t
@@ -53,7 +55,7 @@ def multiP(para_dict, call_func):
 
 
 # Execution part
-# multiP(para_dict, call_func)
+multiP(para_dict, call_func)
 
 
 

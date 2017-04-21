@@ -69,7 +69,7 @@ software_dict = {
     "BlastDir"   : "/home/pub/software/blast/bin",
 
 
-    "Mapping"    : "10",
+    "Mapping"    : ["5","10"],
     "GATK"       : "3",
     "Calling"    : "20",
     "Genotyping" : "40",

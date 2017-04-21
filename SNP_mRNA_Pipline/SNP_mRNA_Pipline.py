@@ -262,6 +262,7 @@ _ Log __________________________________________________________________________
 
 2017-04-18
     1) Use 'process_manager.py' in every package but not in main script
+    *2) Should put all executed command in the root DIR of SNP analysis directory
 
 _________________________________________________________________________________
 """
