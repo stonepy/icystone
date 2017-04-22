@@ -69,7 +69,7 @@ software_dict = {
     "BlastDir"   : "/home/pub/software/blast/bin",
 
 
-    "Mapping"    : ["5","10"],
+    "Mapping"    : ["5","10"],      # 1st: processes of STAR programme numbers ; 2rd: threads of STAR
     "GATK"       : "3",
     "Calling"    : "20",
     "Genotyping" : "40",
