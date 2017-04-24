@@ -28,24 +28,6 @@ Usage = """
 
 
 
-""" Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++++ """
-def test():
-    try:
-        exit()
-
-
-    except Exception as e:
-        print(e)
-        print("\nIt's not going to work...\n")
-
-
-    exit()
-
-# test()
-
-""" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ """
-
-
 
 
 """ _ 1. Preparation for Pipline __________________________________________________________________________ """
@@ -80,7 +62,9 @@ class preparation:
             # Parse the config Info and store in dictionary
             WTS_cfg_dict, SNPoutput_dir = config_processor.WTS_cfg(self.WTSconfig_path)
             config_dict = config_processor.configini(WTS_cfg_dict, SNPoutput_dir)
+            # time.sleep(0.5)
             run_dict    = config_processor.runini(WTS_cfg_dict, SNPoutput_dir)
+            # time.sleep(0.5)
             print("\n\n")
 
         except Exception as e:
@@ -162,10 +146,10 @@ if __name__ == "__main__":
     # _ Workflow _______________________________________________________________________________________________________________________
     try:
         print("\nSNP_mRNA Pipline is running...\n")
-        main = main(config_dict, run_dict)       # Comment this line to shut whole Pipline function down and test the Preparation part
+        # main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
 
         # main.mapping()
-        main.gatk()
+        # main.gatk()
 
 
     except Exception as e:
@@ -200,6 +184,36 @@ if __name__ == "__main__":
     """ % time.ctime()
     print(note_finish)
     print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
+
+
+
+""" Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++++ """
+
+main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+main.mapping()
+
+def test(main,config_dict, run_dict):
+    try:
+        main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+        main.mapping()
+
+        exit()
+
+
+    except Exception as e:
+        print(e)
+        print("\nIt's not going to work...\n")
+
+
+    exit()
+
+# test(main,config_dict, run_dict)
+""" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ """
+
+
+
+
+
 
 
 """ _ END _______________________________________________________________________________________________________________________ """

@@ -1,34 +1,45 @@
-Description = """
-
-_ Information ____________________________________________________________________
- Name         : ConfigProcessor_SNP_mRNA
+"""
+- Information --------------------------------------------------------------------
+ Name         : WTS_SNP_ConfigProducer
  Description  : Produce 'config.ini' and 'run.ini' for
                 Whole Transcription Sequecing(WTS) mRNA SNP pipline,
-                using WTS pipline's 'config.txt'
+                using WTS pipline 'config.txt'
+ Formulation  : None
  Author       : Hwx
- Version      : V4
- Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS/Python3.5.3, virtualenv15.1.0
- Finish Date  : 2017-04-15
-___________________________________________________________________________________
-
+ Version      : V3
+ Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS/Windows10 Home CN,
+                Python3.5.3, virtualenv15.1.0
+ Finish Date  : 2017-04-10
+-----------------------------------------------------------------------------------
 """
+
+
+import re
+import sys
 
 
 
 # Test pathes(Windows 10)
-OPT_dir = "C:\\Users\\GiantStone_Hwx\\PycharmProjects\\Playground"
+OPT_dir = "C:\\Users\\GiantStone-Hwx\\PycharmProjects\\Playground"
 configOPT_path = "%s\\config.ini" % OPT_dir
 runOPT_path = "%s\\run.ini" % OPT_dir
 WTS_cfg_path = "WTS_config.txt"
 
+# Obtain pathes from command line(Linux)
+try:
+    WTS_cfg_path = sys.argv[1]
+    OPT_dir = sys.argv[2]
+    configOPT_path = "%s/config.ini" % OPT_dir
+    runOPT_path = "%s/run.ini" % OPT_dir
 
-import os
-import re
-import time
+except:
+    print("""
+    Usage:
+        python config_processor.py <WTSconfig_path> <Output_path>
+    """)
+    exit()
 
 
-
-# _ 1. Process the WTS config and get Info ___________________________________
 def WTS_cfg(WTS_cfg_path):
     with open(WTS_cfg_path, "r") as WTS_config:
 
@@ -41,43 +52,37 @@ def WTS_cfg(WTS_cfg_path):
             "group": [],
         }
 
-        # Get WTS config information and store in dictionary 'WTS_cfg_dict'
+        # Get WTS config information and store in a dictionary
         for l in WTS_config:
             if l.startswith("project"):
-                WTS_cfg_dict["project_dir"] = re.split(" |\t", l)[-1].strip()
+                WTS_cfg_dict["project_dir"] = l.strip()
+
             elif l.startswith("report"):
-                WTS_cfg_dict["report_dir"] = re.split(" |\t", l)[-1].strip()
+                WTS_cfg_dict["report_dir"] = l.strip()
 
             elif l.startswith("raw_data"):
-                WTS_cfg_dict["raw_data_dir"] = re.split(" |\t", l)[-1].strip()
+                WTS_cfg_dict["raw_data_dir"] = l.strip()
 
             elif l.startswith("sample"):
-                WTS_cfg_dict["sample"] = re.split(" |\t", l)[-1].strip()
+                WTS_cfg_dict["sample"] = l.strip()
 
             elif l.startswith("organ"):
-                WTS_cfg_dict["organ"] = re.split(" |\t", l)[-1].strip()
+                WTS_cfg_dict["organ"] = l.strip()
 
             else:
                 if len(l) > 1:
                     WTS_cfg_dict["group"].append(l.strip())
 
-    SNPoutput_dir = os.path.join(WTS_cfg_dict["project_dir"], "mRNA/SNP")
-    if not os.path.exists(SNPoutput_dir):
-        os.makedirs(SNPoutput_dir)
-
-    return WTS_cfg_dict, SNPoutput_dir
+    return WTS_cfg_dict
 
 
-# _ 2. Produce SNP_mRNA_Pipline 'config.ini'______________________________________________________
-def configini(WTS_cfg_dict, SNPoutput_dir):
-
-    output_path = SNPoutput_dir + "/config.ini"
+def configini(WTS_cfg_dict, output_path):
 
     # Oupput 'config.ini' for SNP pipline
     with open(output_path, "w") as cfg:
 
-        print("\nContent of 'config.ini' for SNP pipline:")
-        print("_________________________________________")
+        print("\n>>> Content of 'config.ini' for SNP pipline:")
+        print(">>> ========================================")
 
         # Group INFO
         for gp in WTS_cfg_dict["group"]:
@@ -88,12 +93,12 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
                     gpInfo.append(i)
 
         # Other INFO
-        Rawdata  = WTS_cfg_dict["raw_data_dir"]
-        Output   = WTS_cfg_dict["project_dir"] + "/mRNA/SNP"
-        Report   = WTS_cfg_dict["report_dir"] + "/mRNA/06_SNP"
-        Species  = WTS_cfg_dict["organ"]
-        Samples  = ""
-        for s in WTS_cfg_dict["sample"].split(","):
+        Rawdata = WTS_cfg_dict["raw_data_dir"].split(" ")[-1]
+        Output = WTS_cfg_dict["project_dir"].split(" ")[-1] + "/mRNA/SNP"
+        Report = WTS_cfg_dict["report_dir"].split(" ")[-1] + "/mRNA/06_SNP"
+        Species = WTS_cfg_dict["organ"].split(" ")[-1]
+        Samples = ""
+        for s in WTS_cfg_dict["sample"].split(" ")[-1].split(","):
             Samples += s + "\n"
 
         # Pathes of '=.bed' files
@@ -129,7 +134,7 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
 
             "section_2": {
                 "1_title": "### Species Configuration",
-                "2_": "Species     = %s" % Species.capitalize(),
+                "2_": "Species     = %s" % Species,
             },
 
             "section_3": {
@@ -162,24 +167,22 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
                     continue
 
                 j = sorted(j.items(), key=lambda d: d[0])  # Sort the information specific order
+
                 # Final output
                 for l in j:
                     cfg.write(l[1] + "\n")
                     print(l[1])
 
-        return config_dict
+        print(">>> ========================================\n\n")
 
 
-# _ 3. Produce SNP_mRNA_Pipline 'run.ini' _______________________________________________________________
-def runini(WTS_cfg_dict, SNPoutput_dir):
-
-    output_path = SNPoutput_dir + "/run.ini"
+def runini(WTS_cfg_dict, output_path):
 
     # Output the 'run.ini'
     with open(output_path, "w") as run:
 
-        print("\nContent of 'run.ini' for SNP pipline:")
-        print("_____________________________________\n")
+        print("\n>>> Content of 'run.ini' for SNP pipline:")
+        print(">>> =====================================\n")
 
         for gp in WTS_cfg_dict["group"]:
             gp = re.split(" |\t|;", gp)
@@ -188,38 +191,38 @@ def runini(WTS_cfg_dict, SNPoutput_dir):
                 if i != "":
                     gpInfo.append(i)
 
-            RUN_para      = gpInfo[1] + "_vs_" + gpInfo[0]  # Group name: group1_vs_group2
-            Case_para     = gpInfo[3]                       # Case samples: 5_1_leaves_1, 5_1_leaves_2
-            Control_para  = gpInfo[2]                       # Case samples: Ler_leaves_1, Ler_leaves_2
-            Model_para    = "Dominance"                     # Gene limited calculation related, default: Dominance
-            Report_para   = "All"                           # Report model, default: All
+            RUN_para = gpInfo[1] + "_vs_" + gpInfo[0]  # Group name: group1_vs_group2
+            Case_para = gpInfo[3]  # Case samples: 5-1-leaves-1, 5-1-leaves-2
+            Control_para = gpInfo[2]  # Case samples: Ler-leaves-1, Ler-leaves-2
+            Model_para = "Dominance"  # Gene limited calculation related, default: Dominance
+            Report_para = "All"  # Report model, default: All
 
-            Freq_Alt_1000g_para     = str(0.01)  # 1000Genome database threshold
-            ExAC03_para             = str(0.1)   # ExAC03 database threshold
+            Freq_Alt_1000g_para = str(0.01)  # 1000Genome database threshold
+            ExAC03_para = str(0.1)  # ExAC03 database threshold
             GENESKYDBHITS_Freq_para = str(0.05)  # GENESKYDBHITS database threshold
 
             # Human 'run.ini' config
             human_dict = {
 
-                "::RUN "               : RUN_para,
-                "Case:"                : Case_para,
-                "Control:"             : Control_para,
-                "Freq_Alt (1000g):"    : Freq_Alt_1000g_para,
-                "ExAC03:"              : ExAC03_para,
-                "GENESKYDBHITS_Freq:"  : GENESKYDBHITS_Freq_para,
-                "Model:"               : Model_para,
-                "Report:"              : Report_para,
+                "::RUN ": RUN_para,
+                "Case:": Case_para,
+                "Control:": Control_para,
+                "Freq_Alt (1000g):": Freq_Alt_1000g_para,
+                "ExAC03:": ExAC03_para,
+                "GENESKYDBHITS_Freq:": GENESKYDBHITS_Freq_para,
+                "Model:": Model_para,
+                "Report:": Report_para,
 
             }
 
             # Other species 'run.ini' config
             other_dict = {
 
-                "::RUN "    : RUN_para,
-                "Case:"     : Case_para,
-                "Control:"  : Control_para,
-                "Model:"    : Model_para,
-                "Report:"   : Report_para,
+                "::RUN ": RUN_para,
+                "Case:": Case_para,
+                "Control:": Control_para,
+                "Model:": Model_para,
+                "Report:": Report_para,
 
             }
 
@@ -231,65 +234,44 @@ def runini(WTS_cfg_dict, SNPoutput_dir):
                 run_dict = other_dict
 
             write_list = sorted(run_dict.items(), key=lambda d: d[0])  # Learn from http://jingyan.baidu.com/article/75ab0bcbeaf643d6874db249.html
+
             for item in write_list:
                 run.write(item[0] + item[1] + "\n")
                 print(item[0] + item[1])
             run.write("\n")
             print("\n")
 
-        return run_dict
+        print(">>> =====================================\n")
 
 
-
-# _ 0. When use this script alone ________________________________________
 if __name__ == "__main__":
-
-    import sys
-
-    # Obtain pathes from command line(Linux)
-    try:
-        WTS_cfg_path    = sys.argv[1]
-        OPT_dir         = sys.argv[2]
-        configOPT_path  = "%s/config.ini" % OPT_dir
-        runOPT_path     = "%s/run.ini" % OPT_dir
-
-    except:
-        print("""
-        Usage:
-            python %s <WTSconfig_path> <Output_path>
-        """) % __file__
-        exit()
-
-
-    WTS_cfg_dict, SNPoutput_dir = WTS_cfg(WTS_cfg_path)  # Obtain sample and group information form WTS 'config.txt'
-    configini(WTS_cfg_dict, SNPoutput_dir)  # Produce 'config.ini' for mRNA SNP pipline
-    runini(WTS_cfg_dict, SNPoutput_dir)  # Produce 'run.ini' for mRNA SNP pipline
-
-
-
+    WTS_cfg_dict = WTS_cfg(WTS_cfg_path)  # Obtain sample and group information form WTS 'config.txt'
+    configini(WTS_cfg_dict, configOPT_path)  # Produce 'config.ini' for mRNA SNP pipline
+    runini(WTS_cfg_dict, runOPT_path)  # Produce 'run.ini' for mRNA SNP pipline
 
 """
-_ Example _________________________________________________________________________
+- Example -------------------------------------------------------------------------
+
 
 1.
 ===================================================================================
 project    /home/hwx/work/RNA_seq/WTS_mRNA_17B0206A/
 report     /home/hwx/work/RNA_seq/WTS_mRNA_17B0206A/work_path/report_new
 raw_data   /home/pub/project/Transcriptome/17B0206A
-sample     5_1_leaves_1,5_1_leaves_2,Ler_leaves_1,Ler_leaves_2
+sample     5-1-leaves-1,5-1-leaves-2,Ler-leaves-1,Ler-leaves-2
 organ      Arabidopsis
 
-Ler_1 5_1_1 Ler_leaves_1;5_1_leaves_1
-Ler_2 5_1_2 Ler_leaves_2;5_1_leaves_2
-Ler   5     Ler_leaves_1,Ler_leaves_2;5_1_leaves_1,5_1_leaves_2
+Ler-1 5-1-1 Ler-leaves-1;5-1-leaves-1
+Ler-2 5-1-2 Ler-leaves-2;5-1-leaves-2
+Ler   5     Ler-leaves-1,Ler-leaves-2;5-1-leaves-1,5-1-leaves-2
 ===================================================================================
 
 
 2.
 ===================================================================================
 ### Path Configuration
-case        = 5_1_leaves_1,5_1_leaves_2
-control     = Ler_leaves_1,Ler_leaves_2
+case        = 5-1-leaves-1,5-1-leaves-2
+control     = Ler-leaves-1,Ler-leaves-2
 FastqDir    = /home/pub/project/Transcriptome/17B0206A
 OutputDir   = /home/hwx/work/RNA_seq/WTS_mRNA_17B0206A//mRNA/SNP
 Report      = /home/hwx/work/RNA_seq/WTS_mRNA_17B0206A/work_path/report_new/mRNA/06_SNP
@@ -301,60 +283,46 @@ Species     = Arabidopsis
 Bed         = /home/hwx/reference/Arabidopsis/TAIR10/AnnovarDB/TAIR10.bed
 
 ### Samples Configuration
-5_1_leaves_1
-5_1_leaves_2
-Ler_leaves_1
-Ler_leaves_2
+5-1-leaves-1
+5-1-leaves-2
+Ler-leaves-1
+Ler-leaves-2
 ===================================================================================
 
 
 3.
 ===================================================================================
-::RUN 5_1_1_vs_Ler_1
-Case:5_1_leaves_1
-Control:Ler_leaves_1
+::RUN 5-1-1_vs_Ler-1
+Case:5-1-leaves-1
+Control:Ler-leaves-1
 Model:Dominance
 Report:All
 
-::RUN 5_1_2_vs_Ler_2
-Case:5_1_leaves_2
-Control:Ler_leaves_2
+::RUN 5-1-2_vs_Ler-2
+Case:5-1-leaves-2
+Control:Ler-leaves-2
 Model:Dominance
 Report:All
 
 ::RUN 5_vs_Ler
-Case:5_1_leaves_1,5_1_leaves_2
-Control:Ler_leaves_1,Ler_leaves_2
+Case:5-1-leaves-1,5-1-leaves-2
+Control:Ler-leaves-1,Ler-leaves-2
 Model:Dominance
 Report:All
 ===================================================================================
 
-___________________________________________________________________________________
+
+-----------------------------------------------------------------------------------
 
 
 
-_ Important Information ______________________________________________________________
 
-1. Server #6
+- Import Information --------------------------------------------------------------
+
 Human_bed = "/home/pub/database/Human/hg19/bed/human_exons_realign.bed"
 Mouse_bed = "/home/hwx/reference/mm10.bed"
 Arabidopsis_bed = "/home/hwx/reference/Arabidopsis/TAIR10/AnnovarDB/TAIR10.bed"
 
-___________________________________________________________________________________
-
-
-
-_ Log _____________________________________________________________________________
-
-2017-04-14
-    1) Revised argument input part
-
-2017-04-15
-    1) Split name and value in 'WTS_cfg' part
-
-2016-04-21
-    1)
-
-___________________________________________________________________________________
+-----------------------------------------------------------------------------------
 
 """

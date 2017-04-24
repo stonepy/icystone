@@ -15,7 +15,7 @@ ________________________________________________________________________________
 
 from packages.process_manager import call_func
 from packages.process_manager import multiP
-from packagee.checking        import branchDIR_check
+from packages.checking        import branchDIR_check
 from packages                 import settings
 import time
 
@@ -71,7 +71,7 @@ class main:
         # _ STAR alignment step 1 _____________________________________________________________________________________
         for sample in Samples:
 
-            DIR = "{OutputDir}/{sample}".format(OutputDir, sample)
+            DIR = "{OutputDir}/{sample}".format(OutputDir=OutputDir, sample=sample)
             branchDIR_check(DIR)
 
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
@@ -83,7 +83,7 @@ class main:
         # _ STAR alignment step 2 _____________________________________________________________________________________
         for sample in Samples:
 
-            DIR = "{OutputDir}/{sample}".format(OutputDir, sample)
+            DIR = "{OutputDir}/{sample}".format(OutputDir=OutputDir, sample=sample)
             branchDIR_check(DIR)
 
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
