@@ -13,6 +13,8 @@ ________________________________________________________________________________
 
 
 import os
+import shutil
+
 
 
 """ _ 1. Directory Check ________________________________________________________________________________ """
@@ -92,29 +94,6 @@ def mapping_STAR():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 """
 _ Log ___________________________________________________________________________
 
@@ -131,6 +110,12 @@ _ Log __________________________________________________________________________
 2017-04-21
     1) Add 'baseDIR_check' module,
     2) Convert package check into 'package_check' module
+
+2017-04-24
+    1) 'branchDIR_check', remove old directories and files if user choose to, new function.
+    But sometimes it does not need to do so, depends on the situation, maybe it needs 2 module
+    to do the work
+
 
 _________________________________________________________________________________
 """

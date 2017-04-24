@@ -146,9 +146,9 @@ if __name__ == "__main__":
     # _ Workflow _______________________________________________________________________________________________________________________
     try:
         print("\nSNP_mRNA Pipline is running...\n")
-        # main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+        main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
 
-        # main.mapping()
+        main.mapping()
         # main.gatk()
 
 
@@ -189,8 +189,6 @@ if __name__ == "__main__":
 
 """ Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++++ """
 
-main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
-main.mapping()
 
 def test(main,config_dict, run_dict):
     try:
@@ -279,6 +277,9 @@ _ Log __________________________________________________________________________
 2017-04-18
     1) Use 'process_manager.py' in every package but not in main script
     *2) Should put all executed command in the root DIR of SNP analysis directory
+
+2017-04-24
+    1) Leave all the check including dir check to 'cheking.py', develop it at last
 
 _________________________________________________________________________________
 """

@@ -2,8 +2,8 @@ Description = """
 
 _ Information ____________________________________________________________________
 
-    Name         : Package Model
-    Description  : Model of the package
+    Name         : SeekingGATK_SNP_mRNA
+    Description  : Seeking INDEL/SNP with GATK programme
     Author       : Hwx
     Version      : V0
     Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0
@@ -31,7 +31,7 @@ class main:
 
                               =======================================
                               |                                     |
-                              |  Start mapping with  programme  |
+                              |  Start mapping with GATK programme  |
                               |                                     |
                               =======================================
 
@@ -47,7 +47,7 @@ class main:
 
                               ========================================
                               |                                      |
-                              |  Finish mapping with  programme  |
+                              |  Finish mapping with GATK programme  |
                               |                                      |
                               ========================================
 

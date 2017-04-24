@@ -29,7 +29,7 @@ import time
 
 
 def call_func(CMD):
-    print("\nExecuting command:\n    %s\n" % CMD)
+    print("\nExecuting command:\n[>>>] %s\n" % CMD)
     call(CMD, shell=True)
 
 
@@ -47,7 +47,7 @@ def multiP(para_dict, call_func):
 
 
     total_t = time.time() - start_t
-    print("Time concumed: %0.2fs" % total_t)
+    print("Time consumed: %0.2fs" % total_t)
 
 
 
