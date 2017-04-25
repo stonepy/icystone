@@ -79,8 +79,8 @@ class main:
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
 
             para_dict["CMDs"].append(cmd)
-        # multiP(para_dict, call_func)
-
+        multiP(para_dict, call_func)
+        print(tab)
 
         # _ STAR alignment step 2 _____________________________________________________________________________________
         for sample in Samples:
@@ -91,7 +91,7 @@ class main:
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, OutputDir=OutputDir)
 
             para_dict["CMDs"].append(cmd)
-        multiP(para_dict, call_func)
+        # multiP(para_dict, call_func)
 
 
 

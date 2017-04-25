@@ -24,7 +24,9 @@ Usage = """
 
 from multiprocessing import Pool
 from subprocess      import call
+import signal
 import time
+import sys
 
 
 
@@ -32,7 +34,14 @@ def call_func(CMD):
     print("\nExecuting command:\n[>>>] %s\n" % CMD)
     call(CMD, shell=True)
 
-def signal_handler()
+# Temporary for testing, 2017-04-25
+def ctrlC():
+    while 1 != 0:
+        try:
+            pass
+        except KeyboardInterrupt:
+            sys.exit()
+
 
 def multiP(para_dict, call_func):
 
@@ -43,6 +52,7 @@ def multiP(para_dict, call_func):
 
     for i in para_dict["CMDs"]:
         P.apply_async(call_func, args=(i,))
+    P.apply_async(ctrlC)        # Temporary for testing, 2017-04-25
     P.close()
     P.join()
 
