@@ -77,28 +77,28 @@ class main:
             tab += " {OutputDir}/{sample}/{sample}.step1.SJ.out.tab ".format(OutputDir=OutputDir, sample=sample)     # Very vital, for step 2
 
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
-
+            # print(cmd), for testing
             para_dict["CMDs"].append(cmd)
         multiP(para_dict, call_func)
-        print(tab)
 
         # _ STAR alignment step 2 _____________________________________________________________________________________
+        para_dict["CMDs"] = []
         for sample in Samples:
 
             DIR = "{OutputDir}/{sample}".format(OutputDir=OutputDir, sample=sample)
             branchDIR_check(DIR)
 
-            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, OutputDir=OutputDir)
-
+            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step2.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, OutputDir=OutputDir)
+            # print(cmd), for testing
             para_dict["CMDs"].append(cmd)
-        # multiP(para_dict, call_func)
+        multiP(para_dict, call_func)
 
 
 
         # Finish Note
         note_finish = """
 
-                              ========================================
+                              ========================================+
                               |                                      |
                               |  Finish mapping with STAR programme  |
                               |                                      |
@@ -122,7 +122,8 @@ _ Log __________________________________________________________________________
 2017-04-21
     1) Finish development, not test
 
-2017-04-24
-    1
+2017-04-25
+    1) Fixed 'step 2' issue
+    2) Finished, tested.
 ___________________________________________________________________________________
 """
