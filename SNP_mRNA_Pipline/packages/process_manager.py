@@ -32,6 +32,7 @@ def call_func(CMD):
     print("\nExecuting command:\n[>>>] %s\n" % CMD)
     call(CMD, shell=True)
 
+def signal_handler()
 
 def multiP(para_dict, call_func):
 
@@ -84,5 +85,8 @@ _ Log __________________________________________________________________________
 
 2017-04-21
     1) With 'mapping_STAR.py' locally, tested
+
+2017-04-24
+    1) Multiple processes can't be terminated by 'Ctrl+C' normally,
 _________________________________________________________________________________
 """

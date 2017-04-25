@@ -1,3 +1,37 @@
+# import multiprocessing
+# from multiprocessing import Pool
+# import time
+#
+#
+# def worker(t):
+#     print("wait %s ..." % str(t))
+#     time.sleep(t)
+#
+# def ctrlC():
+#     while 1 != 0:
+#         try:
+#             pass
+#         except KeyboardInterrupt:
+#             exit()
+#
+# p = Pool(4)
+# for i in range(3):
+#     res = p.apply_async(worker, args=(i, ))
+# p.apply_async(ctrlC)
+# p.close()
+# p.join()
+
+
+# import signal
+# import sys
+# def signal_handler(signal, frame):
+#         print('You pressed Ctrl+C!')
+#         sys.exit(0)
+# signal.signal(signal.SIGINT, signal_handler)
+# print('Press Ctrl+C')
+# signal.pause()
+
+
 import multiprocessing
 from multiprocessing import Pool
 import time
@@ -24,27 +58,3 @@ while True:
     # catch TimeoutError and get again
     except multiprocessing.TimeoutError as ex:
         print('timeout')
-
-
-import multiprocessing
-from multiprocessing import Pool
-import time
-
-
-def worker(t):
-    print("wait %s ..." % str(t))
-    time.sleep(t)
-
-def ctrlC():
-    while 1 != 0:
-        try:
-            pass
-        except KeyboardInterrupt:
-            exit()
-
-p = Pool(4)
-for i in range(3):
-    p.apply_async(worker, args=(i, ))
-p.apply_async(ctrlC)
-p.close()
-p.join()
