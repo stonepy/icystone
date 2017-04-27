@@ -43,7 +43,7 @@ def ctrlC():
             sys.exit()
 
 
-def multiP(para_dict, call_func):
+def multiP_1(para_dict, func):
 
     start_t = time.time()
 
@@ -51,8 +51,8 @@ def multiP(para_dict, call_func):
     P = Pool(para_dict["nProcess"])
 
     for i in para_dict["CMDs"]:
-        P.apply_async(call_func, args=(i,))
-    P.apply_async(ctrlC)        # Temporary for testing, 2017-04-25
+        P.apply_async(func, args=(i,))
+    # P.apply_async(ctrlC)        # Temporary for testing, 2017-04-25
     P.close()
     P.join()
 
@@ -97,6 +97,9 @@ _ Log __________________________________________________________________________
     1) With 'mapping_STAR.py' locally, tested
 
 2017-04-24
-    1) Multiple processes can't be terminated by 'Ctrl+C' normally,
+    1) Multiple processes can't be terminated by 'Ctrl+C' normally
+
+2017-04-25
+    1) 
 _________________________________________________________________________________
 """

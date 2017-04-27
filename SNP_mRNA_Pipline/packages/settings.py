@@ -68,11 +68,21 @@ software_dict = {
     "AnnovarDir" : "/home/pub/software/annovar",
     "BlastDir"   : "/home/pub/software/blast/bin",
 
-
-    "Mapping"    : ["5","30"],      # 1st: processes of STAR programme numbers ; 2rd: threads of STAR
-    "GATK"       : "3",
-    "Calling"    : "20",
-    "Genotyping" : "40",
-    "Analysis"   : "40",
+    # Processes/Threads of softwares
+    "Mapping"    : [5,30],      # 1st: processes of STAR programme numbers ; 2rd: threads of STAR
+    "GATK"       : 3,           # Threads for 'dataPre' GATK
+    "Calling"    : 20,
+    "Genotyping" : 40,
+    "Analysis"   : 40,
 
 }
+
+"""
+_ Log _____________________________________________________________________________
+
+2017-04-26
+    1) Revised argument input part
+    2) Revised 'software_dict', all process/thread parameter shift from character to integer
+___________________________________________________________________________________
+
+"""

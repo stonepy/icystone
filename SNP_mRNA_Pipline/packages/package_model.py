@@ -15,7 +15,7 @@ ________________________________________________________________________________
 
 
 from packages.process_manager import call_func
-from packages.process_manager import multiP
+from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
 from packages                 import settings
 import time
@@ -26,12 +26,12 @@ class main:
 
     def __init__(self, config_dict):
 
-        # Start Note
+        # Start Note ___________________________________________________________________________________________________
         note_start = """
 
                               =======================================
                               |                                     |
-                              |  Start mapping with  programme  |
+                              |  Start  with  programme  |
                               |                                     |
                               =======================================
 
@@ -42,12 +42,12 @@ class main:
 
 
 
-        # Finish Note
+        # Finish Note ___________________________________________________________________________________________________
         note_finish = """
 
                               ========================================
                               |                                      |
-                              |  Finish mapping with  programme  |
+                              |  Finish  with  programme  |
                               |                                      |
                               ========================================
 

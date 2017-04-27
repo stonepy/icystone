@@ -90,7 +90,7 @@ class preparation:
 
 
 
-""" _ 2. Main _________________________________________ """
+""" _ 2. Main __________________________________ """
 class main(preparation):
 
     def __init__(self, config_dict, run_dict):
@@ -279,7 +279,13 @@ _ Log __________________________________________________________________________
     *2) Should put all executed command in the root DIR of SNP analysis directory
 
 2017-04-24
-    1) Leave all the check including dir check to 'cheking.py', develop it at last
+    1) Leave all the check including dir check to 'cheking.py', including 'branchDIR_check', develop it at last
 
+2017-04-25
+    1) Finished 'mapping_STAR.py', tested, worked.
+    2) Did not copy 'mapping_STAR.py ~ <sampleName>.step2.Log.final.out' to 'Report/Statistic'
+
+2017-04-27
+    *1) Write a 'time' module for every module
 _________________________________________________________________________________
 """
