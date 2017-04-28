@@ -140,24 +140,28 @@ if __name__ == "__main__":
         config_dict, run_dict = prep.config()
         prep.check()
 
-
     except Exception as e:
         print("\nPreparation of Pipline is Skipped or there is something wrong with it.\n")
         print("%s\n" % e)
 
 
     # _ Workflow _______________________________________________________________________________________________________________________
-    try:
-        print("\nSNP_mRNA Pipline is running...\n")
-        main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+    print("\nSNP_mRNA Pipline is running...\n")
+    main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+    main.mapping()
+    # main.gatk()
 
-        main.mapping()
-        main.gatk()
-
-
-    except Exception as e:
-        print("\n>>> Error: Main workflow goes wrong...\n")
-        print("    %s\n" % e)
+    # try:
+    #     print("\nSNP_mRNA Pipline is running...\n")
+    #     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+    #
+    #     # main.mapping()
+    #     main.gatk()
+    #
+    #
+    # except Exception as e:
+    #     print("\n>>> Error: Main workflow goes wrong...\n")
+    #     print("    %s\n" % e)
 
 
 

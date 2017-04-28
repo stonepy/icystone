@@ -83,6 +83,9 @@ _ Log __________________________________________________________________________
 2017-04-26
     1) Revised argument input part
     2) Revised 'software_dict', all process/thread parameter shift from character to integer
+
+2017-04-28
+    *1) 'software_dict' ~ 'Tmp' is temporary, change it when all done
 ___________________________________________________________________________________
 
 """

@@ -29,11 +29,11 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-                              ================================================
-                              |                                              |
-                              |  Start prepare with Picard & GATK programme  |
-                              |                                              |
-                              ================================================
+                              ====================================================
+                              |                                                  |
+                              |  Start preparation with Picard & GATK programme  |
+                              |                                                  |
+                              ====================================================
 
 
         %s
@@ -61,9 +61,28 @@ class main:
 
 
         # Execute 'run' function here ____________________________
-        para_dict = {"CMDs": self.Samples}
-        multiP_1(para_dict, main.run)
+        self.para_dict = {
+            "nProcess" : len(self.Samples),
+            "CMDs"     : self.Samples
+        }
 
+        multiP_1(self.para_dict, self.run)
+
+
+
+        # Finish Note __________________________________________________________________________________________________
+        note_finish = """
+
+                              =====================================================
+                              |                                                   |
+                              |  Finish preparation with Picard & GATK programme  |
+                              |                                                   |
+                              =====================================================
+
+
+        %s
+        """ % time.ctime()
+        print(note_finish)
 
     """ _ Data preparation ________________________________________________________________________________________ """
     def run(self, sampleName):
@@ -71,10 +90,10 @@ class main:
         # If "dbSNP" and "InDel" exist, only human and mouse for the temporary. For step6, step7.
         knownDBsnp, knownSiteDBsnp, knownInDel = "", "", ""
 
-        if "dbSNP" in settings.software_dict[self.Species]:
+        if "dbSNP" in settings.species_dict[self.Species]["dbSNP"]:
             knownDBsnp     = "-known " + settings.software_dict[self.Species]["dbSNP"]
             knownSiteDBsnp = "-knownSite " + settings.software_dict[self.Species]["dbSNP"]
-        if "InDel" in settings.software_dict[self.Species]:
+        if "InDel" in settings.species_dict[self.Species]["InDel"]:
             knownInDel     = "-known " + settings.software_dict[self.Species]["InDel"]
 
         # Make sure the directory for '*.bam' files exists
@@ -86,7 +105,7 @@ class main:
         sam_path = "%s/%s.step2.Aligned.out.sam" % (BamDir, sampleName)
         bam_path = "%s/%s.bam" % (BamDir, sampleName)
 
-        CMD_1 = "more {sam} | {Samtool} view -bS -L {bed} -h -F 4 - > {bam}".format(sam=sam_path, Samtools=self.Samtools, bed=self.bed, bam=bam_path)
+        CMD_1 = "more {sam} | {Samtools} view -bS -L {bed} -h -F 4 - > {bam}".format(sam=sam_path, Samtools=self.Samtools, bed=self.bed, bam=bam_path)
 
         print(CMD_1+"\n") # for testing
         # call(CMD_1, shell=True)
@@ -110,7 +129,7 @@ class main:
         bamDupMetrics_path = "%s/%s_dup.metrics" % (BamDir, sampleName)     # Copy '*_dup.metrics' to 'Report' dir, but I don't do it
         bamDupIndex_path   = "%s/%s_sort_dup.bai" % (BamDir, sampleName)
 
-        CMD_3_1 = "{JAVA} -jar -Xmx8g {PicardDir}/MarkDuplicates.jar INPUT=${bam_sort} OUTPUT={bam_dup} METRICS_FILE={bam_dup_metrics} REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_dup_metrics=bamDupMetrics_path, Tmp=self.Tmp)
+        CMD_3_1 = "{JAVA} -jar -Xmx8g {PicardDir}/MarkDuplicates.jar INPUT={bam_sort} OUTPUT={bam_dup} METRICS_FILE={bam_dup_metrics} REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_dup_metrics=bamDupMetrics_path, Tmp=self.Tmp)
         CMD_3_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_dup} OUTPUT={bam_dup_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_dup=bamDup_path, bam_dup_idx=bamDupIndex_path, Tmp=self.Tmp)
 
         print(CMD_3_1+"\n") # for testing
@@ -123,7 +142,7 @@ class main:
         bamGroup_path      = "%s/%s_sort_dup_group.bam" % (BamDir, sampleName)
         bamGroupIndex_path = "%s/%s_sort_dup_group.bai" % (BamDir, sampleName)
 
-        CMD_4_1 = "{JAVA} -jar -Xmx16g {PicardDir}/AddOrReplaceReadGroups.jar I={bam_dup} O={bam_group} SO=coordinate ID=$sample LB={sample} PL=illumina PU=barcode SM={sample} CREATE_INDEX=false VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_group=bamGroup_path, sample=sampleName, Tmp=self.Tmp)
+        CMD_4_1 = "{JAVA} -jar -Xmx16g {PicardDir}/AddOrReplaceReadGroups.jar I={bam_dup} O={bam_group} SO=coordinate ID={sample} LB={sample} PL=illumina PU=barcode SM={sample} CREATE_INDEX=false VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_group=bamGroup_path, sample=sampleName, Tmp=self.Tmp)
         CMD_4_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_group} OUTPUT={bam_group_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_group=bamGroup_path, bam_group_idx=bamGroupIndex_path, Tmp=self.Tmp)
 
         print(CMD_4_1+"\n") # for testing
@@ -136,7 +155,7 @@ class main:
         bamTrim_path      = "%s/%s_sort_dup_group_trim.bam" % (BamDir, sampleName)
         bamTrimIndex_path = "%s/%s_sort_dup_group_trim.bai" % (BamDir, sampleName)
 
-        CMD_5_1 = "{JAVA} -jar {GATK} -T SplitNCigarReads -R $Genome -I {bam_group} -o {bam_trim} -U ALLOW_N_CIGAR_READS -rf ReassignOneMappingQuality -RMQF 255 -RMQT 60".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_group=bamGroup_path, bam_trim=bamTrim_path)
+        CMD_5_1 = "{JAVA} -jar {GATK} -T SplitNCigarReads -R {Genome} -I {bam_group} -o {bam_trim} -U ALLOW_N_CIGAR_READS -rf ReassignOneMappingQuality -RMQF 255 -RMQT 60".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_group=bamGroup_path, bam_trim=bamTrim_path)
         CMD_5_2 = "{JAVA} -jar -Xmx8 {PicardDir}/BuildBamIndex.jar INPUT={bam_trim} OUTPUT={bam_trim_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_trim=bamTrim_path, bam_trim_idx=bamTrimIndex_path, Tmp=self.Tmp)
 
         print(CMD_5_1+"\n") # for testing
@@ -154,7 +173,7 @@ class main:
         bamRealignIntervals_path = "%s/%s_sort_dup_group_trim_realign.intervals" % (BamDir, sampleName)
 
         CMD_6_1 = "{JAVA} -jar {GATK} -l INFO -T RealignerTargetCreator -R {Genome} -I {bam_trim} -o {bam_realign_intervals} {knownDBsnp} {knownInDel} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign_intervals=bamRealignIntervals_path, knownDBsnp=knownDBsnp, knownInDel=knownInDel)
-        CMD_6_2 = "{JAVA} -jar {GATK} -l INFO -T IndelRealigner -R {Genome} -I {bam_trim} -o ${bam_realign} {knownInDel} -targetIntervals {bam_realign_intervals} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign=bamRealign_path, knownInDel=knownInDel, bam_realign_intervals=bamRealignIntervals_path)
+        CMD_6_2 = "{JAVA} -jar {GATK} -l INFO -T IndelRealigner -R {Genome} -I {bam_trim} -o {bam_realign} {knownInDel} -targetIntervals {bam_realign_intervals} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign=bamRealign_path, knownInDel=knownInDel, bam_realign_intervals=bamRealignIntervals_path)
 
         print(CMD_6_1+"\n") # for testing
         print(CMD_6_2+"\n") # for testing
@@ -167,9 +186,9 @@ class main:
         bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (BamDir, sampleName)     # No use
         recal_path                = "%s/%s_recal.table" % (BamDir, sampleName)
 
-        CMD_7_1 = "{JAVA} -jar {GATK} -l INFO -T BaseRecalibrator -R {Genome} {knownSitesDBsnp} -I $bam_realign --validation_strictness LENIENT -o {recal}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, knownSitesDBsnp=knownSiteDBsnp, recal=recal_path)
+        CMD_7_1 = "{JAVA} -jar {GATK} -l INFO -T BaseRecalibrator -R {Genome} {knownSitesDBsnp} -I {bam_realign} --validation_strictness LENIENT -o {recal}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, knownSitesDBsnp=knownSiteDBsnp, bam_realign=bamRealign_path, recal=recal_path)
 
-        CMD_7_2 = "{JAVA} -jar {GATK} -l INFO -T PrintReads -R {Genome} -BQSR {recal} --validation_strictness LENIENT -I {bam_realign} -o ${bam_recalibrator}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, recal=recal_path, bam_realign=bamRealign_path, bam_recalibrator=bamRecalibrator_path)
+        CMD_7_2 = "{JAVA} -jar {GATK} -l INFO -T PrintReads -R {Genome} -BQSR {recal} --validation_strictness LENIENT -I {bam_realign} -o {bam_recalibrator}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, recal=recal_path, bam_realign=bamRealign_path, bam_recalibrator=bamRecalibrator_path)
 
         # Skip this step when there is no 'dbSNP'
         if os.path.exists(knownSiteDBsnp.split(" ")[-1]):
@@ -204,24 +223,6 @@ class main:
 
 
 
-# Finish Note __________________________________________________________________________________________________
-note_finish = """
-
-                      =================================================
-                      |                                               |
-                      |  Finish prepare with Picard & GATK programme  |
-                      |                                               |
-                      =================================================
-
-
-%s
-""" % time.ctime()
-print(note_finish)
-
-
-
-
-
 """
 _ Log _____________________________________________________________________________
 
@@ -230,13 +231,13 @@ _ Log __________________________________________________________________________
     2) Step 7 didn't finish, view the 'knownSitesDBsnp' to find out what happens
 
 2017-04-28
-    1) Finish coding, not test
+    1) Finish coding, tested locally, but there are some problems on the server#6
 
 ___________________________________________________________________________________
 """
 
 """
-_ Steps of Picard and GATK ________________________________________________________
+_ Steps of Picard and GATK Bam preparation _______________________________________
 
 2017-04-28
 

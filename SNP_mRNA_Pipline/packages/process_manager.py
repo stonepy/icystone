@@ -51,7 +51,8 @@ def multiP_1(para_dict, func):
     P = Pool(para_dict["nProcess"])
 
     for i in para_dict["CMDs"]:
-        P.apply_async(func, args=(i,))
+        res = P.apply_async(func, args=(i,))
+        # print(res)
     # P.apply_async(ctrlC)        # Temporary for testing, 2017-04-25
     P.close()
     P.join()
