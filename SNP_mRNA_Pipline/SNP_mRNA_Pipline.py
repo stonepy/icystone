@@ -286,6 +286,7 @@ _ Log __________________________________________________________________________
     2) Did not copy 'mapping_STAR.py ~ <sampleName>.step2.Log.final.out' to 'Report/Statistic'
 
 2017-04-27
-    *1) Write a 'time' module for every module
+    *1) Write a 'timer' module for every module
+    *2) Write all commands executed into a log file
 _________________________________________________________________________________
 """

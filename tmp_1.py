@@ -1,73 +1,76 @@
-
-
-# Convert mouse GTF chromesome "M" to "MT"
-import re
-
-
-with open("gencode.nochr.gtf", "r") as gtf:
-
-    output = open("gencode.nochr.hwx.gtf", "w")
-    for l in gtf:
-        if l.startswith("M"):
-            origin  = "M"
-            replace = "MT"
-            l = re.sub(origin, replace, l, count=1)
-        output.write(l)
-
-    output.close()
-
-
-
-
-
-
-
-
-from concurrent.futures import ThreadPoolExecutor
-
-import shutil
 import time
 
-def worker1():
-    time.sleep(1)
-def worker2():
-    time.sleep(2)
-def worker3():
-    time.sleep(3)
+print("wait 2s...")
+time.sleep(2)
 
-with ThreadPoolExecutor(max_workers=4) as e:
-    e.submit(worker1)
-    e.submit(worker2)
-    e.submit(worker3)
-
-
-
-
-
-import multiprocessing
-from multiprocessing import Pool
-import time
-import sys
-
-
-def worker(t):
-    print("wait %s ..." % str(t))
-    time.sleep(t)
-
-def ctrlC(p):
-    while 1 != 0:
-        try:
-            pass
-        except KeyboardInterrupt:
-            p.terminate()
-
-p = Pool(4)
-for i in range(3):
-    p.apply_async(worker, args=(i, ))
-    print()
-p.apply_async(ctrlC, args=(p, ))
-p.close()
-p.join()
+# # Convert mouse GTF chromesome "M" to "MT"
+# import re
+#
+#
+# with open("gencode.nochr.gtf", "r") as gtf:
+#
+#     output = open("gencode.nochr.hwx.gtf", "w")
+#     for l in gtf:
+#         if l.startswith("M"):
+#             origin  = "M"
+#             replace = "MT"
+#             l = re.sub(origin, replace, l, count=1)
+#         output.write(l)
+#
+#     output.close()
+#
+#
+#
+#
+#
+#
+#
+#
+# from concurrent.futures import ThreadPoolExecutor
+#
+# import shutil
+# import time
+#
+# def worker1():
+#     time.sleep(1)
+# def worker2():
+#     time.sleep(2)
+# def worker3():
+#     time.sleep(3)
+#
+# with ThreadPoolExecutor(max_workers=4) as e:
+#     e.submit(worker1)
+#     e.submit(worker2)
+#     e.submit(worker3)
+#
+#
+#
+#
+#
+# import multiprocessing
+# from multiprocessing import Pool
+# import time
+# import sys
+#
+#
+# def worker(t):
+#     print("wait %s ..." % str(t))
+#     time.sleep(t)
+#
+# def ctrlC(p):
+#     while 1 != 0:
+#         try:
+#             pass
+#         except KeyboardInterrupt:
+#             p.terminate()
+#
+# p = Pool(4)
+# for i in range(3):
+#     p.apply_async(worker, args=(i, ))
+#     print()
+# p.apply_async(ctrlC, args=(p, ))
+# p.close()
+# p.join()
 
 
 

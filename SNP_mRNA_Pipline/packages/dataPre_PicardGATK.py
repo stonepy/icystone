@@ -19,9 +19,8 @@ from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
 from packages                 import settings
 from subprocess               import call
-import shutil
 import time
-
+import os
 
 
 class main:
@@ -64,7 +63,9 @@ class main:
     """ _ Data preparation ________________________________________________________________________________________ """
     def run_module(self, sampleName):
 
-        # If "dbSNP" and "InDel" exist, only human and mouse for the temporary
+        # If "dbSNP" and "InDel" exist, only human and mouse for the temporary. For step6, step7.
+        knownDBsnp, knownSiteDBsnp, knownInDel = "", "", ""
+
         if "dbSNP" in settings.software_dict[self.Species]:
             knownDBsnp     = "-known " + settings.software_dict[self.Species]["dbSNP"]
             knownSiteDBsnp = "-knownSite " + settings.software_dict[self.Species]["dbSNP"]
@@ -76,7 +77,7 @@ class main:
         branchDIR_check(BamDir)
 
 
-        # Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping _____________________________________
+        # Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping __________________________
         sam_path = "%s/%s.step2.Aligned.out.sam" % (BamDir, sampleName)
         bam_path = "%s/%s.bam" % (BamDir, sampleName)
 
@@ -85,7 +86,7 @@ class main:
         call(CMD_1, shell=True)
 
 
-        # Step 2 Picard. Sort, '*.bam' files sorting __________________________________________________________________
+        # Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________
         bamSort_path      = "%s/%s_sort.bam" % (BamDir, sampleName)
         bamSortIndex_path = "%s/%s_sort.bai" % (BamDir, sampleName)
 
@@ -96,7 +97,7 @@ class main:
         call(CMD_2_2, shell=True)
 
 
-        # Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file __________________________________________
+        # Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________
         bamDup_path        = "%s/%s_sort_dup.bam" % (BamDir, sampleName)
         bamDupMetrics_path = "%s/%s_dup.metrics" % (BamDir, sampleName)     # Copy '*_dup.metrics' to 'Report' dir, but I don't do it
         bamDupIndex_path   = "%s/%s_sort_dup.bai" % (BamDir, sampleName)
@@ -108,7 +109,7 @@ class main:
         call(CMD_3_2, shell=True)
 
 
-        # Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file ___________________________________________
+        # Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________
         bamGroup_path      = "%s/%s_sort_dup_group.bam" % (BamDir, sampleName)
         bamGroupIndex_path = "%s/%s_sort_dup_group.bai" % (BamDir, sampleName)
 
@@ -130,7 +131,11 @@ class main:
         call(CMD_5_2, shell=True)
 
 
-        # Step 6 GATK, Realignment, realign around the INDLEs _________________________________________________________
+# **********************************************************************************************************************
+# >>>Question: It's so strange that why step 6 use 'knownDBsnp' as same as step 7, but there is no check in step 6 while there it is in step 7
+# <<<Answer: Because if step 6 can run without this parameter, it will be empty if there is no 'knownDBsnp' exist, refer to the parameter preparation
+
+        # Step 6 GATK. Realignment, realign around the INDLEs _________________________________________________________
         bamRealign_path          = "%s/%s_sort_dup_group_trim_realign.bam" % (BamDir, sampleName)
         bamRealignIntervals_path = "%s/%s_sort_dup_group_trim_realign.intervals" % (BamDir, sampleName)
 
@@ -141,21 +146,39 @@ class main:
         call(CMD_6_2, shell=True)
 
 
-        # Step 7 GATK, Base Quality Score Recalibration _______________________________________________________________
+        # Step 7 GATK. Base Quality Score Recalibration. Caution: this step works only when 'dbSNP' exists ____________
         bamRecalibrator_path      = "%s/%s_sort_dup_group_trim_realign_recalibrator.bam" % (BamDir, sampleName)
-        bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (BamDir, sampleName)
+        bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (BamDir, sampleName)     # No use
         recal_path                = "%s/%s_recal.table" % (BamDir, sampleName)
 
-        CMD_7_1 = ""
-        CMD_7_2 = ""
+        CMD_7_1 = "{JAVA} -jar {GATK} -l INFO -T BaseRecalibrator -R {Genome} {knownSitesDBsnp} -I $bam_realign --validation_strictness LENIENT -o {recal}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, knownSitesDBsnp=knownSiteDBsnp, recal=recal_path)
 
-        call(CMD_7_1, shell=True)
-        call(CMD_7_2, shell=True)
+        CMD_7_2 = "{JAVA} -jar {GATK} -l INFO -T PrintReads -R {Genome} -BQSR {recal} --validation_strictness LENIENT -I {bam_realign} -o ${bam_recalibrator}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, recal=recal_path, bam_realign=bamRealign_path, bam_recalibrator=bamRecalibrator_path)
 
-        # Step 8 Picard, Final
+        # Skip this step when there is no 'dbSNP'
+        if os.path.exists(knownSiteDBsnp.split(" ")[-1]):
+
+            call(CMD_7_1, shell=True)
+            call(CMD_7_2, shell=True)
+            FinalInputBam_path = bamRecalibrator_path       # For step 8
+
+        else:
+            print("\n>>>Warning: there is no 'dbSNP' (of '%s') exist, database of known SNPs, thus skip Base Quality Score Recalibration\n" % self.Species)
+            FinalInputBam_path = bamRealign_path
+
+# **********************************************************************************************************************
 
 
+        # Step 8 Picard. Final, output the finally processed '*.bam' file _____________________________________________
+        bamFinal_path      = "%s/%s_final.bam" % (BamDir, sampleName)
+        bamFinalIndex_path = "%s/%s_final.bai" % (BamDir, sampleName)
 
+        CMD_8_1 = "{JAVA} -jar {PicardDir}/SortSam.jar INPUT={FinalInputBam} OUTPUT={bam_final} SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, FinalInputBam=FinalInputBam_path, bam_final=bamFinal_path, Tmp=self.Tmp)
+
+        CMD_8_2 = "{JAVA} -jar {PicardDir}/BuildBamIndex.jar INPUT={bam_final} OUTPUT={bam_final_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_final=bamFinal_path, bam_final_idx=bamFinalIndex_path, Tmp=self.Tmp)
+
+        call(CMD_8_1, shell=True)
+        call(CMD_8_2, shell=True)
 
         # Finish Note __________________________________________________________________________________________________
         note_finish = """
@@ -182,15 +205,25 @@ _ Log __________________________________________________________________________
     *1) Copy '*_dup.metrics' to 'Report' dir, but I don't do it
     2) Step 7 didn't finish, view the 'knownSitesDBsnp' to find out what happens
 
+2017-04-28
+    1) Finished coding, not test
+
 ___________________________________________________________________________________
 """
 
 """
 _ Steps of Picard and GATK ________________________________________________________
 
-2017-04-27
+2017-04-28
 
-
+    # Step 1 Picard.       BAM
+    # Step 2 Picard.       Sort
+    # Step 3 Picard.       Mark Duplicates
+    # Step 4 Picard.       Add Reads Group
+    # Step 5 GATK/Picard.  Split 'N' Trim
+    # Step 6 GATK.         Realignment Around the INDLEs
+    # Step 7 GATK.         Base Quality Score Recalibration
+    # Step 8 Picard.       Final Output
 
 ___________________________________________________________________________________
 """
