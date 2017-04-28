@@ -1,7 +1,3 @@
-import time
-
-print("wait 2s...")
-time.sleep(2)
 
 # # Convert mouse GTF chromesome "M" to "MT"
 # import re
@@ -20,12 +16,7 @@ time.sleep(2)
 #     output.close()
 #
 #
-#
-#
-#
-#
-#
-#
+
 # from concurrent.futures import ThreadPoolExecutor
 #
 # import shutil

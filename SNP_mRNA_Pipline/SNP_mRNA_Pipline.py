@@ -90,6 +90,7 @@ class preparation:
 
 
 
+
 """ _ 2. Main __________________________________ """
 class main(preparation):
 
@@ -102,7 +103,9 @@ class main(preparation):
         mapping_STAR.main(self.config_dict)
 
     def gatk(self):
-        pass
+        from packages import dataPre_PicardGATK
+        dataPre_PicardGATK.main(self.config_dict)
+
 
 
 
@@ -149,7 +152,7 @@ if __name__ == "__main__":
         main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
 
         main.mapping()
-        # main.gatk()
+        main.gatk()
 
 
     except Exception as e:
@@ -287,6 +290,11 @@ _ Log __________________________________________________________________________
 
 2017-04-27
     *1) Write a 'timer' module for every module
-    *2) Write all commands executed into a log file
+
+2017-04-28
+    *1) Write all commands executed into a log file
+    *2) No 'finish check' for modules
+    3) Modules can not be executed individually, they should be
+    4)
 _________________________________________________________________________________
 """

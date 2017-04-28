@@ -14,7 +14,6 @@ ________________________________________________________________________________
 """
 
 
-from packages.process_manager import call_func
 from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
 from packages                 import settings
@@ -60,8 +59,14 @@ class main:
         self.Samtools   = settings.software_dict["Samtools"]     #
         self.Threshold  = settings.software_dict["GATK"]         #
 
+
+        # Execute 'run' function here ____________________________
+        para_dict = {"CMDs": self.Samples}
+        multiP_1(para_dict, main.run)
+
+
     """ _ Data preparation ________________________________________________________________________________________ """
-    def run_module(self, sampleName):
+    def run(self, sampleName):
 
         # If "dbSNP" and "InDel" exist, only human and mouse for the temporary. For step6, step7.
         knownDBsnp, knownSiteDBsnp, knownInDel = "", "", ""
@@ -73,7 +78,7 @@ class main:
             knownInDel     = "-known " + settings.software_dict[self.Species]["InDel"]
 
         # Make sure the directory for '*.bam' files exists
-        BamDir = "%s/%s" % (self.OutputDir, sampleName)
+        BamDir = "%s/%s" % (self.OutputDir+"/BAMs", sampleName)
         branchDIR_check(BamDir)
 
 
@@ -82,8 +87,9 @@ class main:
         bam_path = "%s/%s.bam" % (BamDir, sampleName)
 
         CMD_1 = "more {sam} | {Samtool} view -bS -L {bed} -h -F 4 - > {bam}".format(sam=sam_path, Samtools=self.Samtools, bed=self.bed, bam=bam_path)
-        print(CMD_1) # for testing
-        call(CMD_1, shell=True)
+
+        print(CMD_1+"\n") # for testing
+        # call(CMD_1, shell=True)
 
 
         # Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________
@@ -93,8 +99,10 @@ class main:
         CMD_2_1 = "{JAVA} -jar -Xmx6g {PicardDir}/SortSam.jar INPUT={bam} OUTPUT={bam_sort} SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam=bam_path, bam_sort=bamSort_path, Tmp=self.Tmp)
         CMD_2_2 = "{JAVA} -jar -Xmx6g {PicardDir}/BuildBamIndex.jar INPUT={bam_sort} OUTPUT={bam_sort_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_sort_idx=bamSortIndex_path, Tmp=self.Tmp)
 
-        call(CMD_2_1, shell=True)
-        call(CMD_2_2, shell=True)
+        print(CMD_2_1+"\n") # for testing
+        print(CMD_2_2+"\n") # for testing
+        # call(CMD_2_1, shell=True)
+        # call(CMD_2_2, shell=True)
 
 
         # Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________
@@ -105,8 +113,10 @@ class main:
         CMD_3_1 = "{JAVA} -jar -Xmx8g {PicardDir}/MarkDuplicates.jar INPUT=${bam_sort} OUTPUT={bam_dup} METRICS_FILE={bam_dup_metrics} REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_dup_metrics=bamDupMetrics_path, Tmp=self.Tmp)
         CMD_3_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_dup} OUTPUT={bam_dup_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_dup=bamDup_path, bam_dup_idx=bamDupIndex_path, Tmp=self.Tmp)
 
-        call(CMD_3_1, shell=True)
-        call(CMD_3_2, shell=True)
+        print(CMD_3_1+"\n") # for testing
+        print(CMD_3_2+"\n") # for testing
+        # call(CMD_3_1, shell=True)
+        # call(CMD_3_2, shell=True)
 
 
         # Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________
@@ -116,8 +126,10 @@ class main:
         CMD_4_1 = "{JAVA} -jar -Xmx16g {PicardDir}/AddOrReplaceReadGroups.jar I={bam_dup} O={bam_group} SO=coordinate ID=$sample LB={sample} PL=illumina PU=barcode SM={sample} CREATE_INDEX=false VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_group=bamGroup_path, sample=sampleName, Tmp=self.Tmp)
         CMD_4_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_group} OUTPUT={bam_group_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_group=bamGroup_path, bam_group_idx=bamGroupIndex_path, Tmp=self.Tmp)
 
-        call(CMD_4_1, shell=True)
-        call(CMD_4_2, shell=True)
+        print(CMD_4_1+"\n") # for testing
+        print(CMD_4_2+"\n") # for testing
+        # call(CMD_4_1, shell=True)
+        # call(CMD_4_2, shell=True)
 
 
         # Step 5 GATK/Picard. Split 'N' Trim, Split 'N' and trim from the '*.bam' file ________________________________
@@ -127,8 +139,10 @@ class main:
         CMD_5_1 = "{JAVA} -jar {GATK} -T SplitNCigarReads -R $Genome -I {bam_group} -o {bam_trim} -U ALLOW_N_CIGAR_READS -rf ReassignOneMappingQuality -RMQF 255 -RMQT 60".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_group=bamGroup_path, bam_trim=bamTrim_path)
         CMD_5_2 = "{JAVA} -jar -Xmx8 {PicardDir}/BuildBamIndex.jar INPUT={bam_trim} OUTPUT={bam_trim_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_trim=bamTrim_path, bam_trim_idx=bamTrimIndex_path, Tmp=self.Tmp)
 
-        call(CMD_5_1, shell=True)
-        call(CMD_5_2, shell=True)
+        print(CMD_5_1+"\n") # for testing
+        print(CMD_5_2+"\n") # for testing
+        # call(CMD_5_1, shell=True)
+        # call(CMD_5_2, shell=True)
 
 
 # **********************************************************************************************************************
@@ -142,8 +156,10 @@ class main:
         CMD_6_1 = "{JAVA} -jar {GATK} -l INFO -T RealignerTargetCreator -R {Genome} -I {bam_trim} -o {bam_realign_intervals} {knownDBsnp} {knownInDel} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign_intervals=bamRealignIntervals_path, knownDBsnp=knownDBsnp, knownInDel=knownInDel)
         CMD_6_2 = "{JAVA} -jar {GATK} -l INFO -T IndelRealigner -R {Genome} -I {bam_trim} -o ${bam_realign} {knownInDel} -targetIntervals {bam_realign_intervals} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign=bamRealign_path, knownInDel=knownInDel, bam_realign_intervals=bamRealignIntervals_path)
 
-        call(CMD_6_1, shell=True)
-        call(CMD_6_2, shell=True)
+        print(CMD_6_1+"\n") # for testing
+        print(CMD_6_2+"\n") # for testing
+        # call(CMD_6_1, shell=True)
+        # call(CMD_6_2, shell=True)
 
 
         # Step 7 GATK. Base Quality Score Recalibration. Caution: this step works only when 'dbSNP' exists ____________
@@ -158,8 +174,10 @@ class main:
         # Skip this step when there is no 'dbSNP'
         if os.path.exists(knownSiteDBsnp.split(" ")[-1]):
 
-            call(CMD_7_1, shell=True)
-            call(CMD_7_2, shell=True)
+            print(CMD_7_1 + "\n")  # for testing
+            print(CMD_7_2 + "\n")  # for testing
+            # call(CMD_7_1, shell=True)
+            # call(CMD_7_2, shell=True)
             FinalInputBam_path = bamRecalibrator_path       # For step 8
 
         else:
@@ -177,22 +195,28 @@ class main:
 
         CMD_8_2 = "{JAVA} -jar {PicardDir}/BuildBamIndex.jar INPUT={bam_final} OUTPUT={bam_final_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_final=bamFinal_path, bam_final_idx=bamFinalIndex_path, Tmp=self.Tmp)
 
-        call(CMD_8_1, shell=True)
-        call(CMD_8_2, shell=True)
-
-        # Finish Note __________________________________________________________________________________________________
-        note_finish = """
-
-                              =================================================
-                              |                                               |
-                              |  Finish prepare with Picard & GATK programme  |
-                              |                                               |
-                              =================================================
+        print(CMD_8_1 + "\n")  # for testing
+        print(CMD_8_2 + "\n")  # for testing
+        # call(CMD_8_1, shell=True)
+        # call(CMD_8_2, shell=True)
 
 
-        %s
-        """ % time.ctime()
-        print(note_finish)
+
+
+
+# Finish Note __________________________________________________________________________________________________
+note_finish = """
+
+                      =================================================
+                      |                                               |
+                      |  Finish prepare with Picard & GATK programme  |
+                      |                                               |
+                      =================================================
+
+
+%s
+""" % time.ctime()
+print(note_finish)
 
 
 
@@ -206,7 +230,7 @@ _ Log __________________________________________________________________________
     2) Step 7 didn't finish, view the 'knownSitesDBsnp' to find out what happens
 
 2017-04-28
-    1) Finished coding, not test
+    1) Finish coding, not test
 
 ___________________________________________________________________________________
 """

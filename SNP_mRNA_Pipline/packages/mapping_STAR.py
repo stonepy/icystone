@@ -22,6 +22,7 @@ import time
 
 class main:
 
+    # Run all parts as the class 'main' being called
     def __init__(self, config_dict):
 
         # Start Note ___________________________________________________________________________________________________
@@ -93,6 +94,7 @@ class main:
             # print(cmd)    # for testing
             para_dict["CMDs"].append(cmd)
         multiP_1(para_dict, call_func)
+
 
 
 

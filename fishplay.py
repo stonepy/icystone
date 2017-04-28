@@ -1,8 +1,8 @@
-import shutil
-from subprocess import call
-import time
-# shutil.copy("tmp_1.py","./others/")
+class a:
+    def __init__(self):
+        self.h = "hello"
+        a.j(self)
 
-
-call("python tmp_1.py", shell=True)
-call("python tmp_1.py", shell=True)
+    def j(self):
+        print(self.h)
+a()
