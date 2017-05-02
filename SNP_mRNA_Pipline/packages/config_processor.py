@@ -1,4 +1,4 @@
-Description = """
+Info = """
 
 _ Information ____________________________________________________________________
  Name         : ConfigProcessor_SNP_mRNA

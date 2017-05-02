@@ -1,4 +1,4 @@
-Description = """
+Info = """
 
 _ Information ____________________________________________________________________
 
@@ -7,7 +7,7 @@ _ Information __________________________________________________________________
     Author       : Hwx
     Version      : V0
     Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0
-    Finish Date  : 2017_04_2
+    Finish Date  : 2017_05_02
 __________________________________________________________________________________
 
 
@@ -30,11 +30,11 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-                              ====================================================
-                              |                                                  |
-                              |  Start preparation with Picard & GATK programme  |
-                              |                                                  |
-                              ====================================================
+                              ========================================================
+                              |                                                      |
+                              |  Start BAM preparation with Picard & GATK programme  |
+                              |                                                      |
+                              ========================================================
 
 
         %s
@@ -75,11 +75,11 @@ class main:
         # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
-                              =====================================================
-                              |                                                   |
-                              |  Finish preparation with Picard & GATK programme  |
-                              |                                                   |
-                              =====================================================
+                              =========================================================
+                              |                                                       |
+                              |  Finish BAM preparation with Picard & GATK programme  |
+                              |                                                       |
+                              =========================================================
 
 
         %s
@@ -100,13 +100,13 @@ class main:
             knownInDel     = "-known " + settings.species_dict[self.Species]["InDel"]
 
         # Make sure the directory for '*.bam' files exists
-        BamDir = "%s/%s" % (self.OutputDir+"/BAMs", sampleName)
-        branchDIR_check(BamDir)
+        DataPreDir = "%s/%s" % (self.OutputDir+"/2_DataPre", sampleName)
+        branchDIR_check(DataPreDir)
 
 
         Step1 = "_ Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping __________________________"
-        sam_path = "%s/%s.Step2.Aligned.out.sam" % (BamDir, sampleName)
-        bam_path = "%s/%s.bam" % (BamDir, sampleName)
+        sam_path = "%s/%s.Step2.Aligned.out.sam" % (DataPreDir, sampleName)
+        bam_path = "%s/%s.bam" % (DataPreDir, sampleName)
 
         CMD_1 = "more {sam} | {Samtools} view -bS -L {bed} -h -F 4 - > {bam}".format(sam=sam_path, Samtools=self.Samtools, bed=self.bed, bam=bam_path)
 
@@ -116,8 +116,8 @@ class main:
 
 
         Step2 = "_ Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________"
-        bamSort_path      = "%s/%s_sort.bam" % (BamDir, sampleName)
-        bamSortIndex_path = "%s/%s_sort.bai" % (BamDir, sampleName)
+        bamSort_path      = "%s/%s_sort.bam" % (DataPreDir, sampleName)
+        bamSortIndex_path = "%s/%s_sort.bai" % (DataPreDir, sampleName)
 
         CMD_2_1 = "{JAVA} -jar -Xmx6g {PicardDir}/SortSam.jar INPUT={bam} OUTPUT={bam_sort} SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam=bam_path, bam_sort=bamSort_path, Tmp=self.Tmp)
         CMD_2_2 = "{JAVA} -jar -Xmx6g {PicardDir}/BuildBamIndex.jar INPUT={bam_sort} OUTPUT={bam_sort_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_sort_idx=bamSortIndex_path, Tmp=self.Tmp)
@@ -130,9 +130,9 @@ class main:
 
 
         Step3 = "_ Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________"
-        bamDup_path        = "%s/%s_sort_dup.bam" % (BamDir, sampleName)
-        bamDupMetrics_path = "%s/%s_dup.metrics" % (BamDir, sampleName)     # Copy '*_dup.metrics' to 'Report' dir, but I don't do it
-        bamDupIndex_path   = "%s/%s_sort_dup.bai" % (BamDir, sampleName)
+        bamDup_path        = "%s/%s_sort_dup.bam" % (DataPreDir, sampleName)
+        bamDupMetrics_path = "%s/%s_dup.metrics" % (DataPreDir, sampleName)     # Copy '*_dup.metrics' to 'Report' dir, but I haven't do it
+        bamDupIndex_path   = "%s/%s_sort_dup.bai" % (DataPreDir, sampleName)
 
         CMD_3_1 = "{JAVA} -jar -Xmx8g {PicardDir}/MarkDuplicates.jar INPUT={bam_sort} OUTPUT={bam_dup} METRICS_FILE={bam_dup_metrics} REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_dup_metrics=bamDupMetrics_path, Tmp=self.Tmp)
         CMD_3_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_dup} OUTPUT={bam_dup_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_dup=bamDup_path, bam_dup_idx=bamDupIndex_path, Tmp=self.Tmp)
@@ -145,8 +145,8 @@ class main:
 
 
         Step4 = "_ Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________"
-        bamGroup_path      = "%s/%s_sort_dup_group.bam" % (BamDir, sampleName)
-        bamGroupIndex_path = "%s/%s_sort_dup_group.bai" % (BamDir, sampleName)
+        bamGroup_path      = "%s/%s_sort_dup_group.bam" % (DataPreDir, sampleName)
+        bamGroupIndex_path = "%s/%s_sort_dup_group.bai" % (DataPreDir, sampleName)
 
         CMD_4_1 = "{JAVA} -jar -Xmx16g {PicardDir}/AddOrReplaceReadGroups.jar I={bam_dup} O={bam_group} SO=coordinate ID={sample} LB={sample} PL=illumina PU=barcode SM={sample} CREATE_INDEX=false VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_group=bamGroup_path, sample=sampleName, Tmp=self.Tmp)
         CMD_4_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_group} OUTPUT={bam_group_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_group=bamGroup_path, bam_group_idx=bamGroupIndex_path, Tmp=self.Tmp)
@@ -159,8 +159,8 @@ class main:
 
 
         Step5 = "_ Step 5 GATK/Picard. Split 'N' Trim, Split 'N' and trim from the '*.bam' file ________________________________"
-        bamTrim_path      = "%s/%s_sort_dup_group_trim.bam" % (BamDir, sampleName)
-        bamTrimIndex_path = "%s/%s_sort_dup_group_trim.bai" % (BamDir, sampleName)
+        bamTrim_path      = "%s/%s_sort_dup_group_trim.bam" % (DataPreDir, sampleName)
+        bamTrimIndex_path = "%s/%s_sort_dup_group_trim.bai" % (DataPreDir, sampleName)
 
         CMD_5_1 = "{JAVA} -jar {GATK} -T SplitNCigarReads -R {Genome} -I {bam_group} -o {bam_trim} -U ALLOW_N_CIGAR_READS -rf ReassignOneMappingQuality -RMQF 255 -RMQT 60".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_group=bamGroup_path, bam_trim=bamTrim_path)
         CMD_5_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_trim} OUTPUT={bam_trim_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_trim=bamTrim_path, bam_trim_idx=bamTrimIndex_path, Tmp=self.Tmp)
@@ -177,8 +177,8 @@ class main:
 # <<<Answer: Because if Step 6 can run without this parameter, it will be empty if there is no 'knownDBsnp' exist, refer to the parameter preparation
 
         Step6 = "_ Step 6 GATK. Realignment, realign around the INDLEs _________________________________________________________"
-        bamRealign_path          = "%s/%s_sort_dup_group_trim_realign.bam" % (BamDir, sampleName)
-        bamRealignIntervals_path = "%s/%s_sort_dup_group_trim_realign.intervals" % (BamDir, sampleName)
+        bamRealign_path          = "%s/%s_sort_dup_group_trim_realign.bam" % (DataPreDir, sampleName)
+        bamRealignIntervals_path = "%s/%s_sort_dup_group_trim_realign.intervals" % (DataPreDir, sampleName)
 
         CMD_6_1 = "{JAVA} -jar {GATK} -l INFO -T RealignerTargetCreator -R {Genome} -I {bam_trim} -o {bam_realign_intervals} {knownDBsnp} {knownInDel} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign_intervals=bamRealignIntervals_path, knownDBsnp=knownDBsnp, knownInDel=knownInDel)
         CMD_6_2 = "{JAVA} -jar {GATK} -l INFO -T IndelRealigner -R {Genome} -I {bam_trim} -o {bam_realign} {knownInDel} -targetIntervals {bam_realign_intervals} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign=bamRealign_path, knownInDel=knownInDel, bam_realign_intervals=bamRealignIntervals_path)
@@ -191,9 +191,9 @@ class main:
 
 
         Step7 = "_ Step 7 GATK. Base Quality Score Recalibration. Caution: this Step works only when 'dbSNP' exists ____________"
-        bamRecalibrator_path      = "%s/%s_sort_dup_group_trim_realign_recalibrator.bam" % (BamDir, sampleName)
-        bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (BamDir, sampleName)     # No use
-        recal_path                = "%s/%s_recal.table" % (BamDir, sampleName)
+        bamRecalibrator_path      = "%s/%s_sort_dup_group_trim_realign_recalibrator.bam" % (DataPreDir, sampleName)
+        bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (DataPreDir, sampleName)     # No use
+        recal_path                = "%s/%s_recal.table" % (DataPreDir, sampleName)
 
         CMD_7_1 = "{JAVA} -jar {GATK} -l INFO -T BaseRecalibrator -R {Genome} {knownSitesDBsnp} -I {bam_realign} --validation_strictness LENIENT -o {recal}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, knownSitesDBsnp=knownSiteDBsnp, bam_realign=bamRealign_path, recal=recal_path)
 
@@ -218,8 +218,8 @@ class main:
 
 
         Step8 = "_ Step 8 Picard. Final, output the finally processed '*.bam' file _____________________________________________"
-        bamFinal_path      = "%s/%s_final.bam" % (BamDir, sampleName)
-        bamFinalIndex_path = "%s/%s_final.bai" % (BamDir, sampleName)
+        bamFinal_path      = "%s/%s_final.bam" % (DataPreDir, sampleName)
+        bamFinalIndex_path = "%s/%s_final.bai" % (DataPreDir, sampleName)
 
         CMD_8_1 = "{JAVA} -jar {PicardDir}/SortSam.jar INPUT={FinalInputBam} OUTPUT={bam_final} SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, FinalInputBam=FinalInputBam_path, bam_final=bamFinal_path, Tmp=self.Tmp)
 

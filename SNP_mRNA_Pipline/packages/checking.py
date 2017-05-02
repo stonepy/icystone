@@ -1,4 +1,4 @@
-Description = """
+Info = """
 
 _ Information ____________________________________________________________________
 
@@ -23,7 +23,7 @@ def baseDIR_check(config_dict):
     rawd_dataDIR     = config_dict["section_1"]["4_"].split(" ")[-1]
     data_analysisDIR = config_dict["section_1"]["5_"].split(" ")[-1]
     reportDIR        = config_dict["section_1"]["6_"].split(" ")[-1]
-    logDIR           = os.path.join(data_analysisDIR, "log")
+    logDIR           = os.path.join(data_analysisDIR, "mRNA/SNP/Log")
 
     if not os.path.isdir(rawd_dataDIR):
         print("\n>>> Warning:\n      %s does not exist, creating it...\n" % rawd_dataDIR)
@@ -37,9 +37,9 @@ def baseDIR_check(config_dict):
         print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
         os.makedirs(reportDIR)
 
-    if not os.path.isdir(reportDIR):
-        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
-        os.makedirs(reportDIR)
+    if not os.path.isdir(logDIR):
+        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % logDIR)
+        os.makedirs(logDIR)
 
 
 def branchDIR_check(DIR):
@@ -61,14 +61,14 @@ def package_check():
 
         from packages import mapping_STAR
         from packages import dataPre_PicardGATK
-        # from packages import calling
+        from packages import calling
         # from packages import library
         # from packages import gender
         # from packages import genotyping
         # from packages import database
         # from packages import annotation
         # from packages import analysis
-        #
+
         # from packages import report
         # from packages import excel
         # from packages import format

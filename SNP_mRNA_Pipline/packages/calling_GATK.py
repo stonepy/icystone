@@ -2,12 +2,12 @@ Info = """
 
 _ Information ____________________________________________________________________
 
-    Name         : Package Model
-    Description  : Model of the package
+    Name         : Calling_GATK_SNP_mRNA
+    Description  : Find SNP/INDEL with GATK programme
     Author       : Hwx
     Version      : V0
     Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0
-    Finish Date  : 2017_05-02
+    Finish Date  : 2017_05
 __________________________________________________________________________________
 
 
@@ -29,17 +29,16 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-                              =======================================
-                              |                                     |
-                              |  Start  with  programme  |
-                              |                                     |
-                              =======================================
+                              ===========================================
+                              |                                         |
+                              |  Start SNP calling with GATK programme  |
+                              |                                         |
+                              ===========================================
 
 
         %s
         """ % time.ctime()
         print(note_start)
-
 
         # _ Parameter preparation _____________________________________________________________________________________
 
@@ -57,7 +56,7 @@ class main:
         self.PicardDir  = settings.software_dict["PicardDir"]    #
         self.GATK       = settings.software_dict["GATK"]         #
         self.Samtools   = settings.software_dict["Samtools"]     #
-        self.Threshold  = settings.software_dict["GATK"]         #
+        self.Threshold  = settings.software_dict["Calling"]      #
 
 
         # Execute 'run' function here ____________________________
@@ -69,14 +68,17 @@ class main:
         # Assign preparation tasks
         multiP_1(self.para_dict, self.run)
 
+
+
+
         # Finish Note ___________________________________________________________________________________________________
         note_finish = """
 
-                              ========================================
-                              |                                      |
-                              |  Finish  with  programme  |
-                              |                                      |
-                              ========================================
+                              ============================================
+                              |                                          |
+                              |  Finish SNP calling with GATK programme  |
+                              |                                          |
+                              ============================================
 
 
         %s
@@ -90,6 +92,8 @@ class main:
 """
 _ Log _____________________________________________________________________________
 
+2017-05-02
+    1)
 
 ___________________________________________________________________________________
 """

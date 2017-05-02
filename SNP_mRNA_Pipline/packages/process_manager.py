@@ -1,4 +1,4 @@
-Description = """
+Info = """
 
 - Information --------------------------------------------------------------------
  Name         : ProcessManager_SNP_mRNA_Pipline

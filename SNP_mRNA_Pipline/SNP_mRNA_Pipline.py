@@ -1,4 +1,4 @@
-Description = """
+Info = """
 
 _ Information ____________________________________________________________________
 
@@ -49,7 +49,7 @@ class preparation:
 
         except:
             # If 'config.txt' can not be found, tell user how to use this Pipline
-            print(Description)
+            print(Info)
             print(Usage)
 
             exit()
@@ -106,7 +106,9 @@ class main(preparation):
         from packages import dataPre_PicardGATK
         dataPre_PicardGATK.main(self.config_dict)
 
-
+    def calling(self):
+        from packages import calling_GATK
+        calling_GATK.main(self.config_dict)
 
 
 
@@ -149,7 +151,10 @@ if __name__ == "__main__":
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
     # main.mapping()
-    main.gatk()
+    # main.gatk()
+    main.calling()
+
+
 
     """ Don't use this block while testing """
     # try:
@@ -295,5 +300,9 @@ _ Log __________________________________________________________________________
 
 2017-05-02
     1) Use a simple 'finishe_check' for the time
+    2) Finished 'dataPre_PicardGATK.py', tested, worked.
+    3) The problem that Multiprocessing~Pool can not be interrupted by Ctrl+C no longer
+        exists in python3.5.2
+    4) 'Log' dir set according to 'config'
 _________________________________________________________________________________
 """

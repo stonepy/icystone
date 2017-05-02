@@ -72,16 +72,20 @@ class main:
             "CMDs"     : []
         }
 
+        # Make sure the directory for mapping result files exists
+        MappingDir = "%s/%s" % (OutputDir+"/1_Mapping", sampleName)
+        branchDIR_check(MappingDir)
+
 
         """ _ STAR alignment step 1 _____________________________________________________________________________________ """
         for sample in Samples:
 
-            DIR = "{OutputDir}/{sample}".format(OutputDir=OutputDir, sample=sample)
+            DIR = "{MappingDir}/{sample}".format(MappingDir=MappingDir, sample=sample)
             branchDIR_check(DIR)
 
-            tab += " {OutputDir}/{sample}/{sample}.step1.SJ.out.tab ".format(OutputDir=OutputDir, sample=sample)     # Very vital, for step 2
+            tab += " {MappingDir}/{sample}/{sample}.step1.SJ.out.tab ".format(MappingDir=MappingDir, sample=sample)     # Very vital, for step 2
 
-            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
+            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {MappingDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, MappingDir=MappingDir)
             # print(cmd+"\n")    # for testing
 
             para_dict["CMDs"].append(cmd)
@@ -91,10 +95,10 @@ class main:
         para_dict["CMDs"] = []
         for sample in Samples:
 
-            DIR = "{OutputDir}/{sample}".format(OutputDir=OutputDir, sample=sample)
+            DIR = "{MappingDir}/{sample}".format(MappingDir=MappingDir, sample=sample)
             branchDIR_check(DIR)
 
-            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step2.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, OutputDir=OutputDir)
+            cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {MappingDir}/{sample}/{sample}.step2.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, MappingDir=MappingDir)
             # print(cmd+"\n")    # for testing
 
             para_dict["CMDs"].append(cmd)
