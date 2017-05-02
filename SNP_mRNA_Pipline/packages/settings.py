@@ -45,7 +45,7 @@ species_dict = {
         {
             "GenomeSTAR"   : "/home/pub/database/Human/hg19/genome/STAR_db",
             "GTF"          : "/home/pub/database/Human/hg19/gene/genes.nochr.gtf",
-            "Genome"       : "home/pub/database/Human/hg19/genome/hg19.fa",
+            "Genome"       : "/home/pub/database/Human/hg19/genome/hg19.fa",
             "dbSNP"        : "/home/pub/database/Human/hg19/snp/dbsnp_137.hg19.vcf",
             "InDel"        : "/home/pub/database/Human/hg19/snp/1000G_phase1.indels.hg19.vcf",
             "AnnovarDB"    : "/home/pub/database/Human/hg19/Annotation",
@@ -70,7 +70,7 @@ software_dict = {
 
     # Processes/Threads of softwares
     "Mapping"    : [5,30],      # 1st: processes of STAR programme numbers ; 2rd: threads of STAR
-    "GATK"       : 3,           # Threads for 'dataPre' GATK
+    "GATKn"      : 3,           # Threads for 'dataPre' GATK
     "Calling"    : 20,
     "Genotyping" : 40,
     "Analysis"   : 40,

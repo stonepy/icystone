@@ -16,8 +16,11 @@ ________________________________________________________________________________
 from packages.process_manager import call_func
 from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
+from packages.checking        import finish_check
 from packages                 import settings
 import time
+import os
+import re
 
 
 class main:
@@ -79,9 +82,10 @@ class main:
             tab += " {OutputDir}/{sample}/{sample}.step1.SJ.out.tab ".format(OutputDir=OutputDir, sample=sample)     # Very vital, for step 2
 
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, OutputDir=OutputDir)
-            print(cmd+"\n")    # for testing
+            # print(cmd+"\n")    # for testing
+
             para_dict["CMDs"].append(cmd)
-        # multiP_1(para_dict, call_func)
+        multiP_1(para_dict, call_func)
 
         """ _ STAR alignment step 2 _____________________________________________________________________________________ """
         para_dict["CMDs"] = []
@@ -91,12 +95,16 @@ class main:
             branchDIR_check(DIR)
 
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {OutputDir}/{sample}/{sample}.step2.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, OutputDir=OutputDir)
-            print(cmd+"\n")    # for testing
+            # print(cmd+"\n")    # for testing
+
             para_dict["CMDs"].append(cmd)
-        # multiP_1(para_dict, call_func)
+        multiP_1(para_dict, call_func)
 
 
-
+        # Finish marker file
+        finish_path = os.path.join(OutputDir, "log/%s.finish" % re.split("[/.]", __file__)[-2])
+        with open(finish_path, "w") as finish:
+            finish.write("Congratulation !")
 
 
         # Finish Note __________________________________________________________________________________________________
@@ -132,6 +140,9 @@ _ Log __________________________________________________________________________
     3) Did not copy '<sampleName>.step2.Log.final.out' to 'Report/Statistic'
 
 2017-04-27
-    1) Copy '*.step2.Log.final.out' to 'Report', but I don't do it
+    1) Copy '*.step2.Log.final.out' to 'Report', but I haven't done it
+
+2017-05-02
+    1) Add new function 'finish marker', for finish checking, did not test
 ___________________________________________________________________________________
 """

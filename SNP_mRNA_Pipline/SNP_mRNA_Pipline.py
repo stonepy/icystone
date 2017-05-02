@@ -30,7 +30,7 @@ Usage = """
 
 
 
-""" _ 1. Preparation for Pipline __________________________________________________________________________ """
+""" _ 1. Preparation for Pipline ___________________________________________________________________________________ """
 class preparation:
 
     def __init__(self):
@@ -91,7 +91,7 @@ class preparation:
 
 
 
-""" _ 2. Main __________________________________ """
+""" _ 2. Main ______________________________________________________________________________________________________ """
 class main(preparation):
 
     def __init__(self, config_dict, run_dict):
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
 
 
-    # _ Preparation ______________________________________________________________________________________________
+    # _ Preparation ____________________________________________________________________________________________________
     try:
         prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
 
@@ -145,12 +145,13 @@ if __name__ == "__main__":
         print("%s\n" % e)
 
 
-    # _ Workflow _______________________________________________________________________________________________________________________
+    # _ Workflow _______________________________________________________________________________________________________
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
-    main.mapping()
-    # main.gatk()
+    # main.mapping()
+    main.gatk()
 
+    """ Don't use this block while testing """
     # try:
     #     print("\nSNP_mRNA Pipline is running...\n")
     #     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
@@ -166,7 +167,7 @@ if __name__ == "__main__":
 
 
 
-    # _ Timer _______________________________________________________________________________________________________________
+    # _ Timer __________________________________________________________________________________________________________
     t_finish   = time.time()             # Finish time
     total_time = t_finish - t_start    # Total time
 
@@ -221,24 +222,19 @@ def test(main,config_dict, run_dict):
 
 
 
-""" _ END _______________________________________________________________________________________________________________________ """
+""" _ END __________________________________________________________________________________________________________ """
 
 
 
 # _ ALl modules needed ________________
-
-
 modules_dict = """
 
 settings
 config_producer
-
-# _ need to be develop ________________
-check
-
-config_parser
+checking
 mapping
 
+# _ need to be developed ________________
 gatk
 calling
 library
@@ -253,9 +249,6 @@ excel
 format
 
 """
-
-
-
 
 
 
@@ -299,6 +292,8 @@ _ Log __________________________________________________________________________
     *1) Write all commands executed into a log file
     *2) No 'finish check' for modules
     3) Modules can not be executed individually, they should be
-    4)
+
+2017-05-02
+    1) Use a simple 'finishe_check' for the time
 _________________________________________________________________________________
 """

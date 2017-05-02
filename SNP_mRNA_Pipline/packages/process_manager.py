@@ -31,7 +31,7 @@ import sys
 
 
 def call_func(CMD):
-    print("\nExecuting command:\n[>>>] %s\n" % CMD)
+    print("\n>>> Executing command:\n%s\n" % CMD)
     call(CMD, shell=True)
 
 # Temporary for testing, 2017-04-25
@@ -51,7 +51,7 @@ def multiP_1(para_dict, func):
     P = Pool(para_dict["nProcess"])
 
     for i in para_dict["CMDs"]:
-        res = P.apply_async(func, args=(i,))
+        P.apply_async(func, args=(i,))
         # print(res)
     # P.apply_async(ctrlC)        # Temporary for testing, 2017-04-25
     P.close()
@@ -101,6 +101,6 @@ _ Log __________________________________________________________________________
     1) Multiple processes can't be terminated by 'Ctrl+C' normally
 
 2017-04-25
-    1) 
+    1)
 _________________________________________________________________________________
 """

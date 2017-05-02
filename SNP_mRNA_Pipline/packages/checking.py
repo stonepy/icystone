@@ -23,7 +23,7 @@ def baseDIR_check(config_dict):
     rawd_dataDIR     = config_dict["section_1"]["4_"].split(" ")[-1]
     data_analysisDIR = config_dict["section_1"]["5_"].split(" ")[-1]
     reportDIR        = config_dict["section_1"]["6_"].split(" ")[-1]
-
+    logDIR           = os.path.join(data_analysisDIR, "log")
 
     if not os.path.isdir(rawd_dataDIR):
         print("\n>>> Warning:\n      %s does not exist, creating it...\n" % rawd_dataDIR)
@@ -37,6 +37,9 @@ def baseDIR_check(config_dict):
         print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
         os.makedirs(reportDIR)
 
+    if not os.path.isdir(reportDIR):
+        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
+        os.makedirs(reportDIR)
 
 
 def branchDIR_check(DIR):
@@ -44,10 +47,6 @@ def branchDIR_check(DIR):
     if not os.path.isdir(DIR):
         print("\nCreating directory: %s...\n" % DIR)
         os.makedirs(DIR)
-
-
-
-
 
 
 
@@ -61,7 +60,7 @@ def package_check():
         from packages import process_manager
 
         from packages import mapping_STAR
-        # from packages import gatk
+        from packages import dataPre_PicardGATK
         # from packages import calling
         # from packages import library
         # from packages import gender
@@ -82,13 +81,16 @@ def package_check():
             ">>> You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be, but you may encounter some problems during Pipline running.\n")
 
 
-
 def mapping_STAR():
     pass
 
 
 
+""" _ 3. Finished Check __________________________________________________________________________________ """
+def finish_check(finish_path):
 
+    if os.path.exists(finish_path):
+        pass
 
 
 
@@ -116,6 +118,9 @@ _ Log __________________________________________________________________________
     But sometimes it does not need to do so, depends on the situation, maybe it needs 2 module
     to do the work
 
+2017-05-02
+    1) 'finish_check', check if the module finished simply, new function, for the time
+    2) 'log' dir, new dir for storing log files
 
 _________________________________________________________________________________
 """

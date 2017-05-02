@@ -107,13 +107,13 @@ def configini(WTS_cfg_dict, SNPoutput_dir):
 
         # Choose '=bed' by species
         if Species.lower() == "human":
-            Bed_path = bed_dict["human"].capitalize()
+            Bed_path = bed_dict["human"]
 
         elif Species.lower() == "mouse":
-            Bed_path = bed_dict["mouse"].capitalize()
+            Bed_path = bed_dict["mouse"]
 
         elif Species.lower() == "arabidopsis":
-            Bed_path = bed_dict["arabidopsis"].capitalize()
+            Bed_path = bed_dict["arabidopsis"]
 
         # You can see the config dictionary structure here
         config_dict = {
