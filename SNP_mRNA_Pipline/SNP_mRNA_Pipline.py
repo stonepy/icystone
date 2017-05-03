@@ -151,7 +151,7 @@ if __name__ == "__main__":
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
     # main.mapping()
-    # main.gatk()
+    main.gatk()
     main.calling()
 
 
@@ -303,6 +303,10 @@ _ Log __________________________________________________________________________
     2) Finished 'dataPre_PicardGATK.py', tested, worked.
     3) The problem that Multiprocessing~Pool can not be interrupted by Ctrl+C no longer
         exists in python3.5.2
-    4) 'Log' dir set according to 'config'
+    4) Set 'Log' DIR according to 'config'
+
+2017-05-03
+    1) The Pipline should be able to start at any point, only if user feed data properly
+
 _________________________________________________________________________________
 """

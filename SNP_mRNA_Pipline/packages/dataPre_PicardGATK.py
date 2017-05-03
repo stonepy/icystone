@@ -58,10 +58,10 @@ class main:
         self.PicardDir  = settings.software_dict["PicardDir"]    #
         self.GATK       = settings.software_dict["GATK"]         #
         self.Samtools   = settings.software_dict["Samtools"]     #
-        self.Threshold  = settings.software_dict["GATK"]         #
+        self.Threshold  = settings.software_dict["PreGATK"]      # No use in this module
 
 
-        # Execute 'run' function here ____________________________
+        # Use for passing parameters to 'process_manager.py'
         self.para_dict = {
             "nProcess" : len(self.Samples),
             "CMDs"     : self.Samples
@@ -87,7 +87,7 @@ class main:
         print(note_finish)
 
 
-    """ _ Data preparation ________________________________________________________________________________________ """
+    """ _ Data preparation _________________________________________________________________________________________ """
     def run(self, sampleName):
 
         # If "dbSNP" and "InDel" exist, only human and mouse for the temporary. For Step6, Step7.
@@ -101,73 +101,68 @@ class main:
 
         # Make sure the directory for '*.bam' files exists
         DataPreDir = "%s/%s" % (self.OutputDir+"/2_DataPre", sampleName)
-        branchDIR_check(DataPreDir)
+        branchDIR_check(DataPreDir)     # Directory check
 
 
-        Step1 = "_ Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping __________________________"
+        Step1 = \
+            """_ Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping __________________________"""
+
         sam_path = "%s/%s.Step2.Aligned.out.sam" % (DataPreDir, sampleName)
         bam_path = "%s/%s.bam" % (DataPreDir, sampleName)
-
         CMD_1 = "more {sam} | {Samtools} view -bS -L {bed} -h -F 4 - > {bam}".format(sam=sam_path, Samtools=self.Samtools, bed=self.bed, bam=bam_path)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step1, CMD_1))
-
         call(CMD_1, shell=True)
 
 
-        Step2 = "_ Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________"
+        Step2 = \
+            """_ Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________"""
+
         bamSort_path      = "%s/%s_sort.bam" % (DataPreDir, sampleName)
         bamSortIndex_path = "%s/%s_sort.bai" % (DataPreDir, sampleName)
-
         CMD_2_1 = "{JAVA} -jar -Xmx6g {PicardDir}/SortSam.jar INPUT={bam} OUTPUT={bam_sort} SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam=bam_path, bam_sort=bamSort_path, Tmp=self.Tmp)
         CMD_2_2 = "{JAVA} -jar -Xmx6g {PicardDir}/BuildBamIndex.jar INPUT={bam_sort} OUTPUT={bam_sort_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_sort_idx=bamSortIndex_path, Tmp=self.Tmp)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step2, CMD_2_1))
         print("\n>>> Executing command:\n%s\n" % CMD_2_2)
-
         call(CMD_2_1, shell=True)
         call(CMD_2_2, shell=True)
 
 
-        Step3 = "_ Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________"
+        Step3 = \
+            """_ Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________"""
+
         bamDup_path        = "%s/%s_sort_dup.bam" % (DataPreDir, sampleName)
         bamDupMetrics_path = "%s/%s_dup.metrics" % (DataPreDir, sampleName)     # Copy '*_dup.metrics' to 'Report' dir, but I haven't do it
         bamDupIndex_path   = "%s/%s_sort_dup.bai" % (DataPreDir, sampleName)
-
         CMD_3_1 = "{JAVA} -jar -Xmx8g {PicardDir}/MarkDuplicates.jar INPUT={bam_sort} OUTPUT={bam_dup} METRICS_FILE={bam_dup_metrics} REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_dup_metrics=bamDupMetrics_path, Tmp=self.Tmp)
         CMD_3_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_dup} OUTPUT={bam_dup_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_dup=bamDup_path, bam_dup_idx=bamDupIndex_path, Tmp=self.Tmp)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step3, CMD_3_1))
         print("\n>>> Executing command:\n%s\n" % CMD_3_2)
-
         call(CMD_3_1, shell=True)
         call(CMD_3_2, shell=True)
 
 
-        Step4 = "_ Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________"
+        Step4 = \
+            """_ Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________"""
+
         bamGroup_path      = "%s/%s_sort_dup_group.bam" % (DataPreDir, sampleName)
         bamGroupIndex_path = "%s/%s_sort_dup_group.bai" % (DataPreDir, sampleName)
-
         CMD_4_1 = "{JAVA} -jar -Xmx16g {PicardDir}/AddOrReplaceReadGroups.jar I={bam_dup} O={bam_group} SO=coordinate ID={sample} LB={sample} PL=illumina PU=barcode SM={sample} CREATE_INDEX=false VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_sort=bamSort_path, bam_dup=bamDup_path, bam_group=bamGroup_path, sample=sampleName, Tmp=self.Tmp)
         CMD_4_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_group} OUTPUT={bam_group_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_group=bamGroup_path, bam_group_idx=bamGroupIndex_path, Tmp=self.Tmp)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step4, CMD_4_1))
         print("\n>>> Executing command:\n%s\n" % CMD_4_2)
-
         call(CMD_4_1, shell=True)
         call(CMD_4_2, shell=True)
 
 
-        Step5 = "_ Step 5 GATK/Picard. Split 'N' Trim, Split 'N' and trim from the '*.bam' file ________________________________"
+        Step5 = \
+            """_ Step 5 GATK/Picard. Split 'N' Trim, Split 'N' and trim from the '*.bam' file ________________________________"""
+
         bamTrim_path      = "%s/%s_sort_dup_group_trim.bam" % (DataPreDir, sampleName)
         bamTrimIndex_path = "%s/%s_sort_dup_group_trim.bai" % (DataPreDir, sampleName)
-
         CMD_5_1 = "{JAVA} -jar {GATK} -T SplitNCigarReads -R {Genome} -I {bam_group} -o {bam_trim} -U ALLOW_N_CIGAR_READS -rf ReassignOneMappingQuality -RMQF 255 -RMQT 60".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_group=bamGroup_path, bam_trim=bamTrim_path)
         CMD_5_2 = "{JAVA} -jar -Xmx8g {PicardDir}/BuildBamIndex.jar INPUT={bam_trim} OUTPUT={bam_trim_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_trim=bamTrim_path, bam_trim_idx=bamTrimIndex_path, Tmp=self.Tmp)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step5, CMD_5_1))
         print("\n>>> Executing command:\n%s\n" % CMD_5_2)
-
         call(CMD_5_1, shell=True)
         call(CMD_5_2, shell=True)
 
@@ -176,27 +171,26 @@ class main:
 # >>>Question: It's so strange that why Step 6 use 'knownDBsnp' as same as Step 7, but there is no check in Step 6 while there it is in Step 7
 # <<<Answer: Because if Step 6 can run without this parameter, it will be empty if there is no 'knownDBsnp' exist, refer to the parameter preparation
 
-        Step6 = "_ Step 6 GATK. Realignment, realign around the INDLEs _________________________________________________________"
+        Step6 = \
+            """_ Step 6 GATK. Realignment, realign around the INDLEs _________________________________________________________"""
+
         bamRealign_path          = "%s/%s_sort_dup_group_trim_realign.bam" % (DataPreDir, sampleName)
         bamRealignIntervals_path = "%s/%s_sort_dup_group_trim_realign.intervals" % (DataPreDir, sampleName)
-
         CMD_6_1 = "{JAVA} -jar {GATK} -l INFO -T RealignerTargetCreator -R {Genome} -I {bam_trim} -o {bam_realign_intervals} {knownDBsnp} {knownInDel} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign_intervals=bamRealignIntervals_path, knownDBsnp=knownDBsnp, knownInDel=knownInDel)
         CMD_6_2 = "{JAVA} -jar {GATK} -l INFO -T IndelRealigner -R {Genome} -I {bam_trim} -o {bam_realign} {knownInDel} -targetIntervals {bam_realign_intervals} --validation_strictness LENIENT".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, bam_trim=bamTrim_path, bam_realign=bamRealign_path, knownInDel=knownInDel, bam_realign_intervals=bamRealignIntervals_path)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step6, CMD_6_1))
         print("\n>>> Executing command:\n%s\n" % CMD_6_2)
-
         call(CMD_6_1, shell=True)
         call(CMD_6_2, shell=True)
 
 
-        Step7 = "_ Step 7 GATK. Base Quality Score Recalibration. Caution: this Step works only when 'dbSNP' exists ____________"
+        Step7 = \
+            """_ Step 7 GATK. Base Quality Score Recalibration. Caution: this Step works only when 'dbSNP' exists ____________"""
+
         bamRecalibrator_path      = "%s/%s_sort_dup_group_trim_realign_recalibrator.bam" % (DataPreDir, sampleName)
         bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (DataPreDir, sampleName)     # No use
         recal_path                = "%s/%s_recal.table" % (DataPreDir, sampleName)
-
         CMD_7_1 = "{JAVA} -jar {GATK} -l INFO -T BaseRecalibrator -R {Genome} {knownSitesDBsnp} -I {bam_realign} --validation_strictness LENIENT -o {recal}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, knownSitesDBsnp=knownSiteDBsnp, bam_realign=bamRealign_path, recal=recal_path)
-
         CMD_7_2 = "{JAVA} -jar {GATK} -l INFO -T PrintReads -R {Genome} -BQSR {recal} --validation_strictness LENIENT -I {bam_realign} -o {bam_recalibrator}".format(JAVA=self.JAVA, GATK=self.GATK, Genome=self.Genome, recal=recal_path, bam_realign=bamRealign_path, bam_recalibrator=bamRecalibrator_path)
 
         # Skip this Step when there is no 'dbSNP'
@@ -204,7 +198,6 @@ class main:
 
             print("\n%s\n>>> Executing command:\n%s" % (Step7, CMD_7_1))
             print("\n>>> Executing command:\n%s\n" % CMD_7_2)
-
             call(CMD_7_1, shell=True)
             call(CMD_7_2, shell=True)
 
@@ -217,17 +210,15 @@ class main:
 # **********************************************************************************************************************
 
 
-        Step8 = "_ Step 8 Picard. Final, output the finally processed '*.bam' file _____________________________________________"
+        Step8 = \
+            """_ Step 8 Picard. Final, output the finally processed '*.bam' file _____________________________________________"""
+
         bamFinal_path      = "%s/%s_final.bam" % (DataPreDir, sampleName)
         bamFinalIndex_path = "%s/%s_final.bai" % (DataPreDir, sampleName)
-
         CMD_8_1 = "{JAVA} -jar {PicardDir}/SortSam.jar INPUT={FinalInputBam} OUTPUT={bam_final} SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, FinalInputBam=FinalInputBam_path, bam_final=bamFinal_path, Tmp=self.Tmp)
-
         CMD_8_2 = "{JAVA} -jar {PicardDir}/BuildBamIndex.jar INPUT={bam_final} OUTPUT={bam_final_idx} VALIDATION_STRINGENCY=LENIENT TMP_DIR={Tmp}".format(JAVA=self.JAVA, PicardDir=self.PicardDir, bam_final=bamFinal_path, bam_final_idx=bamFinalIndex_path, Tmp=self.Tmp)
-
         print("\n%s\n>>> Executing command:\n%s" % (Step8, CMD_8_1))
         print("\n>>> Executing command:\n%s\n" % CMD_8_2)
-
         call(CMD_8_1, shell=True)
         call(CMD_8_2, shell=True)
 
@@ -251,6 +242,8 @@ _ Log __________________________________________________________________________
     2) Finish Server #6 testing, worked well
     3) No finish check now
 
+2017-05-03
+    *1) '*_Final.bam' is empty, find the problem, maybe sample is too small
 __________________________________________________________________________________
 """
 

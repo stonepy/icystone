@@ -41,7 +41,7 @@ class main:
         print(note_start)
 
 
-        # _ Parameter preparation _____________________________________________________________________________________
+        # _ Parameter preparation ______________________________________________________________________________________
 
         # Get necessery Info from 'config.ini' and 'settings.py'
         self.OutputDir  = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the OutputDir value
@@ -57,7 +57,7 @@ class main:
         self.PicardDir  = settings.software_dict["PicardDir"]    #
         self.GATK       = settings.software_dict["GATK"]         #
         self.Samtools   = settings.software_dict["Samtools"]     #
-        self.Threshold  = settings.software_dict["GATK"]         #
+        self.Threshold  = settings.software_dict["PreGATK"]      #
 
 
         # Execute 'run' function here ____________________________
@@ -69,7 +69,15 @@ class main:
         # Assign preparation tasks
         multiP_1(self.para_dict, self.run)
 
-        # Finish Note ___________________________________________________________________________________________________
+
+    def run(self, para_dict, sampleName):
+
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir+"/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+
+        # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
                               ========================================

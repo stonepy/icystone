@@ -70,10 +70,11 @@ software_dict = {
 
     # Processes/Threads of softwares
     "Mapping"    : [5,30],      # 1st: processes of STAR programme numbers ; 2rd: threads of STAR
-    "GATKn"      : 3,           # Threads for 'dataPre' GATK
+    "PreGATK"    : 3,           # Threads for 'dataPre' GATK
     "Calling"    : 20,
     "Genotyping" : 40,
     "Analysis"   : 40,
+    "nSample"    : 6            # Limit the max numbers of samples at the same time
 
 }
 
@@ -85,7 +86,10 @@ _ Log __________________________________________________________________________
     2) Revised 'software_dict', all process/thread parameter shift from character to integer
 
 2017-04-28
-    *1) 'software_dict' ~ 'Tmp' is temporary, change it when all done
+    *1) 'software_dict'~'Tmp' is temporary, change it when all done
+
+2017-05-03
+    1) Add 'software_dict'~'nSample', haven't developed corresponding part
 ___________________________________________________________________________________
 
 """

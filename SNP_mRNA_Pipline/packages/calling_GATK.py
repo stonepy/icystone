@@ -40,7 +40,7 @@ class main:
         """ % time.ctime()
         print(note_start)
 
-        # _ Parameter preparation _____________________________________________________________________________________
+        # _ Parameter preparation ______________________________________________________________________________________
 
         # Get necessery Info from 'config.ini' and 'settings.py'
         self.OutputDir  = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the OutputDir value
@@ -56,22 +56,46 @@ class main:
         self.PicardDir  = settings.software_dict["PicardDir"]    #
         self.GATK       = settings.software_dict["GATK"]         #
         self.Samtools   = settings.software_dict["Samtools"]     #
-        self.Threshold  = settings.software_dict["Calling"]      #
+        self.Threshold  = settings.software_dict["Calling"]      # Maybe this time it's also no use
 
+        # If "dbSNP" exists, it will be used, only human and mouse for the temporary
+        if "dbSNP" in settings.species_dict[self.Species]:
+            knownDBsnpGATK = "-D:dbsnp,vcf " + settings.species_dict[self.Species]["dbSNP"]
+        else:
+            knownDBsnpGATK = ""
 
-        # Execute 'run' function here ____________________________
+        # Use for passing parameters to 'process_manager.py'
         self.para_dict = {
+            "Samples"  : self.Samples,
             "nProcess" : len(self.Samples),
-            "CMDs"     : self.Samples
+            "nThread"  : self.Threshold,
+            "CMDs"     : []
         }
 
-        # Assign preparation tasks
-        multiP_1(self.para_dict, self.run)
+        # Make sure the directory for '*.vcf' files exists
+        CallingDir = self.OutputDir + "/3_Calling"
+        branchDIR_check(CallingDir)     # Directory check
 
+        Step1 = \
+            """ _ Step1 GATK SNP calling _____________________________________________________________________________________ """
 
+        for sample in self.Samples:
 
+            DIR = "{CallingingDir}/{sample}".format(CallingingDir=CallingDir, sample=sample)
+            branchDIR_check(DIR)     # Directory check
+            bamFinal_path = "{OutputDir}/{DataPre}/{sample}/{sample}_final.bam".format(OutputDir=self.OutputDir, DataPre="2_DataPre", sample=sample)
+            cmd = "{JAVA} -jar {GATK} -T HaplotypeCaller -I {bam} -R {Genome} -nct 10 -o {CallingDir}/{sample}.vcf {knownDBsnpGATK}".format(JAVA=self.JAVA, GATK=self.GATK, bam=bamFinal_path, Genome=self.Genome, CallingDir=CallingDir, sample=sample, knownDBsnpGATK=knownDBsnpGATK)
 
-        # Finish Note ___________________________________________________________________________________________________
+            self.para_dict["CMDs"].append(cmd)
+            print("\n%s\n>>> Executing command:\n" % Step1)
+            # print(cmd+"\n")    # for testing
+
+        # Assign GATK tasks
+        multiP_1(self.para_dict, call_func)
+
+        # ReportDir = self.ReportDir + "/2_DataPre"
+
+        # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
                               ============================================
@@ -93,7 +117,8 @@ class main:
 _ Log _____________________________________________________________________________
 
 2017-05-02
-    1)
+    1) Finished 'GATK' coding, tested ion Server #6, everything is OK except results
+    were empty, maybe becasuse the anmount of sample reads were too small.
 
 ___________________________________________________________________________________
 """

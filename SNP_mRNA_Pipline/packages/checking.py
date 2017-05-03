@@ -17,7 +17,7 @@ import shutil
 
 
 
-""" _ 1. Directory Check ________________________________________________________________________________ """
+""" _ 1. Directory Check ___________________________________________________________________________________________ """
 def baseDIR_check(config_dict):
 
     rawd_dataDIR     = config_dict["section_1"]["4_"].split(" ")[-1]
@@ -36,10 +36,10 @@ def baseDIR_check(config_dict):
     if not os.path.isdir(reportDIR):
         print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
         os.makedirs(reportDIR)
-
-    if not os.path.isdir(logDIR):
-        print("\n>>> Warning:\n      %s does not exist, creating it...\n" % logDIR)
-        os.makedirs(logDIR)
+    """ Haven't developed corresponding part"""
+    # if not os.path.isdir(logDIR):
+    #     print("\n>>> Warning:\n      %s does not exist, creating it...\n" % logDIR)
+    #     os.makedirs(logDIR)
 
 
 def branchDIR_check(DIR):
@@ -50,7 +50,7 @@ def branchDIR_check(DIR):
 
 
 
-""" _ 2. Package Check ___________________________________________________________________________________ """
+""" _ 2. Package Check _____________________________________________________________________________________________ """
 def package_check():
     try:
         # Alternative way: import packages.settings
@@ -86,7 +86,7 @@ def mapping_STAR():
 
 
 
-""" _ 3. Finished Check __________________________________________________________________________________ """
+""" _ 3. Finished Check ____________________________________________________________________________________________ """
 def finish_check(finish_path):
 
     if os.path.exists(finish_path):
@@ -120,7 +120,7 @@ _ Log __________________________________________________________________________
 
 2017-05-02
     1) 'finish_check', check if the module finished simply, new function, for the time
-    2) 'log' dir, new dir for storing log files
+    2) Add 'log' dir check, new dir for storing log files
 
 _________________________________________________________________________________
 """
