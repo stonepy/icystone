@@ -150,6 +150,7 @@ if __name__ == "__main__":
     # _ Workflow _______________________________________________________________________________________________________
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+
     # main.mapping()
     main.gatk()
     main.calling()
@@ -306,7 +307,9 @@ _ Log __________________________________________________________________________
     4) Set 'Log' DIR according to 'config'
 
 2017-05-03
-    1) The Pipline should be able to start at any point, only if user feed data properly
+    *1) The Pipline should be able to start at any point, only if user feed data properly
+    *2) Write common 'check', 'print', 'run' etc. modules, then controlling the every point
+    of the Pipline by enabling/disabling these modules
 
 _________________________________________________________________________________
 """

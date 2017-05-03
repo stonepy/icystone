@@ -80,14 +80,14 @@ class main:
         Step1 = \
             """ _ STAR alignment Step1 ______________________________________________________________________________________ """
 
+        print("\n%s\n>>> Executing command:\n" % Step1)
         for sample in Samples:
             DIR = "{MappingDir}/{sample}".format(MappingDir=MappingDir, sample=sample)
-            branchDIR_check(DIR)        # Directory check
+            branchDIR_check(DIR)
             tab += " {MappingDir}/{sample}/{sample}.step1.SJ.out.tab ".format(MappingDir=MappingDir, sample=sample)     # Very vital, for step 2
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbOverhang 149 --outFileNamePrefix {MappingDir}/{sample}/{sample}.step1.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, MappingDir=MappingDir)
 
             para_dict["CMDs"].append(cmd)
-            print("\n%s\n>>> Executing command:\n" % Step1)
             # print(cmd+"\n")    # for testing
 
         # Assign STAR step1 tasks
@@ -97,24 +97,25 @@ class main:
         Step2 = \
             """ _ STAR alignment Step2 ______________________________________________________________________________________ """
 
+        print("\n%s\n>>> Executing command:\n" % Step2)
         para_dict["CMDs"] = []
         for sample in Samples:
             DIR = "{MappingDir}/{sample}".format(MappingDir=MappingDir, sample=sample)
-            branchDIR_check(DIR)        # Directory check
+            branchDIR_check(DIR)
             cmd = "{STAR_path} --runThreadN {Threshold} --genomeDir {GenomeSTAR} --readFilesIn {FastqDir}/{sample}_R1.fastq.gz {FastqDir}/{sample}_R2.fastq.gz --readFilesCommand zcat --sjdbGTFfile {GTF} --sjdbFileChrStartEnd {tab} --sjdbOverhang 149 --outFileNamePrefix {MappingDir}/{sample}/{sample}.step2.".format(STAR_path=STAR_path, Threshold=Threshold, GenomeSTAR=GenomeSTAR, FastqDir=FastqDir, sample=sample, GTF=GTF, tab=tab, MappingDir=MappingDir)
 
-            print("\n%s\n>>> Executing command:\n" % Step2)
             para_dict["CMDs"].append(cmd)
             # print(cmd+"\n")    # for testing
 
-        # Assign STAR step1 tasks
+        # Assign STAR step2 tasks
         multiP_1(para_dict, call_func)
 
 
-        # Finish marker file
-        finish_path = os.path.join(OutputDir, "log/%s.finish" % re.split("[/.]", __file__)[-2])
-        with open(finish_path, "w") as finish:
-            finish.write("Congratulation !")
+
+        """# Finish marker file, haven't developed"""
+        # finish_path = os.path.join(OutputDir, "log/%s.finish" % re.split("[/.]", __file__)[-2])
+        # with open(finish_path, "w") as finish:
+        #     finish.write("Congratulation !")
 
 
         # Finish Note __________________________________________________________________________________________________

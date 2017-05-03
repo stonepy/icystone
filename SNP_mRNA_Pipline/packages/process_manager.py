@@ -52,6 +52,7 @@ def multiP_1(para_dict, func):
 
     for i in para_dict["CMDs"]:
         P.apply_async(func, args=(i,))
+        time.sleep(0.5)
         # print(res)
     # P.apply_async(ctrlC)        # Temporary for testing, 2017-04-25
     P.close()

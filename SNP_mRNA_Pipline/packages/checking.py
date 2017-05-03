@@ -36,6 +36,7 @@ def baseDIR_check(config_dict):
     if not os.path.isdir(reportDIR):
         print("\n>>> Warning:\n      %s does not exist, creating it...\n" % reportDIR)
         os.makedirs(reportDIR)
+
     """ Haven't developed corresponding part"""
     # if not os.path.isdir(logDIR):
     #     print("\n>>> Warning:\n      %s does not exist, creating it...\n" % logDIR)
@@ -49,19 +50,17 @@ def branchDIR_check(DIR):
         os.makedirs(DIR)
 
 
-
 """ _ 2. Package Check _____________________________________________________________________________________________ """
 def package_check():
     try:
         # Alternative way: import packages.settings
-
 
         from packages import settings
         from packages import process_manager
 
         from packages import mapping_STAR
         from packages import dataPre_PicardGATK
-        from packages import calling
+        from packages import calling_GATK
         # from packages import library
         # from packages import gender
         # from packages import genotyping
