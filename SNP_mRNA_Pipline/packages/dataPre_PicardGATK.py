@@ -30,14 +30,13 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-                              ========================================================
-                              |                                                      |
-                              |  Start BAM preparation with Picard & GATK programme  |
-                              |                                                      |
-                              ========================================================
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  |                                                      |
+  |  Start BAM preparation with Picard & GATK programme  |
+  |                                                      |
+  ========================================================
 
-
-        %s
+  %s\n
         """ % time.ctime()
         print(note_start)
 
@@ -75,14 +74,13 @@ class main:
         # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
-                              =========================================================
-                              |                                                       |
-                              |  Finish BAM preparation with Picard & GATK programme  |
-                              |                                                       |
-                              =========================================================
+  =========================================================
+  |                                                       |
+  |  Finish BAM preparation with Picard & GATK programme  |
+  |                                                       |
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-        %s
+  %s\n
         """ % time.ctime()
         print(note_finish)
 
@@ -105,7 +103,7 @@ class main:
 
 
         Step1 = \
-            """_ DataPre Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping __________________________"""
+            """\n_ DataPre Step 1 Picard. BAM, convert '*.sam' with the '*.bam' file, results of STAR mapping __________________________\n"""
 
         sam_path = "%s/%s/%s.step2.Aligned.out.sam" % (self.OutputDir+"/1_Mapping", sampleName, sampleName)        # Input '*.sam' data
         bam_path = "%s/%s.bam" % (DataPreDir, sampleName)
@@ -115,7 +113,7 @@ class main:
 
 
         Step2 = \
-            """_ DataPre Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________"""
+            """\n_ DataPre Step 2 Picard. Sort, '*.bam' file sorting ___________________________________________________________________\n"""
 
         bamSort_path      = "%s/%s_sort.bam" % (DataPreDir, sampleName)
         bamSortIndex_path = "%s/%s_sort.bai" % (DataPreDir, sampleName)
@@ -128,7 +126,7 @@ class main:
 
 
         Step3 = \
-            """_ DataPre Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________"""
+            """\n_ DataPre Step 3 Picard. Mark Duplicates, mark duplicates in the '*.bam' file _________________________________________\n"""
 
         bamDup_path        = "%s/%s_sort_dup.bam" % (DataPreDir, sampleName)
         bamDupMetrics_path = "%s/%s_dup.metrics" % (DataPreDir, sampleName)     # Copy '*_dup.metrics' to 'Report' dir, but I haven't do it
@@ -142,7 +140,7 @@ class main:
 
 
         Step4 = \
-            """_ DataPre Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________"""
+            """\n_ DataPre Step 4 Picard. Add Reads Group, add reads group to the '*.bam' file _________________________________________\n"""
 
         bamGroup_path      = "%s/%s_sort_dup_group.bam" % (DataPreDir, sampleName)
         bamGroupIndex_path = "%s/%s_sort_dup_group.bai" % (DataPreDir, sampleName)
@@ -155,7 +153,7 @@ class main:
 
 
         Step5 = \
-            """_ DataPre Step 5 GATK/Picard. Split 'N' Trim, Split 'N' and trim from the '*.bam' file ________________________________"""
+            """\n_ DataPre Step 5 GATK/Picard. Split 'N' Trim, Split 'N' and trim from the '*.bam' file ________________________________\n"""
 
         bamTrim_path      = "%s/%s_sort_dup_group_trim.bam" % (DataPreDir, sampleName)
         bamTrimIndex_path = "%s/%s_sort_dup_group_trim.bai" % (DataPreDir, sampleName)
@@ -172,7 +170,7 @@ class main:
 # <<<Answer: Because if Step 6 can run without this parameter, it will be empty if there is no 'knownDBsnp' exist, refer to the parameter preparation
 
         Step6 = \
-            """_ DataPre Step 6 GATK. Realignment, realign around the INDLEs _________________________________________________________"""
+            """\n_ DataPre Step 6 GATK. Realignment, realign around the INDLEs _________________________________________________________\n"""
 
         bamRealign_path          = "%s/%s_sort_dup_group_trim_realign.bam" % (DataPreDir, sampleName)
         bamRealignIntervals_path = "%s/%s_sort_dup_group_trim_realign.intervals" % (DataPreDir, sampleName)
@@ -185,7 +183,7 @@ class main:
 
 
         Step7 = \
-            """_ DataPre Step 7 GATK. Base Quality Score Recalibration. Caution: this Step works only when 'dbSNP' exists ____________"""
+            """\n_ DataPre Step 7 GATK. Base Quality Score Recalibration. Caution: this Step works only when 'dbSNP' exists ____________\n"""
 
         bamRecalibrator_path      = "%s/%s_sort_dup_group_trim_realign_recalibrator.bam" % (DataPreDir, sampleName)
         bamRecalibratorIndex_path = "%s/%s_sort_dup_group_trim_realign_recalibrator.bai" % (DataPreDir, sampleName)     # No use
@@ -211,7 +209,7 @@ class main:
 
 
         Step8 = \
-            """_ DataPre Step 8 Picard. Final, output the finally processed '*.bam' file _____________________________________________"""
+            """\n_ DataPre Step 8 Picard. Final, output the finally processed '*.bam' file _____________________________________________\n"""
 
         bamFinal_path      = "%s/%s_final.bam" % (DataPreDir, sampleName)
         bamFinalIndex_path = "%s/%s_final.bai" % (DataPreDir, sampleName)
@@ -245,7 +243,8 @@ _ Log __________________________________________________________________________
 2017-05-03
     *1) '*_Final.bam' is empty, find the problem, maybe sample is too small
     2) Solved the problem above, Step1 path define in a wrong way
-    
+    3) Finish Server #6 testing, worked well
+
 __________________________________________________________________________________
 """
 

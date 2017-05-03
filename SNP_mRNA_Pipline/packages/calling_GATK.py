@@ -7,7 +7,7 @@ _ Information __________________________________________________________________
     Author       : Hwx
     Version      : V0
     Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0
-    Finish Date  : 2017_05
+    Finish Date  : 2017_05_03
 __________________________________________________________________________________
 
 
@@ -29,14 +29,13 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-                              ===========================================
-                              |                                         |
-                              |  Start SNP calling with GATK programme  |
-                              |                                         |
-                              ===========================================
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  |                                         |
+  |  Start SNP calling with GATK programme  |
+  |                                         |
+  ===========================================
 
-
-        %s
+  %s\n
         """ % time.ctime()
         print(note_start)
 
@@ -77,7 +76,7 @@ class main:
         branchDIR_check(CallingDir)     # Directory check
 
         Step1 = \
-            """ _ Step1 GATK SNP calling _____________________________________________________________________________________ """
+            """\n_ Step1 GATK SNP calling _____________________________________________________________________________________\n """
 
         for sample in self.Samples:
 
@@ -93,19 +92,19 @@ class main:
         # Assign GATK tasks
         multiP_1(self.para_dict, call_func)
 
+        """ Copy results to Report Dir """
         # ReportDir = self.ReportDir + "/2_DataPre"
 
         # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
-                              ============================================
-                              |                                          |
-                              |  Finish SNP calling with GATK programme  |
-                              |                                          |
-                              ============================================
+  ============================================
+  |                                          |
+  |  Finish SNP calling with GATK programme  |
+  |                                          |
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-        %s
+  %s\n
         """ % time.ctime()
         print(note_finish)
 
@@ -117,7 +116,11 @@ class main:
 _ Log _____________________________________________________________________________
 
 2017-05-02
-    1) Finished 'GATK' coding, tested ion Server #6, everything is OK except results
+    1) Finished 'GATK' coding, tested on Server #6, everything is OK except results
+    were empty, maybe becasuse the anmount of sample reads were too small.
+
+2017-05-02
+    1) Finished testing on Server #6, everything is OK except results
     were empty, maybe becasuse the anmount of sample reads were too small.
 
 ___________________________________________________________________________________

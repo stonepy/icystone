@@ -121,14 +121,13 @@ if __name__ == "__main__":
     # Start Note
     note_start = """
 
-                               **************************************
-                               *                                    *
-                               *  Lauching the SNP_mRNA Pipline...  *
-                               *                                    *
-                               **************************************
+  **************************************
+  *                                    *
+  *  Lauching the SNP_mRNA Pipline...  *
+  *                                    *
+  **************************************
 
-
-    %s
+  %s\n
     """ % time.ctime()
     print(note_start)
 
@@ -151,7 +150,7 @@ if __name__ == "__main__":
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
 
-    # main.mapping()
+    main.mapping()
     main.gatk()
     main.calling()
 
@@ -187,14 +186,13 @@ if __name__ == "__main__":
     # Finish note
     note_finish = """
 
-                               **************************************
-                               *                                    *
-                               *     SNP_mRNA Pipline finished.     *
-                               *                                    *
-                               **************************************
+  **************************************
+  *                                    *
+  *     SNP_mRNA Pipline finished.     *
+  *                                    *
+  **************************************
 
-
-    %s
+  %s\n
     """ % time.ctime()
     print(note_finish)
     print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
@@ -310,6 +308,9 @@ _ Log __________________________________________________________________________
     *1) The Pipline should be able to start at any point, only if user feed data properly
     *2) Write common 'check', 'print', 'run' etc. modules, then controlling the every point
     of the Pipline by enabling/disabling these modules
+    *3) If the SNP_Pipline integrate into mRNA_Pipline, it should start after trimming, and
+    wait DEGs to mark the genes
+    4) Finished 'calling_GATK.py' , tested, worked.
 
 _________________________________________________________________________________
 """
