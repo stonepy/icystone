@@ -2,12 +2,12 @@ Info = """
 
 _ Information ____________________________________________________________________
 
-    Name         : Package Model
-    Description  : Model of the package
+    Name         : Library_Annovar_SNP_mRNA
+    Description  :
     Author       : Hwx
     Version      : V0
     Dev Env      : Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0
-    Finish Date  : 2017_05-02
+    Finish Date  : 2017_05-0
 __________________________________________________________________________________
 
 
@@ -29,11 +29,11 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  |                                     |
-  |  Start  with  programme  |
-  |                                     |
-  =======================================
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  |                                        |
+  |  Start library with Annovar programme  |
+  |                                        |
+  ==========================================
 
   %s
         """ % time.ctime()
@@ -46,17 +46,11 @@ class main:
         self.OutputDir  = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the OutputDir value
         self.ReportDir  = config_dict["section_1"]["6_"].split(" ")[-1]     # Split out the ReportDir value
         self.Species    = config_dict["section_2"]["2_"].split(" ")[-1]     # Split out the Species value
-        self.bed        = config_dict["section_3"]["2_"].split(" ")[-1]     # Split out the bed value
         self.Samples    = config_dict["section_4"]["2_samples"].split("\n")[0:-1]   # Convert sample string to sample list
 
         # Get parameters from 'setting.py'
         self.Genome     = settings.species_dict[self.Species]['Genome']         # Genome fasta file
-        self.Tmp        = settings.software_dict["Tmp"]          #
-        self.JAVA       = settings.software_dict["JAVA"]         #
-        self.PicardDir  = settings.software_dict["PicardDir"]    #
-        self.GATK       = settings.software_dict["GATK"]         #
-        self.Samtools   = settings.software_dict["Samtools"]     #
-        self.Threshold  = settings.software_dict["PreGATK"]      #
+        self.AnnovarDir = settings.software_dict["AnnovarDir"]                  #
 
 
         # Use for passing parameters to 'process_manager.py'
@@ -65,25 +59,67 @@ class main:
             "CMDs"     : self.Samples
         }
 
-        # Assign tasks
+        # Assign preparation tasks
         multiP_1(self.para_dict, self.run)
 
 
-    def run(self, para_dict, sampleName):
 
+
+    def createLib(self, para_dict, sampleName):
         # Make sure the directory for '*.*' files exists
         DataPreDir = "%s/%s" % (self.OutputDir+"/<packageName>", sampleName)
         branchDIR_check(DataPreDir)
+
+    def callDepthFreq(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir+"/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+    def annRS(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir+"/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+    def annoSeq(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir + "/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+    def annoInDel(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir + "/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+    def annoBlast(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir + "/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+    def str_annotation_indel_1(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir + "/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+    def str_annotation_indel_2(self, para_dict, sampleName):
+        # Make sure the directory for '*.*' files exists
+        DataPreDir = "%s/%s" % (self.OutputDir + "/<packageName>", sampleName)
+        branchDIR_check(DataPreDir)
+
+
+
+
+
+
 
 
         # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
-  ========================================
-  |                                      |
-  |  Finish  with  programme  |
-  |                                      |
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ===========================================
+  |                                         |
+  |  Finish library with Annovar programme  |
+  |                                         |
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   %s
         """ % time.ctime()
@@ -96,6 +132,8 @@ class main:
 """
 _ Log _____________________________________________________________________________
 
+2017-05-04
+    1)
 
 ___________________________________________________________________________________
 """

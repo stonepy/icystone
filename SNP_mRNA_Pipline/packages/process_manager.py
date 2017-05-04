@@ -24,7 +24,6 @@ Usage = """
 
 from multiprocessing import Pool
 from subprocess      import call
-import signal
 import time
 import sys
 
@@ -101,7 +100,8 @@ _ Log __________________________________________________________________________
 2017-04-24
     1) Multiple processes can't be terminated by 'Ctrl+C' normally
 
-2017-04-25
-    1)
+2017-05-04
+    1) 'Ctrl+C' problem has been solved in Python3.5.* version
+
 _________________________________________________________________________________
 """

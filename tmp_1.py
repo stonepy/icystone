@@ -1,5 +1,17 @@
-print("hello")
-import re
+# print("hello")
+# import re
+
+from subprocess      import call
+import signal
+import time
+import sys
+
+
+
+def call_func(CMD):
+    print("\n>>> Executing command:\n%s\n" % CMD)
+    call(CMD, shell=True)
+
 
 # import time
 # from multiprocessing import Pool

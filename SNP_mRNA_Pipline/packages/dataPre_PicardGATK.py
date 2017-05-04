@@ -14,9 +14,9 @@ ________________________________________________________________________________
 """
 
 
-from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
 # from packages.checking        import finish_check
+from packages.process_manager import multiP_1
 from packages                 import settings
 from subprocess               import call
 import time
@@ -85,7 +85,7 @@ class main:
         print(note_finish)
 
 
-    """ _ Data preparation _________________________________________________________________________________________ """
+    """ _ BAM preparation __________________________________________________________________________________________ """
     def run(self, sampleName):
 
         # If "dbSNP" and "InDel" exist, only human and mouse for the temporary. For Step6, Step7.

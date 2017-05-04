@@ -9,6 +9,8 @@ _ Information __________________________________________________________________
     Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS/Python3.5.3, virtualenv15.1.0
     Finish Date  : 2017-04-
 __________________________________________________________________________________
+
+
 """
 
 
@@ -61,7 +63,7 @@ def package_check():
         from packages import mapping_STAR
         from packages import dataPre_PicardGATK
         from packages import calling_GATK
-        # from packages import library
+        from packages import library
         # from packages import gender
         # from packages import genotyping
         # from packages import database

@@ -45,16 +45,12 @@ class main:
         self.OutputDir  = config_dict["section_1"]["5_"].split(" ")[-1]     # Split out the OutputDir value
         self.ReportDir  = config_dict["section_1"]["6_"].split(" ")[-1]     # Split out the ReportDir value
         self.Species    = config_dict["section_2"]["2_"].split(" ")[-1]     # Split out the Species value
-        self.bed        = config_dict["section_3"]["2_"].split(" ")[-1]     # Split out the bed value
         self.Samples    = config_dict["section_4"]["2_samples"].split("\n")[0:-1]   # Convert sample string to sample list
 
         # Get parameters from 'setting.py'
         self.Genome     = settings.species_dict[self.Species]['Genome']         # Genome fasta file
-        self.Tmp        = settings.software_dict["Tmp"]          #
         self.JAVA       = settings.software_dict["JAVA"]         #
-        self.PicardDir  = settings.software_dict["PicardDir"]    #
         self.GATK       = settings.software_dict["GATK"]         #
-        self.Samtools   = settings.software_dict["Samtools"]     #
         self.Threshold  = settings.software_dict["Calling"]      # Maybe this time it's also no use
 
         # If "dbSNP" exists, it will be used, only human and mouse for the temporary
@@ -122,6 +118,7 @@ _ Log __________________________________________________________________________
 2017-05-02
     1) Finished testing on Server #6, everything is OK except results
     were empty, maybe becasuse the anmount of sample reads were too small.
+    2) Did not develop 'Varscan' part
 
 ___________________________________________________________________________________
 """

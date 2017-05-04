@@ -150,9 +150,9 @@ if __name__ == "__main__":
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
 
-    main.mapping()
-    main.gatk()
-    main.calling()
+    # main.mapping()
+    # main.gatk()
+    # main.calling()
 
 
 
@@ -311,6 +311,10 @@ _ Log __________________________________________________________________________
     *3) If the SNP_Pipline integrate into mRNA_Pipline, it should start after trimming, and
     wait DEGs to mark the genes
     4) Finished 'calling_GATK.py' , tested, worked.
+
+2017-05-04
+    *1) Add 'Results_check' module to check all results, if there are some results do not
+    meet the criterions, send warning message, haven't done it yet, leave it for the last
 
 _________________________________________________________________________________
 """
