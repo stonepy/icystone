@@ -28,8 +28,6 @@ Usage = """
 
 
 
-
-
 """ _ 1. Preparation for Pipline ___________________________________________________________________________________ """
 class preparation:
 
@@ -88,9 +86,6 @@ class preparation:
             print(">>> Encounter some problems as above while checking. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
 
 
-
-
-
 """ _ 2. Main ______________________________________________________________________________________________________ """
 class main(preparation):
 
@@ -110,73 +105,47 @@ class main(preparation):
         from packages import calling_GATK
         calling_GATK.main(self.config_dict)
 
+    def library(self):
+        from packages import library_Annovar
+        library_Annovar.main(self.config_dict)
 
 
 """ _ 3. Execution Control _________________________________________________________________________________________ """
 if __name__ == "__main__":
-
     t_start = time.time()   # Start time
 
 
     # Start Note
     note_start = """
 
-  **************************************
-  *                                    *
-  *  Lauching the SNP_mRNA Pipline...  *
-  *                                    *
-  **************************************
-
-  %s\n
+  ---------------------------------------
+  |    Lauching the SNP_mRNA Pipline    |
+  ---------------------------------------
+   [ %s ]\n
     """ % time.ctime()
     print(note_start)
 
 
-
     # _ Preparation ____________________________________________________________________________________________________
-    try:
-        prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
-
-        prep.get_args()
-        config_dict, run_dict = prep.config()
-        prep.check()
-
-    except Exception as e:
-        print("\nPreparation of Pipline is Skipped or there is something wrong with it.\n")
-        print("%s\n" % e)
-
+    prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
+    prep.get_args()
+    config_dict, run_dict = prep.config()
+    prep.check()
 
     # _ Workflow _______________________________________________________________________________________________________
     print("\nSNP_mRNA Pipline is running...\n")
     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
-
     # main.mapping()
     # main.gatk()
     # main.calling()
-
-
-
-    """ Don't use this block while testing """
-    # try:
-    #     print("\nSNP_mRNA Pipline is running...\n")
-    #     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
-    #
-    #     # main.mapping()
-    #     main.gatk()
-    #
-    #
-    # except Exception as e:
-    #     print("\n>>> Error: Main workflow goes wrong...\n")
-    #     print("    %s\n" % e)
-
-
+    main.library()
 
 
     # _ Timer __________________________________________________________________________________________________________
     t_finish   = time.time()             # Finish time
     total_time = t_finish - t_start    # Total time
 
-    # Convert second to minute,hour and day.
+    # Convert second to minute, hour and day.
     day    = total_time // (3600 * 24)
     hour   = total_time // (3600) % 24
     minute = total_time / 60 % 60
@@ -186,43 +155,55 @@ if __name__ == "__main__":
     # Finish note
     note_finish = """
 
-  **************************************
-  *                                    *
-  *     SNP_mRNA Pipline finished.     *
-  *                                    *
-  **************************************
-
-  %s\n
+  -----------------------------------
+  |    SNP_mRNA Pipline finished    |
+  -----------------------------------
+   [ %s ]\n
     """ % time.ctime()
     print(note_finish)
-    print("\n\n>>> Run time: |> %id %ih %im %.2fs <| (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
+    print("\n\n>>> Run time: [ %.2fs: %im: %ih: %id ] (Total second(s): %.2fs)\n" % (day, hour, minute, second, total_time))
 
 
 
 """ Test Zone +++++++++++++++++++++++++++++++++++++++++++++++++++ """
-
-
 def test(main,config_dict, run_dict):
     try:
         main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
         main.mapping()
-
         exit()
-
 
     except Exception as e:
         print(e)
         print("\nIt's not going to work...\n")
-
 
     exit()
 
 # test(main,config_dict, run_dict)
 """ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ """
 
+""" Don't use this block while testing (Excution control)"""
+# try:
+#     prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
+#
+#     prep.get_args()
+#     config_dict, run_dict = prep.config()
+#     prep.check()
+#
+# except Exception as e:
+#     print("\nPreparation of Pipline is Skipped or there is something wrong with it.\n")
+#     print("%s\n" % e)
 
-
-
+# try:
+#     print("\nSNP_mRNA Pipline is running...\n")
+#     main = main(config_dict, run_dict)      # Comment this line to shut whole Pipline function down and test the workflow
+#
+#     # main.mapping()
+#     main.gatk()
+#
+#
+# except Exception as e:
+#     print("\n>>> Error: Main workflow goes wrong...\n")
+#     print("    %s\n" % e)
 
 
 
@@ -253,7 +234,6 @@ excel
 format
 
 """
-
 
 
 """

@@ -18,6 +18,7 @@ from packages.process_manager import call_func
 from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
 from packages                 import settings
+from subprocess               import call
 import time
 
 
@@ -29,13 +30,10 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  |                                        |
-  |  Start library with Annovar programme  |
-  |                                        |
-  ==========================================
-
-  %s
+  ======================================
+   Start library with Annovar programme
+  ======================================
+   [ %s ]\n
         """ % time.ctime()
         print(note_start)
 
@@ -59,16 +57,42 @@ class main:
             "CMDs"     : self.Samples
         }
 
-        # Assign preparation tasks
-        multiP_1(self.para_dict, self.run)
+        # Make sure the directory for annotated '*.vcf' files exists
+        self.LibraryDir  = self.OutputDir + "/4_Library"
+        branchDIR_check(self.LibraryDir)
+
+
+        Step0 = \
+            """\n_ Library Step 0: Collect GATK results of all samples __________________________________________________________________\n"""
+
+        print("\n%s\n" % Step0)
+        with open(self.LibraryDir+"/allSample.step0.vcf", "w") as vcf:
+            for sample in self.Samples:
+                with open(self.OutputDir+"/3_Calling/%s.vcf" % sample, "r") as gatk:
+                    for l in gatk:
+                        vcf.write(l)
+
+
+        Step1 = \
+            """\n_ Library Step 1: Annovar, convert GATK results(*.vcf) into Annovar format _____________________________________________\n"""
+
+        CMD_1 = "{AnnovarDir}/convert2annovar.pl --includeinfo -format vcf4 {Input} > {Output} ".format(AnnovarDir=self.AnnovarDir, Input=self.LibraryDir+"/allSample.step1.vcf", Output=self.LibraryDir+"/allSample.step1.annovar")
+        print("\n%s\n>>> Executing command:\n%s\n" % (Step1, CMD_1))
+        call(CMD_1, shell=True)
+
+
+        Step2 = \
+            """\n_ Library Step 2: Annovar,  _____________________________________________\n"""
+
+        print("\n%s\n" % Step2)
+        self.createLib()
 
 
 
+    def createLib(self):
+        self.LibraryPath = self.LibraryDir + "/allSample.step3.library"
 
-    def createLib(self, para_dict, sampleName):
-        # Make sure the directory for '*.*' files exists
-        DataPreDir = "%s/%s" % (self.OutputDir+"/<packageName>", sampleName)
-        branchDIR_check(DataPreDir)
+
 
     def callDepthFreq(self, para_dict, sampleName):
         # Make sure the directory for '*.*' files exists
@@ -106,34 +130,21 @@ class main:
         branchDIR_check(DataPreDir)
 
 
+    # Finish Note __________________________________________________________________________________________________
+    note_finish = """
 
-
-
-
-
-
-        # Finish Note __________________________________________________________________________________________________
-        note_finish = """
-
-  ===========================================
-  |                                         |
-  |  Finish library with Annovar programme  |
-  |                                         |
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  %s
+=======================================
+ Finish library with Annovar programme
+=======================================
+ [ %s ]\n
         """ % time.ctime()
-        print(note_finish)
-
-
-
-
+    print(note_finish)
 
 """
 _ Log _____________________________________________________________________________
 
 2017-05-04
-    1)
+    1) 
 
 ___________________________________________________________________________________
 """

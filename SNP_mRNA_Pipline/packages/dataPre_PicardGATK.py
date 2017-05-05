@@ -30,13 +30,10 @@ class main:
         # Start Note ___________________________________________________________________________________________________
         note_start = """
 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  |                                                      |
-  |  Start BAM preparation with Picard & GATK programme  |
-  |                                                      |
-  ========================================================
-
-  %s\n
+  ====================================================
+   Start BAM preparation with Picard & GATK programme
+  ====================================================
+   [ %s ]\n
         """ % time.ctime()
         print(note_start)
 
@@ -74,13 +71,10 @@ class main:
         # Finish Note __________________________________________________________________________________________________
         note_finish = """
 
-  =========================================================
-  |                                                       |
-  |  Finish BAM preparation with Picard & GATK programme  |
-  |                                                       |
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  %s\n
+  =====================================================
+   Finish BAM preparation with Picard & GATK programme
+  =====================================================
+   [ %s ]\n
         """ % time.ctime()
         print(note_finish)
 
@@ -108,7 +102,7 @@ class main:
         sam_path = "%s/%s/%s.step2.Aligned.out.sam" % (self.OutputDir+"/1_Mapping", sampleName, sampleName)        # Input '*.sam' data
         bam_path = "%s/%s.bam" % (DataPreDir, sampleName)
         CMD_1 = "more {sam} | {Samtools} view -bS -L {bed} -h -F 4 - > {bam}".format(sam=sam_path, Samtools=self.Samtools, bed=self.bed, bam=bam_path)
-        print("\n%s\n>>> Executing command:\n%s" % (Step1, CMD_1))
+        print("\n%s\n>>> Executing command:\n%s\n" % (Step1, CMD_1))
         call(CMD_1, shell=True)
 
 
