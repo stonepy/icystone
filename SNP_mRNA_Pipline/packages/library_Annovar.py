@@ -14,12 +14,14 @@ ________________________________________________________________________________
 """
 
 
+
 from packages.process_manager import call_func
 from packages.process_manager import multiP_1
 from packages.checking        import branchDIR_check
 from packages                 import settings
 from subprocess               import call
 import time
+import re
 
 
 
@@ -76,7 +78,8 @@ class main:
         Step1 = \
             """\n_ Library Step 1: Annovar, convert GATK results(*.vcf) into Annovar format _____________________________________________\n"""
 
-        CMD_1 = "{AnnovarDir}/convert2annovar.pl --includeinfo -format vcf4 {Input} > {Output} ".format(AnnovarDir=self.AnnovarDir, Input=self.LibraryDir+"/allSample.step1.vcf", Output=self.LibraryDir+"/allSample.step1.annovar")
+        self.Step1_path = self.LibraryDir+"/allSample.step1.annovar"
+        CMD_1 = "{AnnovarDir}/convert2annovar.pl --includeinfo -format vcf4 {Input} > {Output} ".format(AnnovarDir=self.AnnovarDir, Input=self.LibraryDir+"/allSample.step0.vcf", Output=self.Step1_path)
         print("\n%s\n>>> Executing command:\n%s\n" % (Step1, CMD_1))
         call(CMD_1, shell=True)
 
@@ -88,16 +91,45 @@ class main:
         self.createLib()
 
 
-
+    # 'Step2'
     def createLib(self):
-        self.LibraryPath = self.LibraryDir + "/allSample.step3.library"
+        self.Step2_Path = self.LibraryDir + "/allSample.step2.library"
+
+        sepInfo_dict = {}
+
+
+        with open(self.Step2_Path, "w") as ANNO:
+            with open(self.Step1_path, "r") as annovar:
+                for l in annovar:
+
+                    tmp_ls = l.split("\t")
+                    info   = re.split("[:,]", tmp_ls[-1])
+                    refDepth = info[1]     # Reference depth
+                    altDepth = info[2]     # Alternavtive depth(variant)
+                    depth = refDepth + altDepth
+
+                    # Calculate frequency of variant
+                    if altDepth > 0:
+                        freq = altDepth / depth
+
+                    # Filter out low depth and frequent site
+                    if depth < 10 or freq < 0.1:
+                        continue
+
+                    title = "%s|%s|%s" % (tmp_ls[0], tmp_ls[1], tmp_ls[3])
+                    sepInfo_dict[title]["GATK"] =
 
 
 
-    def callDepthFreq(self, para_dict, sampleName):
-        # Make sure the directory for '*.*' files exists
-        DataPreDir = "%s/%s" % (self.OutputDir+"/<packageName>", sampleName)
-        branchDIR_check(DataPreDir)
+
+
+
+
+
+
+
+
+
 
     def annRS(self, para_dict, sampleName):
         # Make sure the directory for '*.*' files exists
@@ -144,7 +176,7 @@ class main:
 _ Log _____________________________________________________________________________
 
 2017-05-04
-    1) 
+    1)
 
 ___________________________________________________________________________________
 """
