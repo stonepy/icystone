@@ -38,12 +38,78 @@ with open(refFastaPATH, "r") as rf:
                     for mi in miRNA:
                         # If they share the same name, start record
                         if mi in rl:
-                            sf.write(mi+"\n")
+                            sf.write(rl)
                             record = True
                     continue
 
                 # Record the sequence when names are the same
                 if record == True:
-                    print(rl)
                     sf.write(rl)
                     record = False
+
+
+
+
+
+"""
+_ Example _________________________________________________________________________
+
+2017-05-12
+    1) Reference Fasta file:
+
+    '
+        >hsa-let-7a-5p
+        TGAGGTAGTAGGTTGTATAGTT
+        >hsa-let-7a-3p
+        CTATACAATCTACTGTCTTTC
+        >hsa-let-7a-2-3p
+        CTGTACAGCCTCCTAGCTTTCC
+        >hsa-let-7b-5p
+        TGAGGTAGTAGGTTGTGTGGTT
+        >hsa-let-7b-3p
+        CTATACAACCTACTGCCTTCCC
+        >hsa-let-7c-5p
+        TGAGGTAGTAGGTTGTATGGTT
+        >hsa-let-7c-3p
+        CTGTACAACCTTCTAGCTTTCC
+        ...
+    '
+
+    2) miRNA list:
+
+    '
+        let-7c-5p
+        let-7d-5p
+        let-7e-5p
+        let-7i-3p
+        miR-100-5p
+        miR-101-3p
+        miR-106a-5p
+        miR-10a-5p
+        miR-10b-5p
+        miR-1246
+        miR-1248
+        miR-125b-1-3p
+        miR-125b-2-3p
+        ...
+    '
+
+    3) Selected Fasta file:
+
+    '
+        >hsa-let-7c-5p
+        TGAGGTAGTAGGTTGTATGGTT
+        >hsa-let-7d-5p
+        AGAGGTAGTAGGTTGCATAGTT
+        >hsa-let-7e-5p
+        TGAGGTAGGAGGTTGTATAGTT
+        >hsa-miR-19a-3p
+        TGTGCAAATCTATGCAAAACTGA
+        >hsa-miR-19b-3p
+        TGTGCAAATCCATGCAAAACTGA
+        >hsa-miR-20a-5p
+        TAAAGTGCTTATAGTGCAGGTAG
+    ...
+    '
+___________________________________________________________________________________
+"""
