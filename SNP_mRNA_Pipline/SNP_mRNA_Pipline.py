@@ -296,5 +296,7 @@ _ Log __________________________________________________________________________
     *1) Add 'Results_check' module to check all results, if there are some results do not
     meet the criterions, send warning message, haven't done it yet, leave it for the last
 
+2017-05-09
+    *1)  Use pandas to output final data sheet as '*.xlsx'
 _________________________________________________________________________________
 """

@@ -96,11 +96,12 @@ class main:
         self.Step2_Path = self.LibraryDir + "/allSample.step2.library"
 
         sepInfo_dict = {}
+        a_dict       = {}
 
 
         with open(self.Step2_Path, "w") as ANNO:
-            with open(self.Step1_path, "r") as annovar:
-                for l in annovar:
+            with open(self.Step1_path, "r") as GATK:
+                for l in GATK:
 
                     tmp_ls = l.split("\t")
                     info   = re.split("[:,]", tmp_ls[-1])
@@ -117,8 +118,38 @@ class main:
                         continue
 
                     title = "%s|%s|%s" % (tmp_ls[0], tmp_ls[1], tmp_ls[3])
-                    sepInfo_dict[title]["GATK"] =
 
+# I think this part is overlaped with 'Step1 Annovar' convertion
+# **********************************************************************************************************************
+                    # >>> Question: I don't get it, what for ???
+                    # <<< Answer: Just fill the key 'GATK' with value
+                    # *******************************
+                    sepInfo_dict[title] = {}
+                    sepInfo_dict[title]["GATK"] = 0
+                    sepInfo_dict[title]["GATK"] += 1
+                    # *******************************
+
+                    alleles = tmp_ls[9].split(",")      # Usually there is only one value in this cell, maybe there will be more than one
+
+                    for alt in alleles:
+                        if len(tmp_ls[8]) > 1 or len(alt) > 1:
+
+                            # I was not pretty sure if I got it right
+                            # *******************************
+                            if len(alt) > len(tmp_ls[8]):
+                                alt = re.sub(tmp_ls[8], "", alt)
+                            else:
+                                alt2 = tmp_ls[8]
+                                alt  = "-"
+                        if len(alt)  == 0:
+                            alt = "-"
+                            a_dict["title"] = {}
+                            a_dict["title"][alt] = 0
+                            a_dict["title"][alt] += 1
+                            # *******************************
+# **********************************************************************************************************************
+
+            for i in a_dict:
 
 
 
@@ -169,14 +200,22 @@ class main:
  Finish library with Annovar programme
 =======================================
  [ %s ]\n
-        """ % time.ctime()
+    """ % time.ctime()
     print(note_finish)
+
+
+
+
 
 """
 _ Log _____________________________________________________________________________
 
-2017-05-04
-    1)
+2017-05-08
+    1) Integrated 'callDepthFreq' function into 'createLib' function
+
+2017-05-09
+    1) Omit the 'Varscan' part
+
 
 ___________________________________________________________________________________
 """
