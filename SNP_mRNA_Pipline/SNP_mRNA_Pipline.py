@@ -297,6 +297,9 @@ _ Log __________________________________________________________________________
     meet the criterions, send warning message, haven't done it yet, leave it for the last
 
 2017-05-09
-    *1)  Use pandas to output final data sheet as '*.xlsx'
+    *1) Use 'pandas' to output final data sheet as '*.xlsx'
+
+2017-05-12
+    1) Pause the development for a while, stay at the stage of 'library_Annovar.py'
 _________________________________________________________________________________
 """
