@@ -1,0 +1,33 @@
+1. ======= Path =======
+
+    Project  = /home/hwx/Development/WTS_mRNA_Hwx/WTS_mRNA_Pipline/
+    Raw_data = /home/hwx/Development/WTS_mRNA_Hwx/WTS_mRNA_Pipline/raw_data
+
+2. ====== Species ======
+
+    Species = human
+
+3. ==== Sample and Group -- See the Footnotes -- ====
+
+    Sample  = TWJRS_test , TWJRX_test
+
+4. ======= Group =======
+
+    Group_1 = TWJRS_test ; TWJRX_test
+
+
+
+# __ Note ____________________________________________________________________________________________________
+
+# You must not change any character prior to the equal sign, except for 'Group' option.
+#
+# 1) Sample note
+#   If 'Sample' option is empty, Pipline will use all samples in 'Raw_data' directory.
+#   You can seperate samples with characters including(" ", ",", ";", ":") -> (space, comma, semicolon, colon).
+#
+# 2) Group note
+#   Group information, example as below:
+#     "Group Name : Control sample 1, Control sample 2, ... ; Case sample 1, Case sample 2, ..."
+#
+#   No quotation mark is needed, but space and tab seperation are both OK.
+#   'Group' name must start with 'Group' or 'group', or it will not be recognized.
