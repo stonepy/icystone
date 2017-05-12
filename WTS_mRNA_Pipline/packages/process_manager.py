@@ -1,13 +1,14 @@
 Info = """
 
-- Information --------------------------------------------------------------------
- Name         : ProcessManager_SNP_mRNA_Pipline
- Description  : Run modules with single or multiple processes automatically
- Author       : Hwx
- Version      : V0
- Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS, Python3.5.3, virtualenv15.1.0
- Finish Date  : 2017-04-18
------------------------------------------------------------------------------------
+_ Information ____________________________________________________________________________
+
+    Name         : ProcessManager_SNP_mRNA_Pipline
+    Description  : Run modules with single or multiple processes automatically
+    Author       : Hwx
+    Version      : V0
+    Dev Env      : Red Hat 4.8.5-11/Ubuntu16.04 LTS, Python3.5.3, virtualenv15.1.0
+    Finish Date  : 2017-04-18
+__________________________________________________________________________________________
 
 """
 

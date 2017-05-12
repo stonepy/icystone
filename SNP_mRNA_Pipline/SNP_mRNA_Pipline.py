@@ -181,6 +181,7 @@ def test(main,config_dict, run_dict):
 # test(main,config_dict, run_dict)
 """ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ """
 
+
 """ Don't use this block while testing (Excution control)"""
 # try:
 #     prep = preparation()       # Comment this line to skip whole preparation then test the Pipline manually
@@ -219,7 +220,7 @@ config_producer
 checking
 mapping
 
-# _ need to be developed ________________
+_ need to be developed ________________
 gatk
 calling
 library

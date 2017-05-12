@@ -37,27 +37,27 @@ class preparation:
         # Start Note
         self.note_start = """
 
-        ---------------------------------------
-        |    Lauching the WTS_mRNA Pipline    |
-        ---------------------------------------
-         [ %s ]\n
+               ---------------------------------------
+===============     Lauching the WTS_mRNA Pipline     ===============
+               ---------------------------------------
+                    [ %s ]\n
           """ % time.ctime()
 
         # Running Note
         self.note_running = """
-        -------------------------------------
-        |    WTS_mRNA Pipline is running    |
-        -------------------------------------
-         [ %s ]\n
+                -------------------------------------
+================     WTS_mRNA Pipline is running     ================
+                -------------------------------------
+                    [ %s ]\n
           """ % time.ctime()
 
         # Finish note
         self.note_finish = """
 
-        -----------------------------------
-        |    WTS_mRNA Pipline finished    |
-        -----------------------------------
-         [ %s ]\n
+                  ---------------------------------
+==================    WTS_mRNA Pipline finished    ==================
+                  ---------------------------------
+                    [ %s ]\n
           """ % time.ctime()
 
 
@@ -83,7 +83,7 @@ class preparation:
     # 2) Generate configs and parse them
     def config(self):
         try:
-            from packages import config_processor
+            from Packages import config_processor
 
             # Parse the config Info, then store in a dictionary
             self.WTS_cfg_dict = config_processor.WTS_cfg(self.WTSconfig_path)
@@ -103,13 +103,26 @@ class preparation:
     def check(self):
         try:
             print("\nChecking the necessary packages and other items before running...\n")
-            from packages import checking
+            from Packages import checking
             checking.baseDIR_check(self.WTS_cfg_dict)    # Check 'raw_data','data_analysis' and 'report' directory
             checking.package_check()
 
         except Exception as e:
             print(">>> Warning:\n      %s\n" % e)
             print(">>> Encounter some problems as above while checking. You can stop(Ctrl+C) this Pipline right now and fix it, or just let it be. If you lucky, everything will be fine, but you are not...Good luck!\n")
+
+
+    def timer(self, t_start):
+        t_finish = time.time()  # Finish time
+        total_time = t_finish - t_start  # Total time
+        # Convert second to minute, hour and day.
+        day = total_time // (3600 * 24)
+        hour = total_time // (3600) % 24
+        minute = total_time / 60 % 60
+        second = total_time % (60)
+
+        return day, hour, minute, second, total_time
+
 
 
 """ _ 2. Main ______________________________________________________________________________________________________ """
@@ -119,7 +132,7 @@ class workflow(preparation):
         self.WTS_cfg_dict  = WTS_cfg_dict
 
     # def mapping(self):
-    #     from packages import mapping_STAR
+    #     from Packages import mapping_STAR
     #     mapping_STAR.main(self.config_dict)
 
 

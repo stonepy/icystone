@@ -55,10 +55,10 @@ def branchDIR_check(DIR):
 """ _ 2. Package Check _____________________________________________________________________________________________ """
 def package_check():
     try:
-        # Alternative way: import packages.settings
+        # Alternative way: import Packages.settings
 
-        from packages import settings
-        from packages import process_manager
+        from Packages import settings
+        from Packages import process_manager
 
         print("\n  Everything is OK. Start running right away.\n")
 

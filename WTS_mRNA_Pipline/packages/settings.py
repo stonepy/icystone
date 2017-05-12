@@ -11,13 +11,15 @@ _ Information __________________________________________________________________
     Finish Date  : 2017-05-
 __________________________________________________________________________________________
 
-
 """
+
+
+from os.path import join as pjoin
 
 
 
 # Species database path set
-species_dict = {
+Reference = {
 
     # Arabidopsis TAIR10
     "Arabidopsis" :
@@ -40,9 +42,58 @@ species_dict = {
 
 
 # Software settings
-software_dict = {
+SoftwarePATH = {
+
+    "SoftPATH"  :   "",
+
+    "Python"    :   "",
+    "R"         :   "",
+    "Java"      :   "",
+    "FastQC"    :   "",
+    "iTools"    :   "",
+    "Fastx_toolkit"  :   "",
+    "Trim_Galore"    :   "",
+    "HISAT2"    :   "",
+    "Samtools"  :   "",
+    "Picard"    :   "",
+    "RNA_SeQC"  :   "",
+    "RSEQC"     :   "",
 
 }
+
+SoftwareINFO = {
+
+    "SoftPATH"  :   "",
+
+    "Python"    :   "",
+    "R"         :   "",
+    "Java"      :   "",
+    "FastQC"    :   "",
+    "iTools"    :   "",
+    "Fastx_toolkit"  :   "",
+    "Trim_Galore"    :   "",
+    "HISAT2"    :   "",
+    "Samtools"  :   "",
+    "Picard"    :   "",
+    "RNA_SeQC"  :   "",
+    "RSEQC"     :   "",
+
+}
+
+
+# Result dir
+ResultDIR = {
+    "Log"   :   "",
+
+}
+
+
+# Report dir
+ReportDIR = {
+
+}
+
+
 
 """
 _ Log _____________________________________________________________________________

@@ -1,7 +1,7 @@
 1. ======= Path =======
 
-    Project  = /home/hwx/Development/WTS_mRNA_Hwx/WTS_mRNA_Pipline/
-    Raw_data = /home/hwx/Development/WTS_mRNA_Hwx/WTS_mRNA_Pipline/raw_data
+    Project  = /home/hwx/DevPipline/WTS_mRNA_Hwx/WTS_mRNA_Pipline/
+    Raw_data = /home/hwx/DevPipline/WTS_mRNA_Hwx/WTS_mRNA_Pipline/raw_data
 
 2. ====== Species ======
 
