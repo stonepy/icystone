@@ -19,7 +19,7 @@ from os.path import join as pjoin
 
 
 # Species database path set
-Reference = {
+Reference_dict = {
 
     # Arabidopsis TAIR10
     "Arabidopsis" :
@@ -42,48 +42,100 @@ Reference = {
 
 
 # Software settings
-SoftwarePATH = {
+Software_dict = {
+
 
     "SoftPATH"  :   "",
 
-    "Python"    :   "",
-    "R"         :   "",
-    "Java"      :   "",
-    "FastQC"    :   "",
-    "iTools"    :   "",
-    "Fastx_toolkit"  :   "",
-    "Trim_Galore"    :   "",
-    "HISAT2"    :   "",
-    "Samtools"  :   "",
-    "Picard"    :   "",
-    "RNA_SeQC"  :   "",
-    "RSEQC"     :   "",
+    "Python3"   : {
+        "path"  : "/home/hwx/bin/virENV/python35_hwx/bin/python",
+        "info"  : "This is the python3 in my directory",
+    },
 
-}
+    "Python2"   :   {
+        "path"  :   "/home/hwx/bin/virENV/python27_hwx/bin/python",
+        "info"  :   "This is the python2 in my directory",
+    },
 
-SoftwareINFO = {
+    "R"         :   {
+        "path"  : "/usr/bin/R",
+        "info"  : "System default",
+    },
 
-    "SoftPATH"  :   "",
+    "Java"      :   {
+        "path"  : "",
+        "info"  : "",
+    },
 
-    "Python"    :   "",
-    "R"         :   "",
-    "Java"      :   "",
-    "FastQC"    :   "",
-    "iTools"    :   "",
-    "Fastx_toolkit"  :   "",
-    "Trim_Galore"    :   "",
-    "HISAT2"    :   "",
-    "Samtools"  :   "",
-    "Picard"    :   "",
-    "RNA_SeQC"  :   "",
-    "RSEQC"     :   "",
+    "FastQC"    :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "iTools"    :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "Fastx_toolkit" :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "Trim_Galore"   :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "HISAT2"    :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "Samtools"  :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "Picard"    :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "RNA_SeQC"  :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
+
+    "RSEQC"     :   {
+        "path"  : "",
+        "nProcess"  : "",
+        "nThread"   : "",
+        "info"  : "",
+    },
 
 }
 
 
 # Result dir
 ResultDIR = {
-    "Log"   :   "",
+    "log"   :   "",
 
 }
 
