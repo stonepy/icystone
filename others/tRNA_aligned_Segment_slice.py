@@ -63,48 +63,49 @@ def reference_seqMerge():
 # There is something need to be fixed ===
 # =======================================
 def blast():
-    with open(output_name+".blast.fa", "w") as res_fa:
+    output_path = output_name + ".blast.trd"
 
-        blastRes = open(blastRes_path, "r")
-        blastRes_dict = {}
+    blastRes = open(blastRes_path, "r")
+    blastRes_dict = {}
 
-        for bl in blastRes:
-            bl_spl  = bl.strip().split("\t")
-            bl_id   = bl_spl[1]
-            sbj_start = int(bl_spl[8])
-            sbj_end   = int(bl_spl[9])
+    for bl in blastRes:
+        bl_spl  = bl.strip().split("\t")
+        bl_id   = bl_spl[1]
+        sbj_start = int(bl_spl[8])
+        sbj_end   = int(bl_spl[9])
 
+        for seq_id in ref_dict.keys():
+            if bl_id in seq_id:
+                seq_tmp = ref_dict[seq_id]
+                faLen   = len(ref_dict[seq_id])
 
+                if sbj_start > sbj_end:
+                    sbj_start = faLen - sbj_start + 1
+                    sbj_end   = faLen - sbj_end + 1
+                    seq_align  = seq_tmp[::-1][sbj_start:sbj_end][::-1]
+                else:
+                    seq_align  = seq_tmp[sbj_start:sbj_end]
 
+                try:
+                    blastRes_dict[bl_id].append([sbj_start,sbj_end,seq_align])
+                except Exception:
+                    blastRes_dict[bl_id] = []
+                    blastRes_dict[bl_id].append([sbj_start,sbj_end,seq_align])
 
-            for seq_id in ref_dict.keys():
-                if bl_id in seq_id:
-                    seq_tmp = ref_dict[seq_id]
-                    faLen   = len(ref_dict[seq_id])
+    blastRes.close()
 
-                    if sbj_start > sbj_end:
-                        sbj_start = faLen - sbj_start + 1
-                        sbj_end   = faLen - sbj_end + 1
-                        seq_align  = seq_tmp[::-1][sbj_start:sbj_end][::-1]
-
-
-                    else:
-                        seq_align  = seq_tmp[sbj_start:sbj_end]
-
-
-                    try:
-                        blastRes_dict[bl_id].append([sbj_start,sbj_end,seq_align])
-
-                    except Exception:
-                        blastRes_dict[bl_id] = []
-                        blastRes_dict[bl_id].append([sbj_start,sbj_end,seq_align])
+    format_out(output_path, blastRes_dict)
 
 
 
-        blastRes.close()
-        for i in blastRes_dict.items():
-            print(i)
+def format_out(output_path, Res_dict):
+    pass
+
+
+
 # =======================================
+
+
 
 
 def bowtie():
