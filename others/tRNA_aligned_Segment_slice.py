@@ -18,12 +18,11 @@ try:
 
         """ % __file__)
 
-    if not reference_path:
         raise
 
-except Exception as e:
+except:
 
-    print(e)
+    print(">>> Use the default parameters\n")
 
     try:
         blastRes_path   = "1_10000.blast.tsv"
@@ -36,9 +35,10 @@ except Exception as e:
         exit()
 
 
-def reference_seqMerge():
+def reference_seqMerge(reference_path):
     ref_dict = {}
     fa_tmp   = None
+
     with open(reference_path, "r") as reference:
         for l in reference:
 
@@ -53,19 +53,15 @@ def reference_seqMerge():
                 try:
                     fa_tmp += l
 
-                except Exception:
+                except:
                     fa_tmp  = l
 
     return ref_dict
 
 
-
-# There is something need to be fixed ===
-# =======================================
-def blast():
+def blast(ref_dict):
     output_path = output_name + ".blast.trd"
-
-    blastRes = open(blastRes_path, "r")
+    blastRes    = open(blastRes_path, "r")
     blastRes_dict = {}
 
     for bl in blastRes:
@@ -82,30 +78,70 @@ def blast():
                 if sbj_start > sbj_end:
                     sbj_start = faLen - sbj_start + 1
                     sbj_end   = faLen - sbj_end + 1
-                    seq_align  = seq_tmp[::-1][sbj_start:sbj_end][::-1]
+                    seq_align = seq_tmp[::-1][sbj_start:sbj_end][::-1]
                 else:
-                    seq_align  = seq_tmp[sbj_start:sbj_end]
+                    seq_align = seq_tmp[sbj_start:sbj_end]
 
                 try:
                     blastRes_dict[bl_id].append([sbj_start,sbj_end,seq_align])
-                except Exception:
+                except:
                     blastRes_dict[bl_id] = []
                     blastRes_dict[bl_id].append([sbj_start,sbj_end,seq_align])
 
     blastRes.close()
-
-    format_out(output_path, blastRes_dict)
-
-
-
-def format_out(output_path, Res_dict):
-    pass
+    format_output(output_path, ref_dict, blastRes_dict)
 
 
 
-# =======================================
+def format_output(output_path, Ref_dict, Res_dict):
 
+    with open(output_path, "w") as fm_out:
 
+        symbol      = "."
+        space       = " "
+        idBlock_len = 60
+        out_dict    = {}
+
+        for seq_id in Ref_dict.keys():
+            for res_id in Res_dict.keys():
+                ref_seq = Ref_dict[seq_id]
+
+                if res_id in seq_id:
+                    refSeq_len = len(ref_seq)
+                    out_dict[res_id] = [ref_seq+"\n"]
+
+                    for info in Res_dict[res_id]:
+                        res_seq = info[2]
+                        if info[0] > info[1]:
+                            start = info[1]
+                            end   = info[0]
+                        else:
+                            start = info[0]
+                            end   = info[1]
+
+                        resIdSeq = (start * symbol) + res_seq + ((refSeq_len - end) * symbol) + "\n"
+                        out_dict[res_id].append(resIdSeq)
+
+        for id in out_dict:
+            id_len    = len(id)
+            space_len = idBlock_len - id_len
+            spaces    = space * space_len
+
+            fm_out.write("\n\n")
+
+            ref_line = True
+            for l in out_dict[id]:
+
+                if ref_line:
+                    x = idBlock_len - len("Reference Sequence:")
+                    outLine = "Reference Sequence:" + (space * x) + l
+                    fm_out.write(outLine)
+                    ref_line = False
+                    continue
+
+                outLine = id + spaces + l
+                fm_out.write(outLine)
+                print(outLine)
 
 
 def bowtie():
@@ -171,8 +207,8 @@ def bowtie():
 
 
 if __name__ == "__main__":
-    ref_dict = reference_seqMerge()
 
+    ref_dict = reference_seqMerge(reference_path)
+    blast(ref_dict)
 
-    blast()
-    # bowtie()
+    # bowtie(ref_dict)
