@@ -118,17 +118,19 @@ def ref_search(res_dict, res_id, sbj_start, sbj_end):
             faLen   = len(ref_dict[seq_id])
 
             if sbj_start > sbj_end:
-                sbj_start = faLen - sbj_start + 1
-                sbj_end   = faLen - sbj_end + 1
+                sbj_start = faLen - sbj_start
+                sbj_end   = faLen - sbj_end
+                # Because the '*.SAM' file use 1-based coordinate system, but python use 0-postiton coordinate system, -1. When reverse the sequence and the position need to +1, offset -1
                 seq_align = seq_tmp[::-1][sbj_start:sbj_end][::-1]
             else:
-                seq_align = seq_tmp[sbj_start:sbj_end]
+                # Because the '*.SAM' file use 1-based coordinate system, but python use 0-postiton coordinate system, substract 1
+                seq_align = seq_tmp[sbj_start-1:sbj_end-1]
 
             try:
-                res_dict[res_id].append([sbj_start, sbj_end, seq_align])
+                res_dict[res_id].append([sbj_start-1, sbj_end-1, seq_align])
             except:
                 res_dict[res_id] = []
-                res_dict[res_id].append([sbj_start, sbj_end, seq_align])
+                res_dict[res_id].append([sbj_start-1, sbj_end-1, seq_align])
 
 
 def format_output(output_path, Ref_dict, Res_dict):
