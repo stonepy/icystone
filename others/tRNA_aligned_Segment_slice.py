@@ -7,7 +7,7 @@ Info = {
                         aligned to the reference sequences",
 
     "__Author"       : "Hwx",
-    "__Version"      : "V0",
+    "__Version"      : "V1",
     "__Dev Env"      : "Red Hat 4.8.5_11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0",
     "__Finish Date"  : "2017_05-24",
 # __________________________________________________________________________________
