@@ -28,18 +28,19 @@ import multiprocessing
 
 # _ Arguments __________________________________________________________________________
 
+def get_args():
+    parser = argparse.ArgumentParser(description=__Description__)
 
-parser = argparse.ArgumentParser(description=__Description__)
+    parser.add_argument("arg1", help="ThisIsThePositionalArgument1", )
+    parser.add_argument("-arg2", help="ThisIsTheOptionalArgument2", default=None)
+    parser.add_argument("-a3", "--arg3", help="ThisIsTheOptionalArgument3", default=None)
 
-parser.add_argument("arg1", help="ThisIsThePositionalArgument1", )
-parser.add_argument("-arg2", help="ThisIsTheOptionalArgument2", default=None)
-parser.add_argument("-a3", "--arg3", help="ThisIsTheOptionalArgument3", default=None)
-print()
-args = parser.parse_args()
+    args = parser.parse_args()
 
-sCMD = "python %s %s %s" % (__file__, args.arg1, '-arg2 '+str(args.arg2))
-print("\n    Running command: %s\n" % sCMD)
+    sCMD = "python %s %s %s" % (__file__, args.arg1, '-arg2 ' + str(args.arg2))
+    print("\n    Running command: %s\n" % sCMD)
 
+    return args
 
 # _ Arguments __________________________________________________________________________
 
@@ -64,7 +65,7 @@ class quality_control:
 # _ Execution Control __________________________________________________________________
 
 if __name__ == "__main__":
-    pass
+    args = get_args()
 
 
 

@@ -17,11 +17,14 @@ __Notes__          = """ None """
 
 import argparse     # Reference of 'Argparse': https://docs.python.org.tw/3/howto/argparse.html
 import logging
+import re
 import os
 import sys
-import re
+import time
 import subprocess
 import multiprocessing
+
+import pandas as pd
 
 # _ Packages ___________________________________________________________________________
 
@@ -58,20 +61,19 @@ class gtf2gff:
     def convertor(self, gtf_PATH, gff_PATH):
         print("\n\tConverting GTF to GFF ...\n")
 
-        with open(gff_PATH, "r") as gff:
-            gtf = open(gtf_PATH)
+        with open(gff_PATH, "w") as gff:
+            gtf = open(gtf_PATH, "r")
 
             for l in gtf:
                 if l.startswith("#"):
                     gff.write(l)
                     continue
 
-                l_spl = re.split("[ \t]", l)
+                l_spl = l.split("\t")
 
-                gff.write()
+                gff.write(l)
 
             gtf.close()
-
 
         print("\tFinish GTF to GFF conversion.\n")
 
@@ -91,8 +93,8 @@ class gff2gtf:
     def convertor(self, gff_PATH, gtf_PATH):
         print("\n\tConverting GFF to GTF ...\n")
 
-        with open(gtf_PATH, "r") as gtf:
-            gff = open(gff_PATH)
+        with open(gtf_PATH, "w") as gtf:
+            gff = open(gff_PATH, "r")
 
             for l in gff:
                 if l.startswith("#"):
@@ -122,11 +124,14 @@ if __name__ == "__main__":
     gff2gtf = gff2gtf()
 
 
+    s = time.time()
     if args.gff2gtf == True:
         gff2gtf.convertor(args.GFF_PATH, args.GTF_PATH)
 
     else:
         gtf2gff.convertor(args.GTF_PATH, args.GFF_PATH)
+    e = time.time()
+    print(e-s)
 
 
 
@@ -142,8 +147,8 @@ if __name__ == "__main__":
 # - Log --------------------------------------------------------------------------------
 Log = """
 
-2017-06-
-    1)
+2017-06-01
+    1) Start this script
 
 
 
