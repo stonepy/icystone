@@ -39,6 +39,7 @@ def get_args():
     parser.add_argument("OutputDir", help="Folder for Outputing result VCF files")
     parser.add_argument("Tumor", help="Name of Tumor samples")
     parser.add_argument("Normal", help="Name of Normal samples")
+    parser.add_argument("-p", "--nProcess", help="Numbers of processes", default=6)
 
     args = parser.parse_args()
 
@@ -101,18 +102,20 @@ def MuTect2_CMDs(pDict):
 
 
 
+def callFunc(cmd):
+    call(cmd, shell=True)
+    print(cmd+"\n")
+
+
 def multiCall(CMDs, max_Process):
     print("\n   Using Multiple Processes\n")
-    print(CMDs)
-
-    def callFunc(cmd):
-        # call(cmd)
-        print(cmd, "\n")
+    # print(CMDs)
 
 
     P = Pool(max_Process)
 
     for cmd in CMDs:
+        # print(cmd+"\n")
         P.apply_async(callFunc, args=(cmd, ))
 
     P.close()
@@ -150,7 +153,8 @@ if __name__ == "__main__":
     }
 
 
-    multiCall(MuTect2_CMDs(pDict), 8)
+
+    multiCall(MuTect2_CMDs(pDict), int(args.nProcess))
 
 
 
