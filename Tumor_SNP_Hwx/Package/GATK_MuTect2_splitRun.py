@@ -7,7 +7,7 @@ __Author__         = """ Hwx """
 __Version__        = """ 0 """
 __DevEnv__         = """ Red Hat 4.8.5-11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0 """
 __FirstCreate__    = """ 2017-06-02"""
-__LastModificate__ = """ 2017-06-"""
+__LastModificate__ = """ 2017-06-06"""
 __Notes__          = """ None """
 # _ Information ________________________________________________________________________
 
