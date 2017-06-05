@@ -1,4 +1,3 @@
-
 # _ Information ________________________________________________________________________
 
 __Name__           = """ TGATK MuTect2 ChromosomeSeparate Running """
@@ -33,16 +32,16 @@ from multiprocessing import Pool
 
 
 def get_args():
+
     parser = argparse.ArgumentParser(description=__Description__)
 
-    parser.add_argument("", help="ThisIsThePositionalArgument1", )
-    parser.add_argument("-arg2", help="ThisIsTheOptionalArgument2", default=None)
-    parser.add_argument("-a3", "--arg3", help="ThisIsTheOptionalArgument3", default=None)
+    parser.add_argument("InputDir", help="Folder contains all Inuput BAM files, both Tumor and Normal")
+    parser.add_argument("OutputDir", help="Folder for Outputing result VCF files")
+    parser.add_argument("Tumor", help="Name of Tumor samples")
+    parser.add_argument("Normal", help="Name of Normal samples")
+    parser.add_argument("-p", "--nProcess", help="Numbers of processes", default=6)
 
     args = parser.parse_args()
-
-    sCMD = "python %s %s %s" % (__file__, args.arg1, '-arg2 ' + str(args.arg2))
-    print("\n    Running command: %s\n" % sCMD)
 
     return args
 
@@ -50,23 +49,73 @@ def get_args():
 
 
 
+
+
 # // Main //////////////////////////////////////////////////////////////////////////////
 
+chrNum    = 23
+chrSpcial = ("X", "Y")
+
+for i in range(1, chrNum):
+
+    try:
+        chrList.append(str(i))
+
+    except:
+        chrList = []
+        chrList.append(str(i))
+
+for i in chrSpcial:
+    chrList.append(i)
 
 
-def MuTect2_CMDs():
-    pass
+projDir = "/home/hwx/DevPipline/Tumor_SNP_Hwx/"
+
+
+
+def MuTect2_CMDs(pDict):
+
+    # CMD_example:
+
+    """
+    java -jar GenomeAnalysisTK.jar \
+     -T MuTect2 \
+     -R reference.fasta \
+     -I:tumor tumor.bam \
+     -I:normal normal.bam \
+     -o output.vcf
+    """
+
+    CMDs = []
+    for i in pDict["chrList"]:
+
+        tumorBAM  = "%s/%s_%s.bam" % (pDict["BAMsplDir"], pDict["tumorName"], str(i))
+        normalBAM = "%s/%s_%s.bam" % (pDict["BAMsplDir"], pDict["normalName"], str(i))
+        outVCF    = "%s/%s_Versus_%s_%s.vcf" % (pDict["vcfDir"], pDict["tumorName"], pDict["normalName"], str(i))
+
+        cmd = "{java} -jar {gatk} -T MuTect2 -R {refFasta} -I:tumor {tumorBAM} -I:normal {normalBAM} -o {outVCF}".format(java=pDict["java"], gatk=pDict["gatk"], refFasta=pDict["ref"], tumorBAM=tumorBAM, normalBAM=normalBAM, outVCF=outVCF)
+
+        CMDs.append(cmd)
+
+
+    return CMDs
+
+
+
+def callFunc(cmd):
+    call(cmd, shell=True)
+    print(cmd+"\n")
 
 
 def multiCall(CMDs, max_Process):
-
-    def callFunc(cmd):
-        call(cmd)
+    print("\n   Using Multiple Processes\n")
+    # print(CMDs)
 
 
     P = Pool(max_Process)
 
     for cmd in CMDs:
+        # print(cmd+"\n")
         P.apply_async(callFunc, args=(cmd, ))
 
     P.close()
@@ -78,10 +127,34 @@ def multiCall(CMDs, max_Process):
 
 
 
+
+
 # _ Execution Control __________________________________________________________________
 
 if __name__ == "__main__":
     args = get_args()
+
+
+    pDict = {
+
+        "tumorName"  : args.Tumor,
+        "normalName" : args.Normal,
+
+        "java"      : "/usr/bin/java",
+        "gatk"      : projDir + "Software/GenomeAnalysisTK.jar",
+        "ref"       : projDir + "Database/hg19/hg19.fa",
+        "BAMsplDir" : args.InputDir,
+        "vcfDir"    : args.OutputDir,
+
+        "chrList"   : chrList,
+
+        'nProcess'  : 8,
+
+    }
+
+
+
+    multiCall(MuTect2_CMDs(pDict), int(args.nProcess))
 
 
 
@@ -95,11 +168,11 @@ if __name__ == "__main__":
 
 # - Log --------------------------------------------------------------------------------
 Log = """
-
 2017-06-
     1)
-
-
-
 """
-# - Log --------------------------------------------------------------------------------
+# - Log
+#
+#
+# --------------------------------------------------------------------------------
+
