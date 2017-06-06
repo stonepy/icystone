@@ -1,18 +1,25 @@
 from multiprocessing import Pool
+from subprocess import call
 
-import multiprocessing as mp
+import os
 import re
 import time
 import pysam
 
 
+
 bamPATH     = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Test_DIR/BAM/0808_3/0808_3_final.bam"
 bamSplitDIR = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Test_DIR/tmp"
+
+bamdir = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Test_DIR/BAM/tmp"
+javaPATH   = "java"
+picardPATH = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Software/picard.jar"
+
+
 
 
 try:
     assert chrNames
-    assert chrNames > 0
 
 except:
     chrNames = []
@@ -42,6 +49,18 @@ class chrSplit_BAM:
         with open(BAMSplit_path, "w") as bamSplit:
             for l in self.bam.fetch(chr_name):
                 bamSplit.write(l)
+
+
+    def index_splitedBAM(self, chr_name):
+        bamName = re.split("[/.]", self.BAM_path)[-2]
+        for bam in bamList:
+            bamPATH = "%s/%s" % (bamdir, bam)
+            baiPATH = "%s/%s.bai" % (bamdir, bam)
+
+            cmd = "{java} -jar {picard} BuildBamIndex I={bamPATH} O={baiPATH}".format(java=javaPATH, picard=picardPATH, bamPATH=bamPATH, baiPATH=baiPATH)
+
+            print(cmd + "\n")
+            call(cmd, shell=True)
 
 
 class manager:

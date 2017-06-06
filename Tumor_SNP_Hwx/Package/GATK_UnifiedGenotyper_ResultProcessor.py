@@ -9,25 +9,20 @@ __DevEnv__         = """ Red Hat 4.8.5-11/Ubuntu16.04 LTS;Python3.5.3,virtualenv
 __FirstCreate__    = """ 2017-06-05"""
 __LastModificate__ = """ 2017-06-05"""
 __Notes__          = """ None """
-# _ Information ________________________________________________________________________
+
+# _ Information ________________________________________________________________ ENd ___
 
 
 
 # _ Packages ___________________________________________________________________________
 
 import argparse
-import logging
-import os
-import sys
-import subprocess
-import multiprocessing
 
-# _ Packages ___________________________________________________________________________
+# _ Packages ___________________________________________________________________ ENd ___
 
 
 
 # _ Arguments __________________________________________________________________________
-
 
 def get_args():
     parser = argparse.ArgumentParser(description=__Description__)
@@ -49,7 +44,7 @@ def get_args():
 
     return args
 
-# _ Arguments __________________________________________________________________________
+# _ Arguments __________________________________________________________________ ENd ___
 
 
 
@@ -86,9 +81,8 @@ def TumorNormal_VCFcomparation(VCF_tumorPATH, VCF_normalPATH, VCF_outputDIR):
     TiVcf = open(VCF_tumorPATH, "r")
     NiVcf = open(VCF_normalPATH, "r")
 
-    run = True
 
-    while run:
+    while True:
 
         try:
             tumorL   = next(TiVcf)
@@ -116,7 +110,7 @@ def TumorNormal_VCFcomparation(VCF_tumorPATH, VCF_normalPATH, VCF_outputDIR):
 
 
 
-# // Main //////////////////////////////////////////////////////////////////////////////
+# // Main ////////////////////////////////////////////////////////////////////// End ///
 
 
 
@@ -136,7 +130,7 @@ if __name__ == "__main__":
         exit()
 
 
-# _ Execution Control __________________________________________________________________
+# _ Execution Control __________________________________________________________ ENd ___
 
 
 
@@ -151,7 +145,8 @@ Log = """
         1> vcf_filter
         2> TumorNormal_VCFcomparation
 
-
+2017-06-06
+    1) Tested, works !
 
 """
-# - Log --------------------------------------------------------------------------------
+# - Log ------------------------------------------------------------------------ End ---

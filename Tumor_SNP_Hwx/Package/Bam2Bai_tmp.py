@@ -1,5 +1,8 @@
 import os
 from subprocess import call
+from multiprocessing import Pool
+
+
 
 bamdir = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Test_DIR/BAM/tmp"
 
@@ -17,3 +20,5 @@ for bam in bamList:
 
     print(cmd + "\n")
     call(cmd, shell=True)
+
+
