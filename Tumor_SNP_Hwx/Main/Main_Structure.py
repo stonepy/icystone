@@ -1,4 +1,8 @@
 """
+
+"""
+
+"""
 Pipline:
 
 --|1| Main |
@@ -61,33 +65,59 @@ Pacakge:
                  |--|
                     |-- 1> Check/Load Package
                            |
-                           |-- 2> Check Software
+                           |-- 2> Check Software: Path exits
                            |
-                           |-- 3> Check Database
+                           |-- 3> Check Database: Path exits
                            |
-                           |-- 4> Check Directory
+                           |-- 4> Check Directory: Path exits
 
 
 --|3| getArgs.py |
-                      |
-                      |  |1|-- Check Preparation
-                      |--|
-                         |2|-- Main
+                 |
+                 |  |1|-- Check
+                 |--|
+                    |2|-- Main
 
 
---|4| qualityCtrl.py |
+--|4| configProcess.py |
 
 
---|5| mapping.py |
+--|5| qualityCtrl.py |
 
 
---|4-1| gatk.py |
+--|6| mapping.py |
 
 
---|4-2| varscan2.py |
+--|7-1| gatk.py |                                       |-- 1> mpileup
+                |                       |-- 1> samtools |
+                |  |-- 0> BAM_Processor |               |-- 2> chr_split
+                |  |                    |
+                |--|                    |             |-- 1> index
+                   |                    |-- 2> picard |
+                   |
+                   |
+                   |-- 1> UnifiedGenotyper
+                   |
+                   |-- 2> MuTect2
+                   |
+                   |-- 3> MuTect2
+
+
+--|7-2| varscan2.py |
+                    |
+                    |  |-- 1> somatic
+                    |--|
+
+
+--|*| processManage.py |
+                       |
+                       |  |-- 1>
 
 
 --|*| reportPack.py |
+
+
+--|*| log.py |
 
 
 

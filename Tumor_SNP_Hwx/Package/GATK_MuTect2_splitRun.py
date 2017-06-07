@@ -114,7 +114,7 @@ def multiCall(CMDs, max_Process):
     P = Pool(max_Process)
 
     for cmd in CMDs:
-        # print(cmd+"\n")
+        print(cmd+"\n")
         P.apply_async(callFunc, args=(cmd, ))
 
     P.close()

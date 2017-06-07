@@ -4,13 +4,13 @@
 __Name__           = """ GATK_UnifiedGenotyper_ResultProcessor """
 __Description__    = """ \n This Script is developed for processing GATK_UnifiedGenotyper results \n """
 __Author__         = """ Hwx """
-__Version__        = """ 0 """
+__Version__        = """ 1 """
 __DevEnv__         = """ Red Hat 4.8.5-11/Ubuntu16.04 LTS;Python3.5.3,virtualenv15.1.0 """
 __FirstCreate__    = """ 2017-06-05"""
-__LastModificate__ = """ 2017-06-05"""
+__LastModificate__ = """ 2017-06-06"""
 __Notes__          = """ None """
 
-# _ Information ________________________________________________________________ ENd ___
+# _ Information ________________________________________________________________ End ___
 
 
 
@@ -18,7 +18,7 @@ __Notes__          = """ None """
 
 import argparse
 
-# _ Packages ___________________________________________________________________ ENd ___
+# _ Packages ___________________________________________________________________ End ___
 
 
 
@@ -44,7 +44,7 @@ def get_args():
 
     return args
 
-# _ Arguments __________________________________________________________________ ENd ___
+# _ Arguments __________________________________________________________________ End ___
 
 
 
@@ -82,25 +82,44 @@ def TumorNormal_VCFcomparation(VCF_tumorPATH, VCF_normalPATH, VCF_outputDIR):
     NiVcf = open(VCF_normalPATH, "r")
 
 
-    while True:
 
-        try:
-            tumorL   = next(TiVcf)
-            normarlL = next(NiVcf)
-        except:
-            break
+    # ___ Version 2 _____________
 
-        if tumorL.startswith("#"):
-            ToVcf.write(tumorL)
-            NoVcf.write(normarlL)
+    def v2():
+        pass
 
-        elif tumorL.split("\t")[4] == normarlL.split("\t")[4]:
-                continue
+    # ___ Version 2 ______ End ___
 
-        else:
-            ToVcf.write(tumorL)
-            NoVcf.write(normarlL)
 
+
+
+    # ___ Version 1 _____________
+
+    def v1():
+        while True:
+
+            try:
+                tumorL   = next(TiVcf)
+                normarlL = next(NiVcf)
+            except:
+                break
+
+            if tumorL.startswith("#"):
+                ToVcf.write(tumorL)
+                NoVcf.write(normarlL)
+
+            elif tumorL.split("\t")[4] == normarlL.split("\t")[4]:
+                    continue
+
+            else:
+                ToVcf.write(tumorL)
+                NoVcf.write(normarlL)
+
+    # ___ Version 1 ______ End ___
+
+
+
+    v2()
 
     TiVcf.close()
     NiVcf.close()
@@ -130,7 +149,7 @@ if __name__ == "__main__":
         exit()
 
 
-# _ Execution Control __________________________________________________________ ENd ___
+# _ Execution Control __________________________________________________________ End ___
 
 
 
@@ -147,6 +166,7 @@ Log = """
 
 2017-06-06
     1) Tested, works !
+    2) 'TumorNormal_VCFcomparation' add new condition
 
 """
 # - Log ------------------------------------------------------------------------ End ---
