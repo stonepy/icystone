@@ -104,10 +104,9 @@ Pacakge:
 
 
 --|7-2| varscan2.py |
-                    |
-                    |  |-- 1> somatic
-                    |--|
-
+                    |                 |-- 1> Complete
+                    |  |-- 1> somatic |
+                    |--|              |-- 2> 
 
 --|*| processManage.py |
                        |
