@@ -64,11 +64,11 @@ class chrSplit_BAM:
 
         bamName = re.split("[/.]", self.BAM_path)[-2]
         BAMSplit_path = "%s/%s_%s.bam" % (self.BAMSplit_dir, bamName, chr_name)
-        BAISplit_path = "%s/%s_%s.bai" % (self.BAMSplit_dir, bamName, chr_name)
+        BAISplit_path = "%s/%s_%s.bam.bai" % (self.BAMSplit_dir, bamName, chr_name)
 
-
-        cmd_split = "{samtools} view -b {BAM_input} {chr} > {BAM_output}".format(samtools=self.samtools, BAM_input=self.BAM_path, chr=chr_name, BAM_output=BAMSplit_path)
-        cmd_index = "{java} -jar {picard} BuildBamIndex I={bamPATH} O={baiPATH}".format(java=javaPATH, picard=picardPATH, bamPATH=bamPATH, baiPATH=BAISplit_path)
+        # Must use '-h' option to include header in every output file, or following steps nay not work
+        cmd_split = "{samtools} view -h -b {BAM_input} {chr} > {BAM_output}".format(samtools=self.samtools, BAM_input=self.BAM_path, chr=chr_name, BAM_output=BAMSplit_path)
+        cmd_index = "{java} -jar {picard} BuildBamIndex I={BAMSplit_path} O={baiPATH}".format(java=javaPATH, picard=picardPATH, BAMSplit_path=BAMSplit_path, baiPATH=BAISplit_path)
 
 
         print(cmd_split + "\n")
