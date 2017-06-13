@@ -1,0 +1,32 @@
+
+
+
+"""
+Select 'chr1' from the results
+
+"""
+
+
+
+import sys
+
+
+inputPATH  = sys.argv[1]
+outputPATH = sys.argv[2]
+
+
+with open(inputPATH, "r") as inf:
+
+    outf = open(outputPATH, "w")
+
+    for l in inf:
+        if l.startswith("#"):
+            continue
+
+        l_split = l.split("\t")
+
+        if l_split[0] == "1":
+            outf.write(l)
+
+
+    outf.close()
