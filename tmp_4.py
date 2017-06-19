@@ -1,70 +1,41 @@
 
 """
-Select 'GATK_UnifiedGenotyper' unique results and 'GATK_UnifiedGenotyper/GATK_MuTect2 common'
+Select 'GATK_UnifiedGenotyper', 'GATK_UnifiedGenotyper/GATK_MuTect2 and 'Varscan2-Somatic' common results
 
 """
 
-import sys
-import time
+
+
 import pandas as pd
 
 
 
-input_1_PATH  = sys.argv[1]
-input_2_PATH  = sys.argv[2]
+df_u = pd.read_csv("UnifiedGenotyper_chr1.vcf", index_col=False, sep="\t")
 
-# output_1_PATH = sys.argv[3]
-# output_2_PATH = sys.argv[4]
+df_m = pd.read_csv("MuTect2_chr1.vcf", index_col=False, sep="\t")
 
-outputPATH = sys.argv[3]
+df_v = pd.read_csv("Varscan2_chr1.vsn", index_col=False, sep="\t")
 
 
-df_tumorI = pd.read_csv(input_1_PATH, header=None, sep="\t", comment="#")
-df_normalI = pd.read_csv(input_2_PATH, header=None, sep="\t", comment="#")
+
+df_merge_um = pd.merge(df_u, df_m, on="position")
+df_merge_uv = pd.merge(df_u, df_v, on="position")
+df_merge_mv = pd.merge(df_m, df_v, on="position")
+df_merge_umv = pd.merge(df_merge_um, df_v, on="position")
+
+df_merge_um.to_csv("UM_chr1.tsv", header=None, index=None, sep="\t")
+df_merge_uv.to_csv("UV_chr1.tsv", header=None, index=None, sep="\t")
+df_merge_mv.to_csv("MV_chr1.tsv", header=None, index=None, sep="\t")
+df_merge_umv.to_csv("UMV_chr1.tsv", header=None, index=None, sep="\t")
 
 
-commonList = []
 
-tumorList  = []
-normalList = []
+df_merge_um = pd.merge(df_u, df_m, on="position", how="outer")
+df_merge_uv = pd.merge(df_u, df_v, on="position", how="outer")
+df_merge_mv = pd.merge(df_m, df_v, on="position", how="outer")
+df_merge_umv = pd.merge(df_merge_um, df_v, on="position", how="outer")
 
-
-for idx_t, row_t in df_tumorI.iterrows():
-    # print("\n\n\ntumor: %s" % row_t)
-    # time.sleep(1.5)
-
-    pos_t = row_t[1]
-    alt_t = row_t[4]
-    gt_t  = row_t[9].split(":")[0]
-
-    for idx_n, row_n in df_normalI.iterrows():
-        # print("\nnormal: %s" % row_n)
-        # time.sleep(0.5)
-
-        pos_n = row_n[1]
-        alt_n = row_n[4]
-        gt_n  = row_n[9].split(":")[0]
-
-        if pos_t == pos_n and alt_t == alt_n and gt_t == gt_n:
-            # print("tumor: %s" % row_t)
-            # time.sleep(0.5)
-            commonList.append(row_t)
-
-        # if alt_t != alt_n or (alt_t != alt_n and gt_t != gt_n):
-        #     tumorList.append(row_t)
-        #     normalList.append(row_n)
-
-
-df_common = pd.DataFrame(commonList)
-
-# df_tumorO  = pd.DataFrame(tumorList)
-# df_normalO = pd.DataFrame(normalList)
-
-
-# print(df_common, df_tumorO, df_normalO)
-
-
-df_common.to_csv(outputPATH, header=None, index=None, sep="\t")
-
-# df_tumorO.to_csv(output_1_PATH, header=None, index=None, sep="\t")
-# df_normalO.to_csv(output_2_PATH, header=None, index=None, sep="\t")
+df_merge_um.to_csv("UM_diff_chr1.tsv", header=None, index=None, sep="\t")
+df_merge_uv.to_csv("UV_diff_chr1.tsv", header=None, index=None, sep="\t")
+df_merge_mv.to_csv("MV_diff_chr1.tsv", header=None, index=None, sep="\t")
+df_merge_umv.to_csv("UMV_diff_chr1.tsv", header=None, index=None, sep="\t")

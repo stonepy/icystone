@@ -51,6 +51,8 @@ if __name__ == "__main__":
 
     try:
         select_opt = sys.argv[3]
+        print("\nSelect chromosome %s\n" % select_opt)
         select_chr()
     except:
+        print("\nSelect all SNP/INDEL sites\n")
         select_snp_indel()
