@@ -35,7 +35,7 @@ def get_args():
     #
     parser.add_argument("Input_BAM_PATH", help="")
     parser.add_argument("Output_BAM_DIR", help="")
-    parser.add_argument("-p", "--nSample", help="", default=6)
+    parser.add_argument("-p", "--nProcess", help="", default=6)
 
     args = parser.parse_args()
 
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
     bamPATH     = args.Input_BAM_PATH
     bamSplitDIR = args.Output_BAM_DIR
-    max_ProcessNum = int(args.nSample)
+    max_ProcessNum = int(args.nProcess)
 
     try:
         assert chrNames
