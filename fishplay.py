@@ -1,44 +1,208 @@
+"""
+   Library Annovar annotation summary
+"""
+
+import pandas as pd
 import sys
 
 
-try:
-    input1PATH  = sys.argv[1]
-    input2PATH  = sys.argv[2]
-    outputPATH  = sys.argv[3]
-
-except:
-    input1PATH  = "mutect1.call_stats.txt"
-    input2PATH  = "Varscan2_chr1.vsn"
-    outputPATH  = "test.vcf"
+libraryPath = sys.argv[1]
+AnnovarDir  = sys.argv[2]
+outputPath  = sys.argv[3]
 
 
-with open(outputPATH, "w") as outf:
+summary_dict = {
 
-    inf1 = open(input1PATH, "r")
-    inf2 = open(input2PATH, "r")
+    "SIFT Score"          : "hg19_dbnsfp33a_sift_dropped",
+    "POLYPhen V2 Score"   : "hg19_dbnsfp33a_pp2_dropped",
+    "MutationTaster"      : "hg19_dbnsfp33a_mt_dropped",
+    "Cadd"                : "hg19_cadd13_dropped",
+    "Dann"                : "hg19_dann_dropped",
+    "Eigen"               : "hg19_eigen_dropped",
+    "Hrcr1"               : "hg19_hrcr1_dropped",
+    "Kaviar"              : "hg19_kaviar_20150923_dropped",
+    "1000g_chbs"          : "hg19_ALL.sites.2012_02_dropped",
+    "esp6500"             : "hg19_esp6500siv2_all_dropped",
+    "tfbsConsSites Score" : "hg19_tfbsConsSites",
+    "ExAC03"              : "hg19_exac03_dropped",
+    "gnomAD"              : "hg19_gnomad_exome_dropped",
+    "ClinVar"             : "hg19_clinvar_20170130_dropped",
+    "COSMIC"              : "hg19_cosmic70_dropped",
+    "ICGC"                : "hg19_icgc21_dropped",
+    "NCI60"               : "hg19_nci60_dropped",
 
-    inf2List = []
-    for l2 in inf2:
-        inf2List.append(l2)
+}
 
-    n = 0
-    for l1 in inf1:
+with open(libraryPath, "r") as lib:
+    lib_dict  = {}
+    lib_title = ["chr", "pos", "ref", "alt"]
 
-        if l1.startswith("#"):
-            continue
+    for l in lib:
 
-        l1_split = l1.split("\t")
-        pos1 = l1_split[1]
+        l_split = l.split("\t")
 
-        for l2 in inf2List:
-            l2_split = l2.split("\t")
-            pos2 = l2_split[1]
-
-            if pos1 == pos2:
-                newl = l1.strip() + "\t" + l2
-                print(newl)
-                outf.write(newl)
+        try:
+            lib_dict[l_split[0]][l_split[1]] = l.strip()
+        except:
+            lib_dict[l_split[0]] = {}
+            lib_dict[l_split[0]][l_split[1]] = l.strip()
 
 
-inf1.close()
-inf2.close()
+libName = libraryPath.split("/")[-1]
+for key in summary_dict:
+    try:
+        AnnovarPath = "%s/%s.%s" % (AnnovarDir, libName, summary_dict[key])
+
+        with open(AnnovarPath, "r") as anno:
+            lib_title.append(key)
+
+            # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+            for chro in lib_dict:
+                for pos in lib_dict[chro]:
+                    lib_dict[chro][pos] += "\t"
+
+            # Find out the right cell to store the value
+            for l in anno:
+                l_split = l.split("\t")
+                l_chro  = l_split[2]
+                l_pos   = l_split[3]
+
+                for chro in lib_dict:
+                    if chro == l_chro:
+                        for pos in lib_dict[chro]:
+                            if pos == l_pos:
+                                lib_dict[chro][pos] += l_split[1]
+
+
+
+with open(outputPath, "w") as outf:
+    for i in lib_title:
+        title = i + "\t"
+    outf.write(title+"\n")
+
+    for chro in lib_dict:
+
+        for pos in lib_dict[chro]:
+            l = lib_dict[chro][pos] + "\n"
+            outf.write(l)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+    Library Annovar annotation
+"""
+
+from multiprocessing import Pool
+from subprocess import call
+
+import sys
+import time
+
+
+inputPath = sys.argv[1]
+print("\n %s \n" % inputPath)
+time.sleep(1)
+refDir = "/home/pub/database/Human/hg19/Annotation/"
+outputDir = ""
+
+
+opt_list = [
+
+    "--hgvs --splicing_threshold 15",
+    "-filter -dbtype avsnp147",
+    "-filter -dbtype 1000g2015aug_all",
+    "-filter -dbtype dbnsfp30a_sift",
+    "-filter -dbtype dbnsfp30a_pp2",
+    "-filter -dbtype dbnsfp30a_mt",
+    "-filter -dbtype esp6500si_all",
+    "-filter -dbtype cadd",
+    "-filter -dbtype dann",
+    "-filter -dbtype eigen",
+    "-filter -dbtype hrcr1",
+    "-filter -dbtype kaviar_20150923",
+    "-regionanno -dbtype tfbsConsSites",
+    "-filter -dbtype 1000g2014oct_chbs",
+    "-filter -dbtype exac03 --otherinfo",
+    "-filter -dbtype clinvar_20161128 -otherinfo",
+    "-filter -dbtype cosmic70",
+    "-filter -dbtype nci60",
+    "-filter -dbtype icgc21 -otherinfo",
+
+]
+
+
+Log = open("log_%s.txt" % time.ctime(), "w")
+cmd_list = []
+
+for opt in opt_list:
+    cmd = "perl /home/pub/software/annovar/annotate_variation.pl {opt} --buildver hg19 {library} {ref_dir}".format(opt=opt, library=inputPath, ref_dir=refDir)
+    cmd_list.append(cmd)
+
+P = Pool(10)
+for cmd in cmd_list:
+    print("\n %s \n" % cmd)
+    Log.write("\n %s \n" % cmd)
+    P.apply_async(call(cmd, shell=True))
+P.close()
+P.join()
+
+
+
+"""
+    Samtools tview
+"""
+
+from multiprocessing import Pool
+from subprocess import call
+
+import sys
+
+
+SNV_Path  = sys.argv[1]
+BAM_Path  = sys.argv[2]
+outputDir = sys.argv[3]
+refPATH = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Database/hg19/hg19.fa"
+
+
+
+with open(SNV_Path, "r") as inf:
+
+    site_list = {}
+    cmd_list  = []
+    for l in inf:
+        l_split = l.split("\t")
+        pos = "%s:%s" % (l_split[0], l_split[1])
+
+        # If the file name does not start with letter 't', it won't work properly
+        output_Path = outputDir + "/tchr%s_%s.tview" % (l_split[0], l_split[1])
+        cmd = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Software/samtools-1.4.1/samtools tview -d {output} -p {pos} {BAM} {ref} > {output}".format(pos=pos, BAM=BAM_Path, ref=refPATH, output=output_Path)
+        # print("\n %s \n" % cmd)
+        cmd_list.append(cmd)
+
+P = Pool(15)
+for cmd in cmd_list:
+    P.apply_async(call(cmd, shell=True))
+    print(cmd)
+P.close()
+P.join()
