@@ -1,3 +1,8 @@
+
+"""
+    Task II
+"""
+
 from multiprocessing import Pool
 from subprocess import call
 
@@ -43,4 +48,32 @@ for cmd in cmd_list:
     print(cmd)
 P.close()
 P.join()
+
+
+
+"""
+    Task II
+"""
+
+from multiprocessing import Pool
+from subprocess import call
+
+
+
+inputPath = ""
+refPATH = ""
+outputDir = ""
+
+
+with open(inputPath, "r") as inf:
+
+    site_list = {}
+    for l in inf:
+        l_split = l.split("\t")
+        chro, site = l_split[0], l_split[1]
+
+        cmd = "samtools tview -d -p {BAM} {ref}".format(ref=refPATH, BAM=inputPath)
+
+        print("\n % \n" % cmd)
+        call(cmd, shell=True)
 
