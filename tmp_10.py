@@ -2,7 +2,7 @@
    Library Annovar annotation summary
 """
 
-import pandas as pd
+
 import sys
 
 

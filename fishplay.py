@@ -162,7 +162,6 @@ with open(path_SIFT, "r") as f:
 #                 lib_dict[chro][pos] += "\t\t"
 
 
-
 # Summarize the rest of annotations.
 for key in summary_dict:
 
