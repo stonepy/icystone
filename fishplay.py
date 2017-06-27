@@ -2,19 +2,22 @@
    Library Annovar annotation summary
 """
 
-import pandas as pd
+
 import sys
 
-
-libraryPath = sys.argv[1]
-AnnovarDir  = sys.argv[2]
-outputPath  = sys.argv[3]
-
+try:
+    assert len(sys.argv) > 1
+    libraryPath = sys.argv[1]
+    AnnovarDir  = sys.argv[2]
+    outputPath  = sys.argv[3]
+except:
+    print("\nUsage:\n    python  %s  <libraryPath>  <AnnovarDir>  <outputPath>" % __file__)
+    exit()
 
 summary_dict = {
 
-    "SIFT Score"          : "hg19_dbnsfp33a_sift_dropped",
-    "POLYPhen V2 Score"   : "hg19_dbnsfp33a_pp2_dropped",
+    # "SIFT Score"          : "hg19_dbnsfp33a_sift_dropped",
+    # "POLYPhen V2 Score"   : "hg19_dbnsfp33a_pp2_dropped",
     "MutationTaster"      : "hg19_dbnsfp33a_mt_dropped",
     "Cadd"                : "hg19_cadd13_dropped",
     "Dann"                : "hg19_dann_dropped",
@@ -33,9 +36,11 @@ summary_dict = {
 
 }
 
+
+# Build the index
 with open(libraryPath, "r") as lib:
     lib_dict  = {}
-    lib_title = ["chr", "pos", "ref", "alt"]
+    lib_title = ["Chrs", "pos", "pos", "RefAllele", "AltAllele"]
 
     for l in lib:
 
@@ -49,35 +54,150 @@ with open(libraryPath, "r") as lib:
 
 
 libName = libraryPath.split("/")[-1]
+
+# Four special annotation: "*.exonic_variant_function", "*.variant_function"
+path_exo = "%s/%s.exonic_variant_function" % (AnnovarDir, libName)
+path_var = "%s/%s.variant_function" % (AnnovarDir, libName)
+path_SIFT = "%s/%s.hg19_dbnsfp33a_sift_dropped" % (AnnovarDir, libName)
+path_POLY = "%s/%s.hg19_dbnsfp33a_pp2_dropped" % (AnnovarDir, libName)
+
+
+# For "Function", "Predicted Protein Variants" columns
+with open(path_exo, "r") as f:
+
+    for l in f:
+
+        l_split = l.split("\t")
+        l_chro  = l_split[-5]
+        l_pos   = l_split[-4]
+
+        for chro in lib_dict:
+            if chro == l_chro:
+                for pos in lib_dict[chro]:
+                    if pos == l_pos:
+                        lib_dict[chro][pos] += "\t%s\t%s\t" % (l_split[1],l_split[2])
+
+
+    lib_title.append("Function")
+    lib_title.append("Predicted Protein Variants")
+
+    # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            if not lib_dict[chro][pos].endswith("\t"):
+                lib_dict[chro][pos] += "\t\t\t"
+
+
+# For "Gene Region", "Gene" columns
+with open(path_var, "r") as f:
+
+    for l in f:
+        l_split = l.split("\t")
+        l_chro  = l_split[-5]
+        l_pos   = l_split[-4]
+
+        for chro in lib_dict:
+            if chro == l_chro:
+                for pos in lib_dict[chro]:
+                    if pos == l_pos:
+                        lib_dict[chro][pos] += "%s\t%s\t" % (l_split[0], l_split[1])
+
+    lib_title.append("Gene Region")
+    lib_title.append("Gene")
+
+    # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            if not lib_dict[chro][pos].endswith("\t"):
+                lib_dict[chro][pos] += "\t\t"
+
+
+# For "SIFT Score", "SIFT Score Pred" columns
+with open(path_SIFT, "r") as f:
+
+    for l in f:
+        l_split = l.split("\t")
+        l_chro  = l_split[-5]
+        l_pos   = l_split[-4]
+
+        for chro in lib_dict:
+            if chro == l_chro:
+                for pos in lib_dict[chro]:
+                    if pos == l_pos:
+                        SIFT_Score, SIFT_Score_Phred = l_split[1].split(";")
+                        lib_dict[chro][pos] += "%s\t%s\t" % (SIFT_Score, SIFT_Score_Phred)
+
+    lib_title.append("SIFT Score")
+    lib_title.append("SIFT Score Pred")
+
+    # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            if not lib_dict[chro][pos].endswith("\t"):
+                lib_dict[chro][pos] += "\t\t"
+
+
+# # For "POLYPhen V2 Score", "POLYPhen V2 Score Pred" columns
+# with open(path_POLY, "r") as f:
+#
+#     for l in f:
+#         l_split = l.split("\t")
+#         l_chro  = l_split[-5]
+#         l_pos   = l_split[-4]
+#
+#         for chro in lib_dict:
+#             if chro == l_chro:
+#                 for pos in lib_dict[chro]:
+#                     POLYPhen_V2_Score, POLYPhen_V2_Score_Pred = l_split[1].split(";")
+#                     lib_dict[chro][pos] += "%s\t%s\t" % (SIFT_Score, SIFT_Score_Phred)
+#                     print(SIFT_Score, SIFT_Score_Phred)
+#
+#     lib_title.append("POLYPhen V2 Score")
+#     lib_title.append("POLYPhen V2 Score Pred")
+#
+#     # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+#     for chro in lib_dict:
+#         for pos in lib_dict[chro]:
+#             if not lib_dict[chro][pos].endswith("\t"):
+#                 lib_dict[chro][pos] += "\t\t"
+
+
+
+# Summarize the rest of annotations.
 for key in summary_dict:
+
     try:
         AnnovarPath = "%s/%s.%s" % (AnnovarDir, libName, summary_dict[key])
 
         with open(AnnovarPath, "r") as anno:
             lib_title.append(key)
 
-            # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
-            for chro in lib_dict:
-                for pos in lib_dict[chro]:
-                    lib_dict[chro][pos] += "\t"
-
             # Find out the right cell to store the value
             for l in anno:
                 l_split = l.split("\t")
-                l_chro  = l_split[2]
-                l_pos   = l_split[3]
+                l_chro  = l_split[-5]
+                l_pos   = l_split[-4]
 
                 for chro in lib_dict:
                     if chro == l_chro:
                         for pos in lib_dict[chro]:
                             if pos == l_pos:
                                 lib_dict[chro][pos] += l_split[1]
+    except:
+        print("%s: %s is not available." % (key, AnnovarPath))
+        continue
+
+    # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            lib_dict[chro][pos] += "\t"
 
 
 
 with open(outputPath, "w") as outf:
+    title = ""
     for i in lib_title:
-        title = i + "\t"
+        title += i + "\t"
     outf.write(title+"\n")
 
     for chro in lib_dict:
@@ -85,124 +205,3 @@ with open(outputPath, "w") as outf:
         for pos in lib_dict[chro]:
             l = lib_dict[chro][pos] + "\n"
             outf.write(l)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-    Library Annovar annotation
-"""
-
-from multiprocessing import Pool
-from subprocess import call
-
-import sys
-import time
-
-
-inputPath = sys.argv[1]
-print("\n %s \n" % inputPath)
-time.sleep(1)
-refDir = "/home/pub/database/Human/hg19/Annotation/"
-outputDir = ""
-
-
-opt_list = [
-
-    "--hgvs --splicing_threshold 15",
-    "-filter -dbtype avsnp147",
-    "-filter -dbtype 1000g2015aug_all",
-    "-filter -dbtype dbnsfp30a_sift",
-    "-filter -dbtype dbnsfp30a_pp2",
-    "-filter -dbtype dbnsfp30a_mt",
-    "-filter -dbtype esp6500si_all",
-    "-filter -dbtype cadd",
-    "-filter -dbtype dann",
-    "-filter -dbtype eigen",
-    "-filter -dbtype hrcr1",
-    "-filter -dbtype kaviar_20150923",
-    "-regionanno -dbtype tfbsConsSites",
-    "-filter -dbtype 1000g2014oct_chbs",
-    "-filter -dbtype exac03 --otherinfo",
-    "-filter -dbtype clinvar_20161128 -otherinfo",
-    "-filter -dbtype cosmic70",
-    "-filter -dbtype nci60",
-    "-filter -dbtype icgc21 -otherinfo",
-
-]
-
-
-Log = open("log_%s.txt" % time.ctime(), "w")
-cmd_list = []
-
-for opt in opt_list:
-    cmd = "perl /home/pub/software/annovar/annotate_variation.pl {opt} --buildver hg19 {library} {ref_dir}".format(opt=opt, library=inputPath, ref_dir=refDir)
-    cmd_list.append(cmd)
-
-P = Pool(10)
-for cmd in cmd_list:
-    print("\n %s \n" % cmd)
-    Log.write("\n %s \n" % cmd)
-    P.apply_async(call(cmd, shell=True))
-P.close()
-P.join()
-
-
-
-"""
-    Samtools tview
-"""
-
-from multiprocessing import Pool
-from subprocess import call
-
-import sys
-
-
-SNV_Path  = sys.argv[1]
-BAM_Path  = sys.argv[2]
-outputDir = sys.argv[3]
-refPATH = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Database/hg19/hg19.fa"
-
-
-
-with open(SNV_Path, "r") as inf:
-
-    site_list = {}
-    cmd_list  = []
-    for l in inf:
-        l_split = l.split("\t")
-        pos = "%s:%s" % (l_split[0], l_split[1])
-
-        # If the file name does not start with letter 't', it won't work properly
-        output_Path = outputDir + "/tchr%s_%s.tview" % (l_split[0], l_split[1])
-        cmd = "/home/hwx/DevPipline/Tumor_SNP_Hwx/Software/samtools-1.4.1/samtools tview -d {output} -p {pos} {BAM} {ref} > {output}".format(pos=pos, BAM=BAM_Path, ref=refPATH, output=output_Path)
-        # print("\n %s \n" % cmd)
-        cmd_list.append(cmd)
-
-P = Pool(15)
-for cmd in cmd_list:
-    P.apply_async(call(cmd, shell=True))
-    print(cmd)
-P.close()
-P.join()

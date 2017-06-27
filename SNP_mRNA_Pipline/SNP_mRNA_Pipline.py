@@ -138,12 +138,12 @@ if __name__ == "__main__":
     # main.mapping()
     # main.gatk()
     # main.calling()
-    main.library()
+    # main.library()
 
 
     # _ Timer __________________________________________________________________________________________________________
     t_finish   = time.time()             # Finish time
-    total_time = t_finish - t_start    # Total time
+    total_time = t_finish - t_start      # Total time
 
     # Convert second to minute, hour and day.
     day    = total_time // (3600 * 24)
