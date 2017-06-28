@@ -5,17 +5,24 @@
 
 import sys
 
+try:
+    assert len(sys.argv) > 1
+    libraryPath = sys.argv[1]
+    AnnovarDir  = sys.argv[2]
+    outputPath  = sys.argv[3]
+except:
+    libraryPath = "tmp/Mutect1_whole_T2N2_KEEP.call_stats.library"
+    AnnovarDir  = "tmp/Mutect1_whole_T2N2_KEEP/"
+    outputPath  = "test.xls"
 
-libraryPath = sys.argv[1]
-AnnovarDir  = sys.argv[2]
-outputPath  = sys.argv[3]
-
+    # print("\nUsage:\n    python  %s  <libraryPath>  <AnnovarDir>  <outputPath>" % __file__)
+    # exit()
 
 summary_dict = {
 
-    "SIFT Score"          : "hg19_dbnsfp33a_sift_dropped",
-    "POLYPhen V2 Score"   : "hg19_dbnsfp33a_pp2_dropped",
-    "MutationTaster"      : "hg19_dbnsfp33a_mt_dropped",
+    # "SIFT Score"          : "hg19_dbnsfp33a_sift_dropped",
+    # "POLYPhen V2 Score"   : "hg19_dbnsfp33a_pp2_dropped",
+    # "MutationTaster"      : "hg19_dbnsfp33a_mt_dropped",
     "Cadd"                : "hg19_cadd13_dropped",
     "Dann"                : "hg19_dann_dropped",
     "Eigen"               : "hg19_eigen_dropped",
@@ -33,9 +40,11 @@ summary_dict = {
 
 }
 
+
+# Build the index
 with open(libraryPath, "r") as lib:
     lib_dict  = {}
-    lib_title = ["chr", "pos", "ref", "alt"]
+    lib_title = ["Chrs", "pos", "pos", "RefAllele", "AltAllele"]
 
     for l in lib:
 
@@ -49,32 +58,152 @@ with open(libraryPath, "r") as lib:
 
 
 libName = libraryPath.split("/")[-1]
+
+# Five special annotation: "*.exonic_variant_function", "*.variant_function"
+path_exo = "%s/%s.exonic_variant_function" % (AnnovarDir, libName)
+path_var = "%s/%s.variant_function" % (AnnovarDir, libName)
+path_SIFT = "%s/%s.hg19_dbnsfp33a_sift_dropped" % (AnnovarDir, libName)
+path_POLY = "%s/%s.hg19_dbnsfp33a_pp2_dropped" % (AnnovarDir, libName)
+path_MuTR = "%s/%s.hg19_dbnsfp33a_mt_dropped" % (AnnovarDir, libName)
+
+
+# For "Function", "Predicted Protein Variants" columns
+with open(path_exo, "r") as f:
+
+    for l in f:
+
+        l_split = l.split("\t")
+        l_chro  = l_split[-5]
+        l_pos   = l_split[-4]
+
+        for chro in lib_dict:
+            if chro == l_chro:
+                for pos in lib_dict[chro]:
+                    if pos == l_pos:
+                        lib_dict[chro][pos] += "\t%s\t%s\t" % (l_split[1],l_split[2])
+
+
+    lib_title.append("Function")
+    lib_title.append("Predicted Protein Variants")
+
+    # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            if not lib_dict[chro][pos].endswith("\t"):
+                lib_dict[chro][pos] += "\t\t\t"
+
+
+# For "Gene Region", "Gene" columns
+with open(path_var, "r") as f:
+
+    for l in f:
+        l_split = l.split("\t")
+        l_chro  = l_split[-5]
+        l_pos   = l_split[-4]
+
+        for chro in lib_dict:
+            if chro == l_chro:
+                for pos in lib_dict[chro]:
+                    if pos == l_pos:
+                        lib_dict[chro][pos] += "%s\t%s" % (l_split[0], l_split[1])
+
+    lib_title.append("Gene Region")
+    lib_title.append("Gene")
+
+    # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            if not lib_dict[chro][pos].endswith("\t"):
+                lib_dict[chro][pos] += "\t"
+            else:
+                lib_dict[chro][pos] += "\t\t"
+
+
+OptSplit_dict = {
+
+    # For "SIFT Score", "SIFT Score Pred" columns
+    "SIFT Score"    :{
+        "path"  :   path_SIFT,
+        "title" :   ["SIFT Score", "SIFT Score Pred"],
+    },
+    # For "POLYPhen V2 Score", "POLYPhen V2 Score Pred" columns
+    "POLYPhen V2 Score" :{
+        "path"  :   path_POLY,
+        "title" :   ["POLYPhen V2 Score", "POLYPhen V2 Score Pred"],
+    },
+    # For "MutationTaster", "MutationTaster Pred" columns
+    "MutationTaster"    :{
+        "path"  :   path_MuTR,
+        "title" :   ["MutationTaster", "MutationTaster Pred"],
+    },
+
+}
+
+
+
+def score_pred(path, score, pred):
+
+    with open(path, "r") as f:
+
+        for l in f:
+            l_split = l.split("\t")
+            l_chro  = l_split[-5]
+            l_pos   = l_split[-4]
+
+            for chro in lib_dict:
+                if chro == l_chro:
+                    for pos in lib_dict[chro]:
+                        if pos == l_pos:
+                            Score, Pred = l_split[1].split(";")
+                            lib_dict[chro][pos] += "%s\t%s" % (Score, Pred)
+
+        lib_title.append(score)
+        lib_title.append(pred)
+
+        # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
+        for chro in lib_dict:
+            for pos in lib_dict[chro]:
+                if not lib_dict[chro][pos].endswith("\t"):
+                    lib_dict[chro][pos] += "\t"
+                else:
+                    lib_dict[chro][pos] += "\t\t"
+
+for key in OptSplit_dict:
+    score_pred(OptSplit_dict[key]["path"], OptSplit_dict[key]["title"][0], OptSplit_dict[key]["title"][1])
+
+
+
+# Summarize the rest of annotations.
 for key in summary_dict:
+
     try:
         AnnovarPath = "%s/%s.%s" % (AnnovarDir, libName, summary_dict[key])
 
         with open(AnnovarPath, "r") as anno:
             lib_title.append(key)
 
-            # If some annotation are not avaible for some sites, it make sure that cells will not be fill by other value
-            for chro in lib_dict:
-                for pos in lib_dict[chro]:
-                    lib_dict[chro][pos] += "\t"
-
             # Find out the right cell to store the value
             for l in anno:
                 l_split = l.split("\t")
-                l_chro  = l_split[2]
-                l_pos   = l_split[3]
+                l_chro  = l_split[-5]
+                l_pos   = l_split[-4]
 
                 for chro in lib_dict:
                     if chro == l_chro:
                         for pos in lib_dict[chro]:
                             if pos == l_pos:
                                 lib_dict[chro][pos] += l_split[1]
+
     except:
         print("%s: %s is not available." % (key, AnnovarPath))
         continue
+
+    # If some annotation are not avaible for some sites, it makes sure that cells will not be fill by other value
+    for chro in lib_dict:
+        for pos in lib_dict[chro]:
+            lib_dict[chro][pos] += "\t"
+
+
 
 
 
@@ -82,15 +211,14 @@ with open(outputPath, "w") as outf:
     title = ""
     for i in lib_title:
         title += i + "\t"
-        print(i)
     outf.write(title+"\n")
-    print(title)
 
     for chro in lib_dict:
 
         for pos in lib_dict[chro]:
             l = lib_dict[chro][pos] + "\n"
             outf.write(l)
+
 
 
 
