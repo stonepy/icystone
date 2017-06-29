@@ -32,8 +32,6 @@ df_mut = pd.read_excel(mutPath, sheetname=mut_sheet)
 delIndex_list = []
 for i, row in df_hap.iterrows():
 
-    # Ex: df_hap.iloc['rowNum', 'colNum']
-    chr = df_hap.iloc[i, 7]
     chr = row[7]
     if chr != 1:
         delIndex_list.append(i)
@@ -65,7 +63,7 @@ hapChr1_N_reads = df_hapmutChr1[hapChr1_Nreads]
 # Deal with reads count
 Tumor_reads  = []
 Nomarl_reads = []
-for i in range(len(mutChr1_T_refcount)):
+for i in mutChr1_T_refcount:
     Tumor_reads.append(str(hapChr1_T_reads[i]) + " | " + (str(mutChr1_T_refcount[i]) + ":" +  str(mutChr1_T_altcount[i])))
     Nomarl_reads.append(str(hapChr1_N_reads[i]) + " | " + (str(mutChr1_N_refcount[i]) + ":" +  str(mutChr1_N_altcount[i])))
 
@@ -411,6 +409,7 @@ Log.close()
 
 """
     Convert 'MuTect*' result into '*library' for Annovar Annotation
+    V1
 """
 
 
