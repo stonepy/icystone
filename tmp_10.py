@@ -1,91 +1,110 @@
 """
-    Convert 'MuTect*' result into '*library' for Annovar Annotation
+    Compare 'HaplotypeCaller' and 'MuTect.x' result
 """
 
 
 import sys
-
+import pandas as pd
 
 
 try:
     assert len(sys.argv) > 1
-    inputPath  = sys.argv[1]
-    outputPath = sys.argv[2]
-    MTtype    = sys.argv[3]
-
+    hapPath = sys.argv[1]
+    mutPath = sys.argv[2]
+    outputPath = sys.argv[3]
 except:
-    # inputPath  = "Mutect1_wjc_chr1.call_stats.txt"
-    # outputPath = "Mutect1_wjc_chr1.call_stats_READs.txt"
-    # MTtype     = "1"
+    # hapPath    = "/home/daniel/PycharmProjects/fishbone/TumorUnique/17B0106A_wjc_SpecialMutation.xlsx"
+    # mutPath    = "Mutect1_chr1_T2N2_KEEP.xlsx"
+    # outputPath = "Mutect1_chr1_T2N2_compare.xlsx"
 
-    print("\nUsage:\n    python  %s  <libraryPath>  <AnnovarDir>  <outputPath>" % __file__)
+    print("\nUsage:\n    python  %s  <HaplotypeCallerResultPath>  <MuTectResultPath>  <OutputPath>\n" % __file__)
     exit()
 
 
-# For MuTect1
-def MT1():
-
-    with open(inputPath, "r") as inf:
-
-        outf = open(outputPath, "w")
-        for l in inf:
-
-            if l.startswith("#"):
-                continue
-
-            l_split = l.split("\t")
-
-            chro = l_split[0]
-            pos  = l_split[1]
-            ref  = l_split[3]
-            alt  = l_split[4]
-
-            Tumor_ref_count  = l_split[25]
-            Tumor_alt_count  = l_split[26]
-            Normal_ref_count = l_split[37]
-            Normal_alt_count = l_split[38]
-
-            wl = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (chro, pos, pos, ref, alt, Tumor_ref_count, Tumor_alt_count, Normal_ref_count, Normal_alt_count)
-            outf.write(wl)
-
-        outf.close()
+# Read the data sheets
+hap_sheet = "SNV Information"
+mut_sheet = mutPath.split("/")[-1].split(".")[-2]
+df_hap = pd.read_excel(hapPath, sheetname=hap_sheet)
+df_mut = pd.read_excel(mutPath, sheetname=mut_sheet)
 
 
-# For MuTect2
-def MT2():
+# Deal with 'HaplotypeCaller' result
+delIndex_list = []
+for i, row in df_hap.iterrows():
 
-    with open(inputPath, "r") as inf:
+    # Ex: df_hap.iloc['rowNum', 'colNum']
+    chr = df_hap.iloc[i, 7]
+    chr = row[7]
+    if chr != 1:
+        delIndex_list.append(i)
 
-        outf = open(outputPath, "w")
-        for l in inf:
+# Keep chromosome 1
+df_hapChr1 = df_hap.drop(delIndex_list, axis=0)
 
-            if l.startswith("#"):
-                continue
-
-            l_split = l.split("\t")
-
-            chro = l_split[0]
-            pos  = l_split[1]
-            ref  = l_split[3]
-            alt  = l_split[4]
-
-            Tumor_ref_count  = l_split[-2].split(":")[1].split(",")[0]
-            Tumor_alt_count  = l_split[-2].split(":")[1].split(",")[1]
-            Normal_ref_count = l_split[-1].split(":")[1].split(",")[0]
-            Normal_alt_count = l_split[-1].split(":")[1].split(",")[1]
-
-            wl = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (chro, pos, pos, ref, alt, Tumor_ref_count, Tumor_alt_count, Normal_ref_count, Normal_alt_count)
-            outf.write(wl)
-
-        outf.close()
+# Tumor/Normal reads columns 'hap'
+hapChr1_Treads = df_hapChr1.columns.values[-1]
+hapChr1_Nreads = df_hapChr1.columns.values[-3]
 
 
+# Deal with 'MuTect.x' result
+df_mutChr1 = df_mut
+# Merge 'HaplotypeCaller' and 'MuTect*' results
+df_hapmutChr1 = pd.merge(df_hapChr1, df_mutChr1, how="inner", on="Position")
 
-if "1" in MTtype:
-    MT1()
 
-elif "2" in MTtype:
-    MT2()
+# Get reads count from 'HaplotypeCaller' and 'MuTect.x' results individually
+mutChr1_T_refcount = df_hapmutChr1["Tumor_ref_count"]
+mutChr1_T_altcount = df_hapmutChr1["Tumor_alt_count"]
+mutChr1_N_refcount = df_hapmutChr1["Normal_ref_count"]
+mutChr1_N_altcount = df_hapmutChr1["Normal_alt_count"]
+
+hapChr1_T_reads = df_hapmutChr1[hapChr1_Treads]
+hapChr1_N_reads = df_hapmutChr1[hapChr1_Nreads]
+
+
+# Deal with reads count
+Tumor_reads  = []
+Nomarl_reads = []
+for i in range(len(mutChr1_T_refcount)):
+    Tumor_reads.append(str(hapChr1_T_reads[i]) + " | " + (str(mutChr1_T_refcount[i]) + ":" +  str(mutChr1_T_altcount[i])))
+    Nomarl_reads.append(str(hapChr1_N_reads[i]) + " | " + (str(mutChr1_N_refcount[i]) + ":" +  str(mutChr1_N_altcount[i])))
+
+# Insert to the last two columns
+df_hapmutChr1["Tumor_Hap | Mut"]  = Tumor_reads
+df_hapmutChr1["Normal_Hap | Mut"] = Nomarl_reads
+
+
+# Select unique results
+df_hapChr1Unique = df_hapChr1
+df_mutChr1Unique = df_mutChr1
+hapIndex_list = []
+mutIndex_list = []
+
+for p in df_hapmutChr1["Position"]:
+
+    for i, row in df_hapChr1Unique.iterrows():
+        if p == row[8]:
+            hapIndex_list.append(i)
+
+    for i, row in df_mutChr1Unique.iterrows():
+        if p == row[1]:
+            mutIndex_list.append(i)
+
+# Keep unique results
+df_hapChr1Unique = df_hapChr1Unique.drop(hapIndex_list, axis=0)
+df_mutChr1Unique = df_mutChr1Unique.drop(mutIndex_list, axis=0)
+
+
+# Save results as '*.xlsx' file
+writer = pd.ExcelWriter(outputPath)
+df_hapmutChr1.to_excel(writer, 'HaploptypeCaller|MuTect.x', index=False)
+df_hapChr1Unique.to_excel(writer, 'HaploptypeCaller_Unique', index=False)
+df_mutChr1Unique.to_excel(writer, 'MuTect.x_Unique', index=False)
+df_hapChr1.to_excel(writer, 'HaploptypeCaller', index=False)
+df_mutChr1.to_excel(writer, 'MuTect.x', index=False)
+writer.save()
+
+
 
 
 
@@ -104,11 +123,11 @@ try:
     AnnovarDir  = sys.argv[2]
     outputPath  = sys.argv[3]
 except:
-    # libraryPath = "tmp/Mutect1_whole_T2N2_KEEP.call_stats.library"
-    # AnnovarDir  = "tmp/Mutect1_whole_T2N2_KEEP/"
+    # libraryPath = "/home/daniel/PycharmProjects/fishbone/tmp_2/Mutect2_chr1_wjc_BED/Mutect2_chr1_wjc_BED.library"
+    # AnnovarDir  = "/home/daniel/PycharmProjects/fishbone/tmp_2/Mutect2_chr1_wjc_BED"
     # outputPath  = "test.xls"
 
-    print("\nUsage:\n    python  %s  <libraryPath>  <AnnovarDir>  <outputPath>" % __file__)
+    print("\nUsage:\n    python  %s  <libraryPath>  <AnnovarDir>  <outputPath>\n" % __file__)
     exit()
 
 summary_dict = {
@@ -137,11 +156,13 @@ summary_dict = {
 # Build the index
 with open(libraryPath, "r") as lib:
     lib_dict  = {}
-    lib_title = ["Chrs", "pos", "pos", "RefAllele", "AltAllele", "Tumor_ref_count", "Tumor_alt_count", "Normal_ref_count", "Normal_alt_count"]
+    lib_title = ["Chrs", "Pos", "Pos", "RefAllele", "AltAllele", "Tumor_ref_count", "Tumor_alt_count", "Normal_ref_count", "Normal_alt_count"]
 
     for l in lib:
 
         l_split = l.split("\t")
+        i_chro  = l_split[0]
+        i_pos   = l_split[1]
 
         try:
             lib_dict[l_split[0]][l_split[1]] = l.strip()
@@ -166,8 +187,8 @@ with open(path_exo, "r") as f:
     for l in f:
 
         l_split = l.split("\t")
-        l_chro  = l_split[-5]
-        l_pos   = l_split[-4]
+        l_chro  = l_split[-9]
+        l_pos   = l_split[-8]
 
         for chro in lib_dict:
             if chro == l_chro:
@@ -191,8 +212,8 @@ with open(path_var, "r") as f:
 
     for l in f:
         l_split = l.split("\t")
-        l_chro  = l_split[-5]
-        l_pos   = l_split[-4]
+        l_chro  = l_split[-9]
+        l_pos   = l_split[-8]
 
         for chro in lib_dict:
             if chro == l_chro:
@@ -239,8 +260,8 @@ def score_pred(path, score, pred):
 
         for l in f:
             l_split = l.split("\t")
-            l_chro  = l_split[-5]
-            l_pos   = l_split[-4]
+            l_chro  = l_split[-9]
+            l_pos   = l_split[-8]
 
             for chro in lib_dict:
                 if chro == l_chro:
@@ -276,8 +297,8 @@ for key in summary_dict:
             # Find out the right cell to store the value
             for l in anno:
                 l_split = l.split("\t")
-                l_chro  = l_split[-5]
-                l_pos   = l_split[-4]
+                l_chro  = l_split[-9]
+                l_pos   = l_split[-8]
 
                 for chro in lib_dict:
                     if chro == l_chro:
@@ -394,7 +415,6 @@ Log.close()
 
 
 import sys
-
 
 
 try:
