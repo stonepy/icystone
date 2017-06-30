@@ -27,7 +27,8 @@ opt_1 = {
 }
 
 
-def backup
+def backup():
+    pass
 
 
 
@@ -56,3 +57,4 @@ if __name__ == "__main__":
         bs_opt = sys.args[2]
 
     except:
+        pass
