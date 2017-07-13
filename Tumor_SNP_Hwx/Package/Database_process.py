@@ -1,4 +1,56 @@
 """
+    Drug Sensitivity in Cancer database process
+"""
+
+
+input_path  = "senseDR.txt"
+output_path = "senseDR.txt.xls"
+
+
+import pandas as pd
+
+
+df = pd.read_table(input_path)
+
+target = df["targets"]
+
+
+geneDict = {}
+geneList = []
+for g in target:
+    gene = g.split(",")
+    for j in gene:
+        geneDict[j] = ""
+
+
+for index,row in df.iterrows():
+
+    for i in row[4].split(","):
+        if i in geneDict:
+            # print(type(row[1]), type(row[2]), type(row[3]))
+            geneDict[i] += "%s : %s : %s ; " % (row[1], row[2], row[3])
+
+
+print(geneDict)
+
+
+with open(output_path, "w") as outf:
+
+    outf.write("Gene Symbol\tDrug Name ; Synonyms ; Pathway Name\n")
+    for key in geneDict:
+
+        outl = key + "\t" + geneDict[key].strip(" ;") + "\n"
+        outf.write(outl)
+        print(outl)
+
+
+
+ 
+
+
+
+
+"""
     NovoDriver Genes process
 """
 
