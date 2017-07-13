@@ -16,7 +16,6 @@ target = df["targets"]
 
 
 geneDict = {}
-geneList = []
 for g in target:
     gene = g.split(",")
     for j in gene:
@@ -31,9 +30,6 @@ for index,row in df.iterrows():
             geneDict[i] += "%s : %s : %s ; " % (row[1], row[2], row[3])
 
 
-print(geneDict)
-
-
 with open(output_path, "w") as outf:
 
     outf.write("Gene Symbol\tDrug Name ; Synonyms ; Pathway Name\n")
@@ -41,7 +37,6 @@ with open(output_path, "w") as outf:
 
         outl = key + "\t" + geneDict[key].strip(" ;") + "\n"
         outf.write(outl)
-        print(outl)
 
 
 
