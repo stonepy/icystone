@@ -16,17 +16,18 @@ target = df["targets"]
 
 
 geneDict = {}
+n = 0
 for g in target:
     gene = g.split(",")
     for j in gene:
-        geneDict[j] = ""
+        n += 1
+        geneDict[j.lstrip(" ")] = ""
 
 
 for index,row in df.iterrows():
 
     for i in row[4].split(","):
         if i in geneDict:
-            # print(type(row[1]), type(row[2]), type(row[3]))
             geneDict[i] += "%s : %s : %s ; " % (row[1], row[2], row[3])
 
 
