@@ -41,8 +41,8 @@ local_dir = {
 
     "TumorSNV_B_Linux"  :   "/media/daniel/Data/ExonTumor_Project",
     "TumorSNV_R_Linux"  :   "/media/daniel/Data/.",
-    "TumorSNV_B_MacOS"  :   "/User/IcyMount/Desktop/ExonTumor_Project",
-    "TumorSNV_R_MacOS"  :   "/User/IcyMount/Desktop/.",
+    "TumorSNV_B_MacOS"  :   "/Users/IcyMount/Desktop/ExonTumor_Project",
+    "TumorSNV_R_MacOS"  :   "/Users/IcyMount/Desktop/.",
     ""  :   "",
     ""  :   "",
 
